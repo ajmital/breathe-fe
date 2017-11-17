@@ -9,6 +9,9 @@ import { FoodService } from '../../services/food.service';
 export class FoodComponent implements OnInit {
 
   food_query:Food[] = [];
+  food_detail:Food = new Food();
+  detail_exists = false;
+  is_searching = false;
 
   constructor(private foodService:FoodService) {
   }
@@ -17,6 +20,7 @@ export class FoodComponent implements OnInit {
   }
 
   search(query:string){
+    this.is_searching = true;
     this.foodService.search(query).subscribe((results) => {
       if (results["branded"] != null){
         results["branded"].forEach(element => {
@@ -39,15 +43,38 @@ export class FoodComponent implements OnInit {
           this.food_query.push(new_food);
         });
       }
+      this.is_searching = false;
     });
   }
   
   getDetails(item_id:string){
     this.foodService.getDetails(item_id).subscribe((results) =>{
-      console.log(results);
+      if (results["brand_name"] != null){
+        this.food_detail.brand_name = results["brand_name"];
+      }
+      this.food_detail.total_fiber = results["nf_dietary_fiber"];
+      this.food_detail.serving_quantity = results["serving_qty"];
+      this.food_detail.carbohydrates = results["nf_total_carbohydrate"];
+      this.food_detail.fat = results["nf_total_fat"];
+      this.food_detail.nix_item = results["nix_item_name"];
+      this.food_detail.food_name = results["food_name"];
+      this.food_detail.sugar = results["nf_sugars"];
+      this.food_detail.calories = results["nf_calories"];
+      this.food_detail.nix_item_id = results["nix_item_id"];
+      this.food_detail.thumbnail = results["photo"]["thumb"];
+      this.food_detail.serving_unit = results["serving_unit"];
+      this.food_detail.protein = results["nf_protein"];
+      this.food_detail.quantity = 1;
+      this.food_detail.water = 0;
+      this.detail_exists = true;
     });
   }
 
+  addFood(){
+    console.log(this.food_detail);
+  }
+
+// End class
 }
 
 class Food{

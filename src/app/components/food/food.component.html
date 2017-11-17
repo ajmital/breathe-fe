@@ -1,10 +1,32 @@
 <h2>Food Search</h2>
-<form (submit)="search(food.value)">
-  <div>
-    <label for="food">Food</label>
-    <input type="text" #food>
-  </div>
-</form>
+
+<table>
+<tr>
+  <td>
+    <form (submit)="search(food.value)">
+      <div>
+        <label for="food">Food</label>
+        <input type="text" #food>
+      </div>
+    </form>
+  </td>
+  <td *ngIf=detail_exists>
+    <div>
+        <h2>{{food_detail.brand_name}} {{food.food_name}}</h2>
+        <img src = {{food_detail.thumbnail}} style="width:50px" />
+        <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}}</p>
+        <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
+        <p>Sugar: {{food_detail.sugar * food_detail.quantity}}</p>
+        <p>Protein: {{food_detail.protein * food_detail.quantity}}</p>
+        <label for="quantity">Quantity: </label>
+        <input type="number" [(ngModel)]="food_detail.quantity">
+        <button (click)="addFood()">Add Food</button>
+    </div>
+  </td>
+</tr>
+</table>
+<img *ngIf=is_searching src="assets/loading_gif.gif" />
+
 
 <ul>
   <li *ngFor="let food of food_query">
@@ -13,3 +35,4 @@
     <button (click)="getDetails(food.nix_item_id)">Details</button>
   </li>
 </ul>  
+
