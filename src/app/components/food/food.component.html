@@ -1,0 +1,15 @@
+<h2>Food Search</h2>
+<form (submit)="search(food.value)">
+  <div>
+    <label for="food">Food</label>
+    <input type="text" #food>
+  </div>
+</form>
+
+<ul>
+  <li *ngFor="let food of food_query">
+    <img src = {{food.thumbnail}} style="width:50px"/>
+    <p>{{food.brand_name}} {{food.food_name}}</p>
+    <button (click)="getDetails(food.nix_item_id)">Details</button>
+  </li>
+</ul>  

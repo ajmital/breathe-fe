@@ -1,0 +1,77 @@
+<h2>User Data</h2>
+<ul *ngIf=userExists>
+  <li>Name: {{user.full_name}}</li>
+  <li>Email: {{user.email}}</li>
+  <li>Weight: {{user.weight}} pounds</li>
+  <li>Height: {{user.height}} inches</li>
+</ul>
+
+<button (click)="toggleEdit()">Edit User</button>
+
+<div *ngIf=editUser>
+  <h2>Edit User</h2>
+  <form>
+      <div>
+          <label for="name">Name: </label><br>
+          <input type="text" [(ngModel)]="user.full_name" name="name">
+        </div>
+    
+        <div>
+          <label for="email">Email: </label><br>
+          <input type="text" [(ngModel)]="user.email" name="email">
+        </div>
+    
+        <div>
+          <label for="age">Age: </label><br>
+          <input type="number" [(ngModel)]="user.age" name="age">
+        </div>
+
+        <div>
+          <label for="gender">Gender: </label><br>
+          <input type="text" [(ngModel)]="user.gender" name="gender">
+        </div>
+
+        <div>
+          <label for="height">Height: </label><br>
+          <input type="number" [(ngModel)]="user.height" name="height">
+        </div>
+
+        <div>
+          <label for="birth_month">Birth Month: </label><br>
+          <input type="number" [(ngModel)]="user.birth_month" name="birth_month">
+        </div>
+
+
+        <div>
+          <label for="birth_year">Birth Year: </label><br>
+          <input type="number" [(ngModel)]="user.birth_year" name="birth_year">
+        </div>
+  </form>
+  <button (click)="setUser()">Update User</button>
+</div>
+
+<h2>CO2</h2>
+<div *ngIf=userExists>
+  <p><strong>CO2: </strong>{{user.co2}} g</p>    
+  <p><strong>Maintain: </strong>{{user.maintain}} g</p>
+  <p><strong>Gradual: </strong>{{user.gradual}} g</p>
+  <p><strong>Moderate: </strong>{{user.moderate}} g</p>
+  <p><strong>Aggressive: </strong>{{user.aggressive}} g</p>
+</div>
+
+
+<h2>Weight</h2>
+<form (submit)="addWeight(weight.value)">
+  <div>
+    <label for="weight">Weight</label>
+    <input type="number" #weight>
+  </div>
+</form>
+
+<table>
+  <tr><td>Time</td><td>Value</td></tr>
+  <tr *ngFor="let weight of weights">
+    <td>{{weight.timestamp}}</td>
+    <td>{{weight.value}} pounds</td>
+  </tr>
+</table>
