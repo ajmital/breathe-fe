@@ -8,44 +8,31 @@ import { UserService } from '../../services/user.service';
 })
 
 export class UserDataComponent implements OnInit {
-  user:User = {
-    email:null,
-    weight:null,
-    gender:null,
-    age:null,
-    height:null,
-    full_name: null,
-    birth_month:null,
-    birth_year:null,
-    maintain:null,
-    gradual:null,
-    moderate:null,
-    aggressive:null,
-    co2:null
-  };
+  user:User = new User();
   editUser:boolean = false;
   userExists:boolean = false;
 
   weights:Weight[] = [];
 
   constructor(private userService:UserService) {
-
   }
 
   ngOnInit() {
     this.userService.getUser().subscribe((user_data) => {
       if (user_data["email"]){
+        this.userService.user.email = user_data["email"];
+        this.userService.user.weight = user_data["weight"];
+        this.userService.user.gender = user_data["gender"];
+        this.userService.user.age = user_data["age"];
+        this.userService.user.height = user_data["height"];
+        this.userService.user.full_name = user_data["full_name"];
+        this.userService.user.birth_month = user_data["birth_month"];
+        this.userService.user.birth_year = user_data["birth_year"];
         this.userExists = true;
-        this.user.email = user_data["email"];
-        this.user.weight = user_data["weight"];
-        this.user.gender = user_data["gender"];
-        this.user.age = user_data["age"];
-        this.user.height = user_data["height"];
-        this.user.full_name = user_data["full_name"];
-        this.user.birth_month = user_data["birth_month"];
-        this.user.birth_year = user_data["birth_year"];
       }
     });
+    
+    ;
     this.userService.getWeights().subscribe((weights) => {
       if (weights["weights"].length > 0){
         weights["weights"].forEach(element => {
@@ -55,38 +42,23 @@ export class UserDataComponent implements OnInit {
     });
 
     this.userService.getResults().subscribe((results) => {
-      this.user.maintain = results["maintain"];
-      this.user.gradual = results["gradual"];
-      this.user.moderate = results["moderate"];
-      this.user.aggressive = results["aggressive"];      
-      this.user.co2 = results["co2"];
+      this.userService.user.maintain = results["maintain"];
+      this.userService.user.gradual = results["gradual"];
+      this.userService.user.moderate = results["moderate"];
+      this.userService.user.aggressive = results["aggressive"];      
+      this.userService.user.co2 = results["co2"];
     });
 
+    this.userService.getFood().subscribe((results) => {
+      console.log(results);
+    });
+
+    this.user = this.userService.user;
   }
 
   setUser(){
-    let userObject = {
-      polynomial_coefficients: "string",
-      bearer_token: "string",
-      oauth_tokens: "string",
-      weight: 210,
-      processed_on: "string",
-      gender: this.user.gender,
-      age: this.user.age,
-      token_source: "string",
-      last_hr_sync: "string",
-      height: this.user.height,
-      last_calculations_ran_on: "string",
-      token_str: "string",
-      authorized: true,
-      full_name: this.user.full_name,
-      birth_month: this.user.birth_month,
-      password: "password",
-      email: this.user.email,
-      birth_year: this.user.birth_year
-    };
-
-    return this.userService.setUser(userObject).subscribe((results) => {
+    this.userService.user = this.user;
+    return this.userService.setUser().subscribe((results) => {
       console.log(results);
     });
   }
@@ -103,7 +75,7 @@ export class UserDataComponent implements OnInit {
     let timestamp = date.getFullYear().toString() + "-" + month.toString() + "-" + date.getDay().toString() + 
       "T" + hour.toString() + ":" + date.getMinutes().toString().padStart(2, "0") + 
       ":" + date.getSeconds().toString().padStart(2, "0") + "." + date.getMilliseconds().toString();
-    this.userService.addWeight(this.user.email, weight, timestamp).subscribe((status) =>{
+    this.userService.addWeight(weight, timestamp).subscribe((status) =>{
         console.log(status);
     });
 
@@ -113,20 +85,21 @@ export class UserDataComponent implements OnInit {
 
 }
 
-interface User{
+class User{
   email:string;
   weight:number;
   gender:string;
   age:number;
   height:number;
   full_name:string;
-  birth_month:number;
   birth_year:number;
+  birth_month:number;
   maintain:number;
   gradual:number;
   moderate:number;
   aggressive:number;
   co2:number;
+  constructor(){}
 }
 
 interface Weight{

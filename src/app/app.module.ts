@@ -11,11 +11,6 @@ import { FoodComponent } from './components/food/food.component';
 import { UserService } from './services/user.service';
 import { FoodService } from './services/food.service';
 
-const app_routes:Routes = [
-  {path: '', component:UserDataComponent},
-  {path: 'food', component:FoodComponent}
-]
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +21,6 @@ const app_routes:Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
-    RouterModule.forRoot(app_routes)
   ],
   providers: [UserService, FoodService],
   bootstrap: [AppComponent]

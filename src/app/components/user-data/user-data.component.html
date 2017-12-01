@@ -28,7 +28,8 @@
 
         <div>
           <label for="gender">Gender: </label><br>
-          <input type="text" [(ngModel)]="user.gender" name="gender">
+          <input type="radio" value="male" name="gender" [(ngModel)]="user.gender"> Male
+          <input type="radio" value="female" name="gender" [(ngModel)]= "user.gender"> Female
         </div>
 
         <div>

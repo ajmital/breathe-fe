@@ -12,7 +12,7 @@
   </td>
   <td *ngIf=detail_exists>
     <div>
-        <h2>{{food_detail.brand_name}} {{food.food_name}}</h2>
+        <h2>{{food_detail.brand_name}} {{food_detail.food_name}}</h2>
         <img src = {{food_detail.thumbnail}} style="width:50px" />
         <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}}</p>
         <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>

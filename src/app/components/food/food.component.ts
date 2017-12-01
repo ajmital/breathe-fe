@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FoodService } from '../../services/food.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-food',
@@ -13,7 +14,7 @@ export class FoodComponent implements OnInit {
   detail_exists = false;
   is_searching = false;
 
-  constructor(private foodService:FoodService) {
+  constructor(private foodService:FoodService, private userService:UserService) {
   }
 
   ngOnInit() {
@@ -71,7 +72,11 @@ export class FoodComponent implements OnInit {
   }
 
   addFood(){
-    console.log(this.food_detail);
+    if (this.userService.user.email != null){
+      this.foodService.postFood(this.food_detail, this.userService.user.email).subscribe((results) => {
+          console.log(results);
+      });
+    }
   }
 
 // End class
@@ -97,4 +102,20 @@ class Food{
   serving_unit:string;
   protein:number;
   constructor(){}
+}
+
+interface User{
+  email:string;
+  weight:number;
+  gender:string;
+  age:number;
+  height:number;
+  full_name:string;
+  birth_month:number;
+  birth_year:number;
+  maintain:number;
+  gradual:number;
+  moderate:number;
+  aggressive:number;
+  co2:number;
 }
