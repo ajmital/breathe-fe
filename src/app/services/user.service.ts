@@ -8,42 +8,39 @@ const api_url:string = "http://localhost/cgi-bin/";
 export class UserService {
 
   user:User = new User();
+  // TODO replace with session
+  options:RequestOptions = new RequestOptions(
+    {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        "Authorization": "Token 1a01bdc0cf6075b582726f21821db33644b6dbc5"
+      })
+    }
+  );
+
+
   
   constructor(public http:Http) {
   }
 
   getFood(){
-    return this.http.get(api_url + "foods.py").map(res=> res.json());
+    return this.http.get(api_url + "foods.py", this.options).map(res=> res.json());
   }
 
   getWeights(){
-    return this.http.get(api_url + "weights.py").map(res => res.json()); 
+    return this.http.get(api_url + "weights.py", this.options).map(res => res.json()); 
   }
 
   addWeight(weight:number, time:string){
-  
-    let options:RequestOptions = new RequestOptions(
-      {
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      }
-    );
-    return this.http.post(api_url + "weights.py", {"email":this.user.email, "value":weight, "timestamp":time}, options).map(res => res.json());
+    return this.http.post(api_url + "weights.py", {"email":this.user.email, "value":weight, "timestamp":time}, this.options).map(res => res.json());
   }
 
   getUser(){
-    return this.http.get(api_url + "users.py").map(res => res.json());
+    return this.http.get("http://localhost:8000/api/users/retrieve/", this.options).map(res => res.json());
   }
 
   setUser(){
-    let options:RequestOptions = new RequestOptions(
-      {
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      }
-    );
+
 
     let userObject = {
       polynomial_coefficients: "string",
@@ -66,7 +63,7 @@ export class UserService {
       birth_year: this.user.birth_year
     };
 
-    return this.http.post(api_url + "users.py", userObject, options).map(res => res.json());
+    return this.http.post(api_url + "users.py", userObject, this.options).map(res => res.json());
   }
 
   getResults(){
