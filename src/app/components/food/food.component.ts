@@ -71,12 +71,18 @@ export class FoodComponent implements OnInit {
     });
   }
 
+  // TODO, allow user to select time
   addFood(){
-    if (this.userService.user.email != null){
-      this.foodService.postFood(this.food_detail, this.userService.user.email).subscribe((results) => {
-          console.log(results);
-      });
-    }
+    let date:Date = new Date();
+    let month = date.getMonth() + 1;
+    let hour = date.getHours();
+
+    let timestamp = date.getFullYear().toString() + "-" + month.toString().padStart(2, "0") + "-" + date.getDate().toString().padStart(2, "0") + 
+    "T" + hour.toString() + ":" + date.getMinutes().toString().padStart(2, "0");
+
+    this.foodService.postFood(this.food_detail, timestamp).subscribe((results) => {
+      console.log(results);
+    });
   }
 
 // End class

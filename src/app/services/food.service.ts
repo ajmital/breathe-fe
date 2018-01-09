@@ -2,48 +2,56 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-const api_url:string = "http://localhost/cgi-bin/";
+const api_url:string = "http://localhost:8000/api/";
+
+
 
 @Injectable()
 export class FoodService {
+  
+  options:RequestOptions = new RequestOptions(
+    {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        "Authorization": "Token 3293f8cbbe16515a56d77ce352421d26241e80ae"
+      })
+    }
+  );
 
   constructor(public http:Http) {
   }
 
   getUPC(upc:string){
-    return this.http.post(api_url + "upc.py", {upc: upc}).map(res => res.json());
+    return this.http.post(
+      api_url + "nutritionix/upc/",
+      {upc: upc},
+      this.options
+    ).map(res => res.json());
   }
 
   search(query_string:string){
-    return this.http.post(api_url + "search.py", {query: query_string}).map(res => res.json());
+    return this.http.post(
+      api_url + "nutritionix/search/",
+      {query: query_string},
+      this.options
+    ).map(res => res.json());
   }
 
   getDetails(item_id:string){
-    return this.http.post(api_url + "detail.py", {nix_item_id: item_id}).map(res => res.json());
+    return this.http.post(
+      api_url + "nutritionix/item/?nix_item_id=" + item_id,
+      {nix_item_id: item_id},
+      this.options
+    ).map(res => res.json());
   }
 
-  postFood(food:Food, email:string){
-    return this.http.post(api_url + "foods.py", {
-      email: email,
-      brand_name: food.brand_name,
-      total_fiber: food.total_fiber,
-      timestamp: food.timestamp,
-      serving_quantity: food.serving_quantity,
-      carbohydrates: food.carbohydrates,
-      fat: food.fat,
-      nix_item: food.nix_item,
-      food_name: food.food_name,
-      sugar: food.sugar,
-      quantity: food.quantity,
-      calories: food.calories,
-      water: food.water,
-      period: food.period,
+  postFood(food:Food, timestamp:string){
+    return this.http.post(api_url + "foods/", {
       nix_item_id: food.nix_item_id,
-      created_on: food.created_on,
-      thumbnail: food.thumbnail,
-      serving_unit: food.serving_unit,
-      protein: food.protein
-    }).map(res => res.json());
+      food_name: food.food_name,
+      period: "auto",
+      timestamp:timestamp
+    }, this.options).map(res => res.json());
   }
 }
 

@@ -18,6 +18,7 @@ export class UserDataComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Retrieves user info
     this.userService.getUser().subscribe((user_data) => {
       if (user_data["email"]){
         this.userService.user.email = user_data["email"];
@@ -32,15 +33,16 @@ export class UserDataComponent implements OnInit {
       }
     });
     
-    ;
+    // Retrieves list of weights
     this.userService.getWeights().subscribe((weights) => {
-      if (weights["weights"].length > 0){
-        weights["weights"].forEach(element => {
+      if (weights.length > 0){
+        weights.forEach(element => {
             this.weights.push(element);
         });
       }
     });
 
+    // Gets latest results
     this.userService.getResults().subscribe((results) => {
       this.userService.user.maintain = results["maintain"];
       this.userService.user.gradual = results["gradual"];
@@ -56,6 +58,7 @@ export class UserDataComponent implements OnInit {
     this.user = this.userService.user;
   }
 
+  // Posts user details
   setUser(){
     this.userService.user = this.user;
     return this.userService.setUser().subscribe((results) => {
@@ -63,23 +66,27 @@ export class UserDataComponent implements OnInit {
     });
   }
 
+  // Toggles the edit form
   toggleEdit(){
     this.editUser = !this.editUser;
   }
 
+
+  // Adds current weight to database
   addWeight(weight:number){
     let date = new Date();
     let month = date.getMonth() + 1;
-    let hour = date.getHours() + 1;
+    let hour = date.getHours();
 
-    let timestamp = date.getFullYear().toString() + "-" + month.toString() + "-" + date.getDay().toString() + 
+    let timestamp = date.getFullYear().toString() + "-" + month.toString().padStart(2, "0") + "-" + date.getDate().toString().padStart(2, "0") + 
       "T" + hour.toString() + ":" + date.getMinutes().toString().padStart(2, "0") + 
-      ":" + date.getSeconds().toString().padStart(2, "0") + "." + date.getMilliseconds().toString();
-    this.userService.addWeight(weight, timestamp).subscribe((status) =>{
-        console.log(status);
-    });
+      ":" + date.getSeconds().toString().padStart(2, "0");
+    this.userService.addWeight(weight, timestamp).subscribe((new_weight) =>{
+        this.weights.push({email:new_weight["email"], timestamp:new_weight["timestamp"], id:new_weight["id"], value:new_weight["value"], created_on:new_weight["created_on"]});
+    },
+    (err) => console.log(err)
+  );
 
-    this.weights.push({email:this.user.email, value:weight, timestamp:timestamp});
     return false;
   }
 
@@ -103,7 +110,9 @@ class User{
 }
 
 interface Weight{
+  id:string;
   email:string;
-  timestamp:string;
   value:number;
+  timestamp:string;  
+  created_on:string;
 }
