@@ -4,6 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 
+// Styling module
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from './app.component';
 import { UserDataComponent } from './components/user-data/user-data.component';
 import { FoodComponent } from './components/food/food.component';
@@ -21,6 +24,7 @@ import { FoodService } from './services/food.service';
     BrowserModule,
     HttpModule,
     FormsModule,
+    NgbModule.forRoot(),
   ],
   providers: [UserService, FoodService],
   bootstrap: [AppComponent]

@@ -1,2 +1,14 @@
-<app-user-data></app-user-data>
-<app-food></app-food>
+<div class="container">
+    <ngb-tabset>
+        <ngb-tab title="User Data">
+            <ng-template ngbTabContent>
+                <app-user-data></app-user-data>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Food Search">
+            <ng-template ngbTabContent>
+                <app-food></app-food>
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
+</div>
