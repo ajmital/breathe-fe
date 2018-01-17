@@ -21,8 +21,16 @@ export class FoodComponent implements OnInit {
   }
 
   search(query:string){
+    // Clear previous search from results
+    if (this.food_query.length > 0){
+      this.food_query = [];
+    }
+
+    // Boolean value used to toggle loading
+
     this.is_searching = true;
     this.foodService.search(query).subscribe((results) => {
+      // Branded results
       if (results["branded"] != null){
         results["branded"].forEach(element => {
           let new_food:Food = new Food();
@@ -34,6 +42,7 @@ export class FoodComponent implements OnInit {
         });
       }
 
+      // Common results
       if (results["common"] != null){
         results["common"].forEach(element => {
           let new_food:Food = new Food();
@@ -44,15 +53,20 @@ export class FoodComponent implements OnInit {
           this.food_query.push(new_food);
         });
       }
+
+      // Set to false within subscribe, because this occurs asynchronously
       this.is_searching = false;
     });
   }
   
   getDetails(item_id:string){
+
     this.foodService.getDetails(item_id).subscribe((results) =>{
+      
       if (results["brand_name"] != null){
         this.food_detail.brand_name = results["brand_name"];
       }
+
       this.food_detail.total_fiber = results["nf_dietary_fiber"];
       this.food_detail.serving_quantity = results["serving_qty"];
       this.food_detail.carbohydrates = results["nf_total_carbohydrate"];
