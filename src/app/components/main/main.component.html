@@ -1,5 +1,6 @@
 <div class="container">
-  <ngb-tabset>
+  <button (click)="logout()">Log Out</button>
+    <ngb-tabset>
       <ngb-tab title="User Data">
           <ng-template ngbTabContent>
               <app-user-data></app-user-data>
@@ -10,5 +11,5 @@
               <app-food></app-food>
           </ng-template>
       </ngb-tab>
-  </ngb-tabset>
+    </ngb-tabset>
 </div>

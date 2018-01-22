@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 const api_url:string = "http://localhost:8000/";
 
@@ -13,15 +13,12 @@ const api_url:string = "http://localhost:8000/";
 export class LandingPageComponent implements OnInit {
 
   persist_credentials:boolean = false;
-  options:RequestOptions = new RequestOptions(
-    {
-      headers: new Headers({
-        "Content-Type": "application/json"
-      })
-    }
-  );
+  headers:HttpHeaders = new HttpHeaders({
+    "Content-Type": "application/json"
+  });
 
-  constructor(private http:Http, private router:Router) { }
+
+  constructor(private http:HttpClient, private router:Router) { }
 
   ngOnInit() {
     // Check if user is already logged in
@@ -41,10 +38,10 @@ export class LandingPageComponent implements OnInit {
     this.http.post(
       api_url + "rest-auth/login/",
       {"email":email, "password":password, "username":email},
-      this.options
+      {headers: this.headers}
     ).subscribe(
       results => {
-        let user_key:string = results.json()["key"];
+        let user_key:string = results["key"];
         if (this.persist_credentials){
           localStorage.removeItem('user');
           localStorage.setItem('user', user_key);
@@ -57,7 +54,7 @@ export class LandingPageComponent implements OnInit {
       },
       // Check for errors
       err => {
-        console.log(err);
+        console.log(err.body);
       }
     );
   }

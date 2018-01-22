@@ -34,7 +34,8 @@ export class UserDataComponent implements OnInit {
     });
     
     // Retrieves list of weights
-    this.userService.getWeights().subscribe((weights) => {
+    this.userService.getWeights().subscribe((weights: any) => {
+      this.weights = weights;
       if (weights.length > 0){
         weights.forEach(element => {
             this.weights.push(element);

@@ -1,24 +1,23 @@
 /* This service provides functions for all requests that require an
- authorized user */
+ authorized user (including logging out) */
 
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import 'rxjs/add/operator/map';
 import { ReactiveFormsModule } from '@angular/forms';
 
-const api_url:string = "http://localhost:8000/api/";
+const api_url:string = "http://localhost:8000/";
 
 @Injectable()
 export class UserService {
 
   user:User = new User();
   user_tok:string = null;
-  options:RequestOptions = null;
-
+  headers:HttpHeaders = null;
 
   
-  constructor(private http:Http, private router:Router) {
+  constructor(private http:HttpClient, private router:Router) {
     this.user_tok = localStorage.getItem('user');
     if (this.user_tok == null){
       this.user_tok = sessionStorage.getItem('user');
@@ -27,28 +26,51 @@ export class UserService {
       this.router.navigateByUrl('/welcome');
     }else{
       // Set token header
-      this.options = new RequestOptions({
-        headers: new Headers({"content-type": "application/json", "Authorization": "Token " + this.user_tok})
-      });
-
+      this.headers = new HttpHeaders({"content-type": "application/json", "Authorization": "Token " + this.user_tok});
     }
+  }
+
+  /* Logout method *////////////////////////////////////
+  logout(){
+    this.http.post(api_url + "rest-auth/logout/", {headers: this.headers}).subscribe(
+      response => {
+        // Remove locally stored information
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // Navigate to the welcome page
+        this.router.navigateByUrl('/welcome');
+      }
+    )
   }
 
   /* Profile-related methods */////////////////////////////
   getFood(){
-    return this.http.get(api_url + "foods/", this.options).map(res=> res.json());
+    return this.http.get(
+      api_url + "api/foods/",
+      {headers: this.headers});
   }
 
   getWeights(){
-    return this.http.get(api_url + "weights/", this.options).map(res => res.json()); 
+    return this.http.get(
+      api_url + "api/weights/",
+      {headers: this.headers}
+    );
   }
 
   addWeight(weight:number, time:string){
-    return this.http.post(api_url + "weights/", {"email":this.user.email, "value":weight, "timestamp":time}, this.options).map(res => res.json());
+    return this.http.post(
+      api_url + "api/weights/",
+      {"email":this.user.email,"value":weight, "timestamp":time},
+      {headers: this.headers}
+    );
   }
 
   getUser(){
-    return this.http.get(api_url + "users/retrieve/", this.options).map(res => res.json());
+    return this.http.get(
+      api_url + "api/users/retrieve/",
+      {headers: this.headers}
+    );
   }
 
   setUser(){
@@ -63,45 +85,56 @@ export class UserService {
       birth_year: this.user.birth_year
     };
 
-    return this.http.put(api_url + "users/update/", userObject, this.options).map(res => res.json());
+    return this.http.put(
+      api_url + "api/users/update/",
+      userObject,
+      {headers: this.headers}
+    );
   }
 
   getResults(){
-    return this.http.get(api_url + "results/retrieve/", this.options).map(res => res.json());    
+    return this.http.get(
+      api_url + "api/results/retrieve/",
+      {headers: this.headers}
+    );    
   }
 
   /* Non-profile-related methods *////////////////////////////
   getUPC(upc:string){
     return this.http.post(
-      api_url + "nutritionix/upc/",
+      api_url + "api/nutritionix/upc/",
       {upc: upc},
-      this.options
-    ).map(res => res.json());
+      {headers: this.headers}
+    );
   }
 
   search(query_string:string){
     return this.http.post(
-      api_url + "nutritionix/search/",
+      api_url + "api/nutritionix/search/",
       {query: query_string},
-      this.options
-    ).map(res => res.json());
+      {headers: this.headers}
+    );
   }
 
   getDetails(item_id:string){
     return this.http.post(
-      api_url + "nutritionix/item/?nix_item_id=" + item_id,
+      api_url + "api/nutritionix/item/?nix_item_id=" + item_id,
       {nix_item_id: item_id},
-      this.options
-    ).map(res => res.json());
+      {headers: this.headers}
+    );
   }
 
   postFood(food:Food, timestamp:string){
-    return this.http.post(api_url + "foods/", {
-      nix_item_id: food.nix_item_id,
-      food_name: food.food_name,
-      period: "auto",
-      timestamp:timestamp
-    }, this.options).map(res => res.json());
+    return this.http.post(
+      api_url + "api/foods/",
+      {
+        nix_item_id: food.nix_item_id,
+        food_name: food.food_name,
+        period: "auto",
+        timestamp:timestamp
+      },
+    {headers: this.headers}
+    );
   }
 
 
