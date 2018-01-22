@@ -23,13 +23,12 @@ export class LandingPageComponent implements OnInit {
   ngOnInit() {
     // Check if user is already logged in
     let user = localStorage.getItem('user');
-    if (user != null){
-      this.router.navigateByUrl('/main');
-    }else{
+    if (user == null){
       user = sessionStorage.getItem('user');
-      if (user != null){
+    }
+
+    if (user != null){
         this.router.navigateByUrl('/main');
-      }
     }
 
   }
