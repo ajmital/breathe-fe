@@ -24,6 +24,17 @@ export class LandingPageComponent implements OnInit {
   constructor(private http:Http, private router:Router) { }
 
   ngOnInit() {
+    // Check if user is already logged in
+    let user = localStorage.getItem('user');
+    if (user != null){
+      this.router.navigateByUrl('/main');
+    }else{
+      user = sessionStorage.getItem('user');
+      if (user != null){
+        this.router.navigateByUrl('/main');
+      }
+    }
+
   }
 
   login(email:string, password:string){
@@ -42,7 +53,7 @@ export class LandingPageComponent implements OnInit {
           sessionStorage.setItem('user', user_key);
         }
         // Navigate to new page
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/main');
       },
       // Check for errors
       err => {

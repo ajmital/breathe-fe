@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FoodService } from '../../services/food.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -14,7 +13,7 @@ export class FoodComponent implements OnInit {
   detail_exists = false;
   is_searching = false;
 
-  constructor(private foodService:FoodService, private userService:UserService) {
+  constructor(private userService:UserService) {
   }
 
   ngOnInit() {
@@ -29,7 +28,7 @@ export class FoodComponent implements OnInit {
     // Boolean value used to toggle loading
 
     this.is_searching = true;
-    this.foodService.search(query).subscribe((results) => {
+    this.userService.search(query).subscribe((results) => {
       // Branded results
       if (results["branded"] != null){
         results["branded"].forEach(element => {
@@ -61,7 +60,7 @@ export class FoodComponent implements OnInit {
   
   getDetails(item_id:string){
 
-    this.foodService.getDetails(item_id).subscribe((results) =>{
+    this.userService.getDetails(item_id).subscribe((results) =>{
       
       if (results["brand_name"] != null){
         this.food_detail.brand_name = results["brand_name"];
@@ -94,7 +93,7 @@ export class FoodComponent implements OnInit {
     let timestamp = date.getFullYear().toString() + "-" + month.toString().padStart(2, "0") + "-" + date.getDate().toString().padStart(2, "0") + 
     "T" + hour.toString() + ":" + date.getMinutes().toString().padStart(2, "0");
 
-    this.foodService.postFood(this.food_detail, timestamp).subscribe((results) => {
+    this.userService.postFood(this.food_detail, timestamp).subscribe((results) => {
       console.log(results);
     });
   }

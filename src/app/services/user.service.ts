@@ -1,6 +1,11 @@
+/* This service provides functions for all requests that require an
+ authorized user */
+
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const api_url:string = "http://localhost:8000/api/";
 
@@ -8,21 +13,28 @@ const api_url:string = "http://localhost:8000/api/";
 export class UserService {
 
   user:User = new User();
-  // TODO replace with session
-  options:RequestOptions = new RequestOptions(
-    {
-      headers: new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Token 3293f8cbbe16515a56d77ce352421d26241e80ae"
-      })
-    }
-  );
+  user_tok:string = null;
+  options:RequestOptions = null;
 
 
   
-  constructor(public http:Http) {
+  constructor(private http:Http, private router:Router) {
+    this.user_tok = localStorage.getItem('user');
+    if (this.user_tok == null){
+      this.user_tok = sessionStorage.getItem('user');
+    }
+    if (this.user_tok == null){
+      this.router.navigateByUrl('/welcome');
+    }else{
+      // Set token header
+      this.options = new RequestOptions({
+        headers: new Headers({"content-type": "application/json", "Authorization": "Token " + this.user_tok})
+      });
+
+    }
   }
 
+  /* Profile-related methods */////////////////////////////
   getFood(){
     return this.http.get(api_url + "foods/", this.options).map(res=> res.json());
   }
@@ -58,8 +70,44 @@ export class UserService {
     return this.http.get(api_url + "results/retrieve/", this.options).map(res => res.json());    
   }
 
+  /* Non-profile-related methods *////////////////////////////
+  getUPC(upc:string){
+    return this.http.post(
+      api_url + "nutritionix/upc/",
+      {upc: upc},
+      this.options
+    ).map(res => res.json());
+  }
+
+  search(query_string:string){
+    return this.http.post(
+      api_url + "nutritionix/search/",
+      {query: query_string},
+      this.options
+    ).map(res => res.json());
+  }
+
+  getDetails(item_id:string){
+    return this.http.post(
+      api_url + "nutritionix/item/?nix_item_id=" + item_id,
+      {nix_item_id: item_id},
+      this.options
+    ).map(res => res.json());
+  }
+
+  postFood(food:Food, timestamp:string){
+    return this.http.post(api_url + "foods/", {
+      nix_item_id: food.nix_item_id,
+      food_name: food.food_name,
+      period: "auto",
+      timestamp:timestamp
+    }, this.options).map(res => res.json());
+  }
+
+
 }
 
+// Class definitions
 class User{
   email:string;
   weight:number;
@@ -74,5 +122,27 @@ class User{
   moderate:number;
   aggressive:number;
   co2:number;
+  constructor(){}
+}
+
+class Food{
+  brand_name:string;
+  total_fiber:number;
+  timestamp:string;
+  serving_quantity:number;
+  carbohydrates:number;
+  fat:number;
+  nix_item:string;
+  food_name:string;
+  sugar:number;
+  quantity:number;
+  calories:number;
+  water:number;
+  period:string;
+  nix_item_id:string;
+  created_on:string;
+  thumbnail:string;
+  serving_unit:string;
+  protein:number;
   constructor(){}
 }

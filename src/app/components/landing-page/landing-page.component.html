@@ -1,5 +1,5 @@
 <!-- Logo image -->
-<img src="../assets/img/breathe.png" style="position:absolute; width:25%; z-index: 10"/>
+<img src="assets/img/breathe.png" style="position:absolute; width:25%; z-index: 10"/>
 
 <form style="position:absolute; z-index:10;left:50%" (submit)="login(email.value, password.value)">
   <div>
@@ -11,6 +11,8 @@
     <label for="password">Password: </label>
     <input type="password" #password>
   </div>
+  Keep Me Logged In: <input type="checkbox" name="persist_checkbox" [(ngModel)]="persist_credentials">
+  <br>
   <input type="submit" Value="Log In">
 </form>
 
@@ -18,15 +20,15 @@
 <ngb-carousel>
   <!-- Scrolling gallery "carousel" -->
   <ng-template ngbSlide>
-    <img src="../assets/img/ocean.jpg" />
+    <img src="assets/img/ocean.jpg" />
   </ng-template>
       
   <ng-template ngbSlide>
-    <img src="../assets/img/protein.jpg" />
+    <img src="assets/img/protein.jpg" />
   </ng-template>
 
   <ng-template ngbSlide>
-    <img src="../assets/img/beach_mod.jpg" />
+    <img src="assets/img/beach_mod.jpg" />
   </ng-template>
 </ngb-carousel>
 

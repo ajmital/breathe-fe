@@ -12,11 +12,15 @@ import { UserDataComponent } from './components/user-data/user-data.component';
 import { FoodComponent } from './components/food/food.component';
 
 import { UserService } from './services/user.service';
-import { FoodService } from './services/food.service';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { MainComponent } from './components/main/main.component';
 
 const appRoutes: Routes = [
-  { path: 'welcome', component: LandingPageComponent }]
+  { path: 'welcome', component: LandingPageComponent },
+  { path: 'main', component: MainComponent },
+  // Redirect invalid URLs to the welcome page
+  { path:'**', redirectTo: 'welcome', }
+]
 
 @NgModule({
   declarations: [
@@ -24,6 +28,7 @@ const appRoutes: Routes = [
     UserDataComponent,
     FoodComponent,
     LandingPageComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +37,7 @@ const appRoutes: Routes = [
     NgbModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [UserService, FoodService],
+  providers: [UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
