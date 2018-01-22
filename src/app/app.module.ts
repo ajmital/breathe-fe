@@ -13,7 +13,7 @@ import { FoodComponent } from './components/food/food.component';
 
 import { UserService } from './services/user.service';
 import { FoodService } from './services/food.service';
-import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 const appRoutes: Routes = [
   { path: 'welcome', component: LandingPageComponent }]

@@ -1,6 +1,19 @@
 <!-- Logo image -->
 <img src="../assets/img/breathe.png" style="position:absolute; width:25%; z-index: 10"/>
 
+<form style="position:absolute; z-index:10;left:50%" (submit)="login(email.value, password.value)">
+  <div>
+    <label for="email">Email: </label>
+    <input type="text" #email>
+  </div>
+  <br>
+  <div>
+    <label for="password">Password: </label>
+    <input type="password" #password>
+  </div>
+  <input type="submit" Value="Log In">
+</form>
+
 <!-- Image gallery -->
 <ngb-carousel>
   <!-- Scrolling gallery "carousel" -->

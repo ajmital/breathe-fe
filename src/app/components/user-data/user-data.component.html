@@ -11,36 +11,36 @@
 <div *ngIf=editUser>
   <h2>Edit User</h2>
   <form>
-      <div>
-          <label for="name">Name: </label><br>
-          <input type="text" [(ngModel)]="user.full_name" name="name">
-        </div>
+    <div>
+      <label for="name">Name: </label><br>
+      <input type="text" [(ngModel)]="user.full_name" name="name">
+    </div>
     
-        <div>
-          <label for="email">Email: </label><br>
-          <input type="text" [(ngModel)]="user.email" name="email">
-        </div>
+    <div>
+      <label for="email">Email: </label><br>
+      <input type="text" [(ngModel)]="user.email" name="email">
+    </div>
 
-        <div>
-          <label for="gender">Gender: </label><br>
-          <input type="radio" value="male" name="gender" [(ngModel)]="user.gender"> Male
-          <input type="radio" value="female" name="gender" [(ngModel)]= "user.gender"> Female
-        </div>
+    <div>
+      <label for="gender">Gender: </label><br>
+      <input type="radio" value="male" name="gender" [(ngModel)]="user.gender"> Male
+      <input type="radio" value="female" name="gender" [(ngModel)]= "user.gender"> Female
+    </div>
 
-        <div>
-          <label for="height">Height: </label><br>
-          <input type="number" [(ngModel)]="user.height" name="height">
-        </div>
+    <div>
+      <label for="height">Height: </label><br>
+      <input type="number" [(ngModel)]="user.height" name="height">
+    </div>
 
-        <div>
-          <label for="birth_month">Birth Month: </label><br>
-          <input type="number" [(ngModel)]="user.birth_month" name="birth_month">
-        </div>
+    <div>
+      <label for="birth_month">Birth Month: </label><br>
+      <input type="number" [(ngModel)]="user.birth_month" name="birth_month">
+    </div>
 
-        <div>
-          <label for="birth_year">Birth Year: </label><br>
-          <input type="number" [(ngModel)]="user.birth_year" name="birth_year">
-        </div>
+    <div>
+      <label for="birth_year">Birth Year: </label><br>
+      <input type="number" [(ngModel)]="user.birth_year" name="birth_year">
+    </div>
   </form>
   <button (click)="setUser()">Update User</button>
 </div>
