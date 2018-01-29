@@ -1,15 +1,15 @@
 <!-- Logo image -->
 <img src="assets/img/breathe.png" style="position:absolute; width:25%; z-index: 10"/>
 
-<form style="position:absolute; z-index:10;left:50%" (submit)="login(email.value, password.value)">
-  <div>
-    <label for="email">Email: </label>
-    <input type="text" #email>
+<form id="login_form" (submit)="login(email.value, password.value)">
+  <div class="login_input">
+    <label class="login_element" for="email">Email: </label>
+    <input class="login_element" type="text" #email>
   </div>
   <br>
-  <div>
-    <label for="password">Password: </label>
-    <input type="password" #password>
+  <div class="login_input">
+    <label class="login_element" for="password">Password: </label>
+    <input class="login_element" type="password" #password>
   </div>
   Keep Me Logged In: <input type="checkbox" name="persist_checkbox" [(ngModel)]="persist_credentials">
   <br>

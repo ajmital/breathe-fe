@@ -33,10 +33,10 @@ export class LandingPageComponent implements OnInit {
 
   }
 
-  login(email:string, password:string){
+  login(username:string, password:string){
     this.http.post(
       api_url + "rest-auth/login/",
-      {"email":email, "password":password, "username":email},
+      {"username":username, "password":password},
       {headers: this.headers}
     ).subscribe(
       results => {
