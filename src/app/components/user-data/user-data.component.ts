@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
+
+const now:Date = new Date();
 
 @Component({
   selector: 'app-user-data',
@@ -8,7 +11,19 @@ import { UserService } from '../../services/user.service';
 })
 
 export class UserDataComponent implements OnInit {
+  // Set min/max date for datepicker
+  minDate:NgbDateStruct = {year: 1900, month:1, day:1};
+  maxDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth(), day: now.getDate()};
+
+  // Date picker model
+  datePicker:NgbDateStruct;
+
+  // User object used for editing
   user:User = new User();
+
+
+
+  // Controls html that is shown
   editUser:boolean = false;
   userExists:boolean = false;
 
@@ -29,6 +44,7 @@ export class UserDataComponent implements OnInit {
         this.userService.user.full_name = user_data["full_name"];
         this.userService.user.birth_month = user_data["birth_month"];
         this.userService.user.birth_year = user_data["birth_year"];
+        this.datePicker = {year:this.userService.user.birth_year, month: this.userService.user.birth_month, day: 0};
         this.userExists = true;
       }
     });
@@ -61,6 +77,8 @@ export class UserDataComponent implements OnInit {
 
   // Posts user details
   setUser(){
+    this.user.birth_month = this.datePicker.month;
+    this.user.birth_year = this.datePicker.year;
     this.userService.user = this.user;
     return this.userService.setUser().subscribe((results) => {
       console.log(results);

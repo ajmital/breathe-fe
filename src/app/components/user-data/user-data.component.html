@@ -3,44 +3,41 @@
   <li>Name: {{user.full_name}}</li>
   <li>Email: {{user.email}}</li>
   <li>Weight: {{user.weight}} pounds</li>
-  <li>Height: {{user.height}} inches</li>
+  <li>Height: {{user.height}} feet</li>
 </ul>
 
 <button (click)="toggleEdit()">Edit User</button>
 
-<div *ngIf=editUser>
+<div *ngIf=editUser class="col-lg-4">
   <h2>Edit User</h2>
   <form>
-    <div>
-      <label for="name">Name: </label><br>
+      <label for="name">Name: </label><br/>
       <input type="text" [(ngModel)]="user.full_name" name="name">
-    </div>
-    
-    <div>
-      <label for="email">Email: </label><br>
+      <br/>
+      <label for="email">Email: </label><br/>
       <input type="text" [(ngModel)]="user.email" name="email">
-    </div>
+      <br/>
 
-    <div>
-      <label for="gender">Gender: </label><br>
+      <label for="gender">Gender: </label><br/>
       <input type="radio" value="male" name="gender" [(ngModel)]="user.gender"> Male
       <input type="radio" value="female" name="gender" [(ngModel)]= "user.gender"> Female
-    </div>
+      <br/>
 
-    <div>
-      <label for="height">Height: </label><br>
+      <label for="height">Height: </label><br/>
       <input type="number" [(ngModel)]="user.height" name="height">
-    </div>
+      <br/>
+    <!-- Datepicker component -->
+    <!-- Input group allows button to be next to input box -->
+      <label for="dp">Birth Date:</label>
+      <div class="input-group">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+             name="dp" [(ngModel)]="datePicker" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker" style="width: auto;">
+        <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
+          <img src="assets/img/calendar_placeholder.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+        </button>
+      </div>
+    <!--</div>-->
 
-    <div>
-      <label for="birth_month">Birth Month: </label><br>
-      <input type="number" [(ngModel)]="user.birth_month" name="birth_month">
-    </div>
-
-    <div>
-      <label for="birth_year">Birth Year: </label><br>
-      <input type="number" [(ngModel)]="user.birth_year" name="birth_year">
-    </div>
   </form>
   <button (click)="setUser()">Update User</button>
 </div>
