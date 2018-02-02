@@ -3,7 +3,7 @@
   <li>Name: {{user.full_name}}</li>
   <li>Email: {{user.email}}</li>
   <li>Weight: {{user.weight}} pounds</li>
-  <li>Height: {{user.height}} feet</li>
+  <li>Height: {{ feet }} feet {{ inches }} inches</li>
 </ul>
 
 <button (click)="toggleEdit()">Edit User</button>
@@ -23,9 +23,14 @@
       <input type="radio" value="female" name="gender" [(ngModel)]= "user.gender"> Female
       <br/>
 
-      <label for="height">Height: </label><br/>
-      <input type="number" [(ngModel)]="user.height" name="height">
+      <label for="feet">Height: </label><br/>
+      <input type="number" [(ngModel)]="feet" name="feet" > feet
+      <input type="number" [(ngModel)]="inches" name="inches" > inches
       <br/>
+      <ngb-alert [dismissible]="false" *ngIf=heightError>
+        <strong>Warning!</strong> Please enter a valid height!
+      </ngb-alert>
+
     <!-- Datepicker component -->
     <!-- Input group allows button to be next to input box -->
       <label for="dp">Birth Date:</label>
@@ -36,7 +41,6 @@
           <img src="assets/img/calendar_placeholder.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
         </button>
       </div>
-    <!--</div>-->
 
   </form>
   <button (click)="setUser()">Update User</button>

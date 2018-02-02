@@ -14,10 +14,12 @@ import { FoodComponent } from './components/food/food.component';
 import { UserService } from './services/user.service';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MainComponent } from './components/main/main.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const appRoutes: Routes = [
   { path: 'welcome', component: LandingPageComponent },
   { path: 'main', component: MainComponent },
+  { path: 'register', component: RegisterComponent },
   // Redirect invalid URLs to the welcome page
   { path:'**', redirectTo: 'welcome', }
 ]
@@ -29,6 +31,7 @@ const appRoutes: Routes = [
     FoodComponent,
     LandingPageComponent,
     MainComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

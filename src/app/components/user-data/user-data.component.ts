@@ -13,19 +13,23 @@ const now:Date = new Date();
 export class UserDataComponent implements OnInit {
   // Set min/max date for datepicker
   minDate:NgbDateStruct = {year: 1900, month:1, day:1};
-  maxDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth(), day: now.getDate()};
+  maxDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
 
   // Date picker model
-  datePicker:NgbDateStruct;
+  datePicker:NgbDateStruct = null;
 
   // User object used for editing
   user:User = new User();
 
+  // Feet/inches for user
+  feet:number = null;
+  inches:number = null;
 
 
   // Controls html that is shown
   editUser:boolean = false;
   userExists:boolean = false;
+  heightError:boolean = false;
 
   weights:Weight[] = [];
 
@@ -46,6 +50,8 @@ export class UserDataComponent implements OnInit {
         this.userService.user.birth_year = user_data["birth_year"];
         this.datePicker = {year:this.userService.user.birth_year, month: this.userService.user.birth_month, day: 0};
         this.userExists = true;
+        this.inches = this.userService.user.height % 12;
+        this.feet = (this.userService.user.height - this.inches) / 12;
       }
     });
     
@@ -77,8 +83,22 @@ export class UserDataComponent implements OnInit {
 
   // Posts user details
   setUser(){
-    this.user.birth_month = this.datePicker.month;
-    this.user.birth_year = this.datePicker.year;
+   this.user.birth_month = this.datePicker.month;
+   this.user.birth_year = this.datePicker.year;
+
+
+
+    if (this.feet != null && this.inches != null){
+      if (this.feet > 0 && this.inches >= 0 && this.inches < 12){
+        this.user.height = this.feet * 12 + this.inches;
+        this.heightError = false;
+      }else{
+        this.heightError = true;
+      }
+    }else{
+      this.heightError = true;
+    }
+
     this.userService.user = this.user;
     return this.userService.setUser().subscribe((results) => {
       console.log(results);
@@ -97,14 +117,22 @@ export class UserDataComponent implements OnInit {
     let month = date.getMonth() + 1;
     let hour = date.getHours();
 
+    this.userService.user.weight = weight;
+    this.user.weight = weight;
+
     let timestamp = date.getFullYear().toString() + "-" + month.toString().padStart(2, "0") + "-" + date.getDate().toString().padStart(2, "0") + 
       "T" + hour.toString() + ":" + date.getMinutes().toString().padStart(2, "0") + 
       ":" + date.getSeconds().toString().padStart(2, "0");
-    this.userService.addWeight(weight, timestamp).subscribe((new_weight) =>{
+    this.userService.addWeight(weight, timestamp).subscribe(
+      (new_weight) =>{
         this.weights.push({email:new_weight["email"], timestamp:new_weight["timestamp"], id:new_weight["id"], value:new_weight["value"], created_on:new_weight["created_on"]});
-    },
-    (err) => console.log(err)
+      },
+      (err) => console.log(err)
   );
+
+  this.userService.setUser().subscribe((results) => {
+    console.log(results);
+  });
 
     return false;
   }

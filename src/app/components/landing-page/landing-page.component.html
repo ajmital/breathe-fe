@@ -13,7 +13,9 @@
   </div>
   Keep Me Logged In: <input type="checkbox" name="persist_checkbox" [(ngModel)]="persist_credentials">
   <br>
-  <input type="submit" Value="Log In">
+  <input type="submit" Value="Log In" /><br/>
+  Don't have an account? <a [routerLink]="['/register']" ><input type="button" value= "Sign up!" /></a>
+
 </form>
 
 <!-- Image gallery -->
