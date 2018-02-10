@@ -2,7 +2,6 @@
  authorized user (including logging out) */
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';

@@ -1,12 +1,66 @@
+#body{
+    margin: 0px;
+    background-image: linear-gradient(#1CBBA5, #1CBBC5);
+    background-color: #cccccc;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
 #content{
-    margin: 10px;
+    padding-top: 20px;
+    background-color: #ffffff;
+    /* These properties center the main container */
+    margin-right:auto;
+    margin-left:auto;
+    max-width: 70%;
+    padding-left: 0%;
+    padding-right: 0%;
+}
+
+#content div{
+    padding: 1em;
+}
+
+.btn{
+    color: #ffffff;
+    background-color: #1CBBF5;
+    font-style: bold;
+    font-size: 1.2em;
+}
+
+.carousel-control-prev, .carousel-control-next{
+    display:none;
+}
+
+.carousel-item{
+    opacity: 0;
+    transition: opacity 6s ease-in-out;
+}
+
+.carousel-item.active{
+    opacity: 1;
+}
+
+ngb-carousel img{
+    width: 100%;
+}
+
+ngb-carousel{
+    width: 100%;
+    margin: 0px;
 }
 
 #login_form{
+    padding: 20px;
+    top: 5%;
     display: table;
     position: absolute;
     z-index: 10;
-    right: 10%;
+    right: 20%;
+    color: #000000;
+    /*text-shadow: 2px 2px 2px #000000;*/
+    background-color: rgba(255,255,255,0.4);
 }
 
 .login_input{
@@ -15,4 +69,25 @@
 }
 .login_element{
     display: table-cell;
+}
+
+#persist_checkbox{
+    display: default;
+}
+
+.align-left{
+    display: inline-block;
+    text-align: left;
+}
+
+.align-right{
+    display: inline-block;
+    text-align: right;
+}
+
+/* For mobile and small screen styling */
+@media only screen and (max-width: 768px){
+    .carousel{
+        display: none;
+    }
 }

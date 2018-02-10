@@ -15,11 +15,13 @@ import { UserService } from './services/user.service';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MainComponent } from './components/main/main.component';
 import { RegisterComponent } from './components/register/register.component';
+import { PostRegisterComponent} from './components/post-register/post-register.component';
 
 const appRoutes: Routes = [
   { path: 'welcome', component: LandingPageComponent },
   { path: 'main', component: MainComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'post-register', component: PostRegisterComponent },
   // Redirect invalid URLs to the welcome page
   { path:'**', redirectTo: 'welcome', }
 ]
@@ -32,6 +34,7 @@ const appRoutes: Routes = [
     LandingPageComponent,
     MainComponent,
     RegisterComponent,
+    PostRegisterComponent,
   ],
   imports: [
     BrowserModule,

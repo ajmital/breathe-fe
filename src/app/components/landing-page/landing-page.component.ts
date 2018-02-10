@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import { ViewEncapsulation } from '@angular/core';
+
 
 const api_url:string = "http://localhost:8000/";
 
 @Component({
+  encapsulation: ViewEncapsulation.None,
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']
@@ -18,7 +22,9 @@ export class LandingPageComponent implements OnInit {
   });
 
 
-  constructor(private http:HttpClient, private router:Router) { }
+  constructor(private http:HttpClient, private router:Router, config:NgbCarouselConfig) {
+    config.keyboard = false;
+  }
 
   ngOnInit() {
     // Check if user is already logged in

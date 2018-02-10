@@ -1,3 +1,35 @@
-<p>
-  register works!
-</p>
+<form id = "registration_form" (submit)="register(email.value, password.value, passwordcheck.value)">
+  <div>
+    <label for="email" required>Email: &nbsp;</label>
+    <input  type="email" autocomplete="email" #email />
+  </div>
+
+  <div>
+    <label for="password" required>Password: &nbsp;</label>
+    <input type="password" autocomplete="new-password" #password />
+  </div>
+  <div>
+    <label for="passwordcheck" required>Re-type Your Password: &nbsp;</label>
+    <input type="password" autocomplete="new-password" #passwordcheck />
+  </div>
+
+  <div>
+    <input type="submit" value="Register">
+  </div>
+  <div class="alert alert-danger" *ngIf=show_pass_check_err>
+    <strong>Error:</strong> Passwords do not match!
+  </div>
+
+  <div class="alert alert-danger" *ngIf=show_pass_len_err>
+    <strong>Error:</strong> Password must be at least 8 characters!
+  </div>
+
+  <div class="alert alert-danger" *ngIf=show_email_err>
+    <strong>Error:</strong> Please input a valid email!
+  </div>
+
+  <div class ="alert alert-danger" *ngIf=show_exists_err>
+    <strong>Error:</strong> User '{{ username }}' already exists!
+  </div>
+
+</form>
