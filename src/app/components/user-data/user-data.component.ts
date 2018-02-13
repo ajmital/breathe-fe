@@ -74,10 +74,6 @@ export class UserDataComponent implements OnInit {
       this.userService.user.co2 = results["co2"];
     });
 
-    this.userService.getFood().subscribe((results) => {
-      console.log(results);
-    });
-
     this.user = this.userService.user;
   }
 

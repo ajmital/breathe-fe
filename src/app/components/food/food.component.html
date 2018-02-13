@@ -1,38 +1,107 @@
 <h2>Food Search</h2>
 
-<table>
-<tr>
-  <td>
-    <form (submit)="search(food.value)">
-      <div>
-        <label for="food">Food</label>
-        <input type="text" #food>
-      </div>
-    </form>
-  </td>
-  <td *ngIf=detail_exists>
-    <div>
-        <h2>{{food_detail.brand_name}} {{food_detail.food_name}}</h2>
-        <img src = {{food_detail.thumbnail}} style="width:50px" />
-        <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}}</p>
-        <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
-        <p>Sugar: {{food_detail.sugar * food_detail.quantity}}</p>
-        <p>Protein: {{food_detail.protein * food_detail.quantity}}</p>
-        <label for="quantity">Quantity: </label>
-        <input type="number" [(ngModel)]="food_detail.quantity">
-        <button (click)="addFood()">Add Food</button>
+<!-- Radio group to select food period -->
+<div class="btn-group btn-group-toggle" style="padding: 1em" ngbRadioGroup name="radioBasic" [(ngModel)]="period">
+  <label ngbButtonLabel class="btn-primary">
+    <input ngbButton type="radio" value="Auto"> Auto
+  </label>
+  <label ngbButtonLabel class="btn-primary">
+    <input ngbButton type="radio" value="Breakfast"> Breakfast
+  </label>
+  <label ngbButtonLabel class="btn-primary">
+    <input ngbButton type="radio" value="Lunch"> Lunch
+  </label>
+  <label ngbButtonLabel class="btn-primary">
+    <input ngbButton type="radio" value="Dinner"> Dinner
+  </label>
+
+  <label ngbButtonLabel class="btn-primary">
+    <input ngbButton type="radio" value="Snack"> Snack
+  </label>
+</div>
+
+<!-- Pop up to show food details -->
+<ng-template #modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- Show loading gif while loading details -->
+  <div class="modal-body" *ngIf="detail_loading">
+    <img src="assets/loading_gif.gif" style="width:50%;">
+  </div>
+  <!-- Show results, note this is mutually exclusive to loading image -->
+  <div class="modal-body text-center" *ngIf="!detail_loading">
+    <!-- Food image, centered -->
+    <div style="width: 100%; text-align:center">
+      <img src = {{food_detail.thumbnail}} style="width:75%"/>
     </div>
-  </td>
-</tr>
-</table>
-<img *ngIf=is_searching src="assets/loading_gif.gif" />
 
+    <!-- Datepicker component -->
+    <!-- input-group class allows button to be next to input box -->
+    <br>
+    <div class="input-group">
+      <label for="dp">Date: &nbsp;</label>
+      <input class="form-control" placeholder="yyyy-mm-dd"
+           name="dp" [(ngModel)]="datePicker" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker" style="width: auto;">
+      <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
+        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+      </button>
+    </div>
+    <p>Period: {{period}}</p>
+    <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}} g</p>
+    <p>Sugar: {{food_detail.sugar * food_detail.quantity}} g</p>
+    <p>Protein: {{food_detail.protein * food_detail.quantity}} g</p>
+    <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
+    <label for="quantity">Quantity: </label>
+    <input type="number" [(ngModel)]="food_detail.quantity">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+  </div>
+</ng-template>
 
-<ul>
-  <li *ngFor="let food of food_query">
-    <img src = {{food.thumbnail}} style="width:50px"/>
-    <p>{{food.brand_name}} {{food.food_name}}</p>
-    <button (click)="getDetails(food.nix_item_id)">Details</button>
-  </li>
-</ul>  
+<!-- Food search form -->
+<form (submit)="search(food.value)">
+  <div>
+    <label for="food">Food:</label>
+    <input type="text" #food>
+  </div>
+</form>
 
+<!-- Loading animation -->
+
+<div class="row">
+<!-- Food search results -->
+    <div class="col-6">
+      <h4>Search Results</h4>
+    </div>
+    <div class="col-6">
+      <h4>History: {{period}}</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 scroll-column">
+    <img *ngIf=is_searching src="assets/loading_gif.gif" />
+      <ul>
+        <li *ngFor="let food of food_query" style="padding: 1em">
+          <img src = {{food.thumbnail}} style="width:25%"/>
+          <p>{{food.brand_name}} {{food.food_name}}</p>
+          <button (click)="getDetails(food, modal)" class="btn">Details</button>
+        </li>
+      </ul> 
+    </div>
+
+  <div class="col-6 scroll-column">
+    <ul>
+      <li *ngFor="let food of food_entries[period.toLowerCase()]">
+          <img src = {{food.thumbnail}} style="width:25%"/>
+          <p>{{food.brand_name}} {{food.food_name}}</p>
+          <button (click)="getDetails(food, modal)" class="btn">Details</button>
+      </li>
+    </ul>
+  </div>
+
+</div>

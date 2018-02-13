@@ -1,3 +1,12 @@
 ul{
     list-style: none;
 }
+
+.pre-scrollable{
+    max-height: 50%;
+}
+
+.scroll-column{
+    overflow-y: scroll;
+    max-height: 40em;
+}

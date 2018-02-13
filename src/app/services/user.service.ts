@@ -123,6 +123,14 @@ export class UserService {
     );
   }
 
+  getCommon(query:string){
+    return this.http.post(
+      api_url + "api/nutritionix/common/",
+      {query: query},
+      {headers: this.headers}
+    );
+  }
+
   postFood(food:Food, timestamp:string){
     return this.http.post(
       api_url + "api/foods/",
