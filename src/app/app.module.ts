@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
 
 // Styling module
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -17,14 +16,15 @@ import { MainComponent } from './components/main/main.component';
 import { RegisterComponent } from './components/register/register.component';
 import { PostRegisterComponent} from './components/post-register/post-register.component';
 
-const appRoutes: Routes = [
+/*const appRoutes: Routes = [
   { path: 'welcome', component: LandingPageComponent },
   { path: 'main', component: MainComponent },
+  {path: 'food', component: FoodComponent},
   { path: 'register', component: RegisterComponent },
   { path: 'post-register', component: PostRegisterComponent },
   // Redirect invalid URLs to the welcome page
-  { path:'**', redirectTo: 'welcome', }
-]
+  { path:'**', redirectTo: 'main', }
+]*/
 
 @NgModule({
   declarations: [
@@ -40,8 +40,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    NgbModule.forRoot(),
-    RouterModule.forRoot(appRoutes)
+    NgbModule.forRoot()
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

@@ -40,6 +40,8 @@ export class LandingPageComponent implements OnInit {
   }
 
   login(username:string, password:string){
+    document.location.href = api_url + "google/oauth2";
+
     this.http.post(
       api_url + "rest-auth/login/",
       {"username":username, "password":password},

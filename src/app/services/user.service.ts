@@ -3,44 +3,29 @@
 
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 const api_url:string = "http://localhost:8000/";
+const CSRF_COOKIE:string = "csrftoken";
 
 @Injectable()
 export class UserService {
 
   user:User = new User();
-  user_tok:string = null;
+  csrf_tok:string = null;
   headers:HttpHeaders = null;
 
   
-  constructor(private http:HttpClient, private router:Router) {
-    this.user_tok = localStorage.getItem('user');
-    if (this.user_tok == null){
-      this.user_tok = sessionStorage.getItem('user');
-    }
-    if (this.user_tok == null){
-      this.router.navigateByUrl('/welcome');
-    }else{
-      // Set token header
-      this.headers = new HttpHeaders({"content-type": "application/json", "Authorization": "Token " + this.user_tok});
-    }
-  }
-
-  /* Logout method *////////////////////////////////////
-  logout(){
-    this.http.post(api_url + "rest-auth/logout/", {headers: this.headers}).subscribe(
-      response => {
-        // Remove locally stored information
-        localStorage.clear();
-        sessionStorage.clear();
-
-        // Navigate to the welcome page
-        this.router.navigateByUrl('/welcome');
+  constructor(private http:HttpClient) {
+    let ca:Array<String> = document.cookie.split(';');
+    for (let i:number = 0; i < ca.length; i += 1){
+      if (ca[i].indexOf(CSRF_COOKIE) == 0){
+        this.csrf_tok = ca[i].substring(CSRF_COOKIE.length + 1);
       }
-    )
+    }
+
+      // Set token header
+    this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
   }
 
   /* Profile-related methods */////////////////////////////
