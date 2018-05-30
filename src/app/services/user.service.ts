@@ -24,6 +24,10 @@ export class UserService {
       }
     }
 
+    // Redirect to login if no CSRF token found
+    if (this.csrf_tok == null){
+      document.location.href = "/fe/";
+    }
       // Set token header
     this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
   }
@@ -52,7 +56,7 @@ export class UserService {
 
   getUser(){
     return this.http.get(
-      api_url + "api/users/retrieve/",
+      api_url + "api/users/me/",
       {headers: this.headers}
     );
   }
@@ -62,7 +66,8 @@ export class UserService {
     let userObject = {
       weight: this.user.weight,
       gender: this.user.gender,
-      height: this.user.height,
+      feet: this.user.feet,
+      inches: this.user.inches,
       full_name: this.user.full_name,
       birth_month: this.user.birth_month,
       email: this.user.email,
@@ -70,7 +75,7 @@ export class UserService {
     };
 
     return this.http.put(
-      api_url + "api/users/update/",
+      api_url + "api/users/me/",
       userObject,
       {headers: this.headers}
     );
@@ -78,75 +83,31 @@ export class UserService {
 
   getResults(){
     return this.http.get(
-      api_url + "api/results/retrieve/",
-      {headers: this.headers}
-    );    
-  }
-
-  /* Non-profile-related methods *////////////////////////////
-  getUPC(upc:string){
-    return this.http.post(
-      api_url + "api/nutritionix/upc/",
-      {upc: upc},
+      api_url + "api/results/me/",
       {headers: this.headers}
     );
   }
-
-  search(query_string:string){
-    return this.http.post(
-      api_url + "api/nutritionix/search/",
-      {query: query_string},
-      {headers: this.headers}
-    );
-  }
-
-  getDetails(item_id:string){
-    return this.http.post(
-      api_url + "api/nutritionix/item/?nix_item_id=" + item_id,
-      {nix_item_id: item_id},
-      {headers: this.headers}
-    );
-  }
-
-  getCommon(query:string){
-    return this.http.post(
-      api_url + "api/nutritionix/common/",
-      {query: query},
-      {headers: this.headers}
-    );
-  }
-
-  postFood(food:Food, timestamp:string){
-    return this.http.post(
-      api_url + "api/foods/",
-      {
-        nix_item_id: food.nix_item_id,
-        food_name: food.food_name,
-        period: "auto",
-        timestamp:timestamp
-      },
-    {headers: this.headers}
-    );
-  }
-
 
 }
 
 // Class definitions
 class User{
-  email:string;
-  weight:number;
-  gender:string;
-  age:number;
-  height:number;
   full_name:string;
+  email:string;
+  username:string;
   birth_year:number;
   birth_month:number;
-  maintain:number;
-  gradual:number;
-  moderate:number;
-  aggressive:number;
-  co2:number;
+  gender:string;
+  feet:number;
+  inches:number;
+  weight:number;
+  weight_goal:string;
+  token_source:string;
+  status:string;
+  last_hr_sync:string;
+  last_hr_sync_attempt:string;
+  eula:string;
+  eula_date:string;
   constructor(){}
 }
 

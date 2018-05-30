@@ -21,11 +21,6 @@ export class UserDataComponent implements OnInit {
   // User object used for editing
   user:User = new User();
 
-  // Feet/inches for user
-  feet:number = null;
-  inches:number = null;
-
-
   // Controls html that is shown
   editUser:boolean = false;
   userExists:boolean = false;
@@ -43,15 +38,14 @@ export class UserDataComponent implements OnInit {
         this.userService.user.email = user_data["email"];
         this.userService.user.weight = user_data["weight"];
         this.userService.user.gender = user_data["gender"];
-        this.userService.user.age = user_data["age"];
-        this.userService.user.height = user_data["height"];
+       // this.userService.user.age = user_data["age"];
+        this.userService.user.inches = user_data["inches"];
+        this.userService.user.feet = user_data["feet"];
         this.userService.user.full_name = user_data["full_name"];
         this.userService.user.birth_month = user_data["birth_month"];
         this.userService.user.birth_year = user_data["birth_year"];
         this.datePicker = {year:this.userService.user.birth_year, month: this.userService.user.birth_month, day: 0};
         this.userExists = true;
-        this.inches = this.userService.user.height % 12;
-        this.feet = (this.userService.user.height - this.inches) / 12;
       }
     });
     
@@ -67,14 +61,14 @@ export class UserDataComponent implements OnInit {
 
     // Gets latest results
     this.userService.getResults().subscribe((results) => {
-      this.userService.user.maintain = results["maintain"];
+ /*     this.userService.user.maintain = results["maintain"];
       this.userService.user.gradual = results["gradual"];
       this.userService.user.moderate = results["moderate"];
       this.userService.user.aggressive = results["aggressive"];      
-      this.userService.user.co2 = results["co2"];
+      this.userService.user.co2 = results["co2"];*/
     });
 
-    this.user = this.userService.user;
+   // this.user = this.userService.user;
   }
 
   // Posts user details
@@ -84,9 +78,8 @@ export class UserDataComponent implements OnInit {
 
 
 
-    if (this.feet != null && this.inches != null){
-      if (this.feet > 0 && this.inches >= 0 && this.inches < 12){
-        this.user.height = this.feet * 12 + this.inches;
+    if (this.user.feet != null && this.user.inches != null){
+      if (this.user.feet > 0 && this.user.inches >= 0 && this.user.inches < 12){
         this.heightError = false;
       }else{
         this.heightError = true;
@@ -95,7 +88,7 @@ export class UserDataComponent implements OnInit {
       this.heightError = true;
     }
 
-    this.userService.user = this.user;
+  //  this.userService.user = this.user;
     return this.userService.setUser().subscribe((results) => {
       console.log(results);
     });
@@ -140,7 +133,8 @@ class User{
   weight:number;
   gender:string;
   age:number;
-  height:number;
+  feet:number;
+  inches:number;
   full_name:string;
   birth_year:number;
   birth_month:number;

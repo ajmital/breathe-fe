@@ -1,14 +1,26 @@
-<div class="container">
-    <ngb-tabset>
-      <ngb-tab title="User Data">
-          <ng-template ngbTabContent>
-              <app-user-data></app-user-data>
-          </ng-template>
-      </ngb-tab>
-      <ngb-tab title="Food Search">
-          <ng-template ngbTabContent>
-              <app-food></app-food>
-          </ng-template>
-      </ngb-tab>
-    </ngb-tabset>
+<div class="container-fluid" id="content">
+
+    <nav class="navbar navbar-expand-md">
+        <img class="navbar-brand" src="../../assets/img/breathe_white.png" />
+        <div class="mr-auto"></div>
+        <div class="navbar-nav">
+            <span class="nav-item nav-link" [ngStyle]="{'color': dashboard ? '#ffffff' : '#363636'}"  (click)="show('dashboard')">Dashboard</span>
+            <span class="nav-item nav-link" [ngStyle]="{'color': progress ? '#ffffff' : '#363636'}" (click)="show('progress')">Progress</span>
+            <span class="nav-item nav-link" [ngStyle]="{'color': food ? '#ffffff' : '#363636'}" (click)="show('food')">Food</span>
+
+            <div ngbDropdown class="d-inline-block" placement="bottom-right">
+                <button class="btn btn-dark" id="dropdownToggle" ngbDropdownToggle>Menu</button>
+                <div ngbDropdownMenu aria-labelledby="dropdownToggle">
+                    <button class="dropdown-item">Payment</button>
+                    <button class="dropdown-item">Placeholder</button>
+                    <button class="dropdown-item">Something else is here</button>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+    <app-dashboard *ngIf="dashboard"></app-dashboard>
+    <app-progress *ngIf="progress"></app-progress>
+    <app-food *ngIf="food"></app-food>
+
 </div>

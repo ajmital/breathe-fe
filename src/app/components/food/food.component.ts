@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import {FoodService} from '../../services/food.service';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
 
@@ -23,7 +24,7 @@ export class FoodComponent implements OnInit {
   // Date picker model
   datePicker:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
 
-  constructor(private userService:UserService, private modalService:NgbModal) {
+  constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
 
   ngOnInit() {
@@ -54,7 +55,7 @@ export class FoodComponent implements OnInit {
     this.is_searching = true;
 
     // Search for food
-    this.userService.search(query).subscribe(
+    this.foodService.search(query).subscribe(
       results => {
         // Branded results
         if (results["branded"] != null){
@@ -91,7 +92,7 @@ export class FoodComponent implements OnInit {
 
     // Retrieve details from the item id for branded foods
     if (food.brand_name){
-      this.userService.getDetails(item_id).subscribe(
+      this.foodService.getDetails(item_id).subscribe(
         (results) =>{
       
           if (results["brand_name"] != null){
@@ -107,7 +108,7 @@ export class FoodComponent implements OnInit {
      );
     }else{
       // Lookup common foods by name
-      this.userService.getCommon(food.food_name).subscribe(
+      this.foodService.getCommon(food.food_name).subscribe(
         results => {
           this.resultToDetail(results);
           this.detail_loading = false;

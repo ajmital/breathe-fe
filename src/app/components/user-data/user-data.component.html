@@ -24,8 +24,8 @@
       <br/>
 
       <label for="feet">Height: </label><br/>
-      <input type="number" [(ngModel)]="feet" name="feet" > feet
-      <input type="number" [(ngModel)]="inches" name="inches" > inches
+      <input type="number" [(ngModel)]="user.feet" name="feet" > feet
+      <input type="number" [(ngModel)]="user.inches" name="inches" > inches
       <br/>
       <ngb-alert [dismissible]="false" *ngIf=heightError>
         <strong>Warning!</strong> Please enter a valid height!
