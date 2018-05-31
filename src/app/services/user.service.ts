@@ -42,6 +42,12 @@ export class UserService {
       {headers: this.headers});
   }
 
+  getFoodByDate(date:string){
+    return this.http.get(
+      api_url + "api/foods/?date=" + date,
+      {headers: this.headers});
+  }
+
   getWeights(){
     this.http.get(
       api_url + "api/weights/",
@@ -121,9 +127,22 @@ export class UserService {
       api_url + "api/foods/",
       {
         nix_item_id: food.nix_item_id,
+        brand_name: food.brand_name,
         food_name: food.food_name,
-        period: "auto",
-        timestamp:timestamp
+        thumbnail: food.thumbnail,
+        quantity: food.quantity,
+        serving_unit: food.serving_unit,
+        serving_quantity: food.serving_quantity,
+
+        carbohydrates: food.carbohydrates,
+        protein: food.protein,
+        fat: food.fat,
+        sugar: food.sugar,
+        total_fiber: food.total_fiber,
+        calories: food.calories,
+
+        period: food.period,
+        timestamp:timestamp,
       },
     {headers: this.headers}
     );
@@ -152,7 +171,7 @@ class User{
   constructor(){}
 }
 
-class Food{
+interface Food{
   brand_name:string;
   total_fiber:number;
   timestamp:string;
@@ -171,7 +190,6 @@ class Food{
   thumbnail:string;
   serving_unit:string;
   protein:number;
-  constructor(){}
 }
 
 interface Weight{

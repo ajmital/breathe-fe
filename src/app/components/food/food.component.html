@@ -84,32 +84,28 @@
 </div>
 <div class="row">
     <div class="col-6 scroll-column">
-    <img *ngIf=is_searching src="assets/loading_gif.gif" />
-      <ul>
-        <li *ngFor="let food of food_query" style="padding: 1em">
-          <img src = {{food.thumbnail}} style="width:25%"/>
-          <p>{{food.brand_name}} {{food.food_name}}</p>
-          <button (click)="getDetails(food, modal)" class="btn">Details</button>
-        </li>
-      </ul> 
+     <img *ngIf=is_searching src="assets/loading_gif.gif" />
+      <div class="mb-3" *ngFor="let food of foodList">
+        <div class="media">
+          <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
+          <div class="media-body align-self-center">
+            <span>{{food.brand_name}} {{food.food_name}}</span>
+          </div>
+        </div>
+        <button (click)="getDetail(food, modal)" class="btn">Details</button>
+      </div>
     </div>
 
   <div class="col-6 scroll-column">
-    <ul>
-      <li *ngFor="let food of food_entries[period.toLowerCase()]">
-          <img src = {{food.thumbnail}} style="width:25%"/>
-          <p>{{food.brand_name}} {{food.food_name}}</p>
-          <button (click)="getDetails(food, modal)" class="btn">Details</button>
-      </li>
-    </ul>
-  </div>
-
-  <h2>Today's Weight</h2>
-  <form>
-    <div>
-      <label for="weight">Weight</label>
-      <input type="number" #weight>
+    <div class="mb-3" *ngFor="let food of food_entries[period.toLowerCase()]">
+      <div class="media">
+        <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
+        <div class="media-body align-self-center">
+          <span>{{food.brand_name}} {{food.food_name}}</span>
+        </div>
+      </div>
+      <button (click)="getDetail(food, modal)" class="btn">Details</button>
     </div>
-  </form>
+  </div>
 
 </div>

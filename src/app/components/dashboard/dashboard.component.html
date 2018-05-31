@@ -1,3 +1,56 @@
+<!-- Modal to add food -->
+<ng-template #modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- Show loading gif while loading details -->
+  <div class="modal-body" *ngIf="detail_loading">
+    <img src="assets/loading_gif.gif" style="width:50%;">
+  </div>
+  <!-- Show results, note this is mutually exclusive to loading image -->
+  <div class="modal-body text-center" *ngIf="!detail_loading">
+    <!-- Food image, centered -->
+    <div style="width: 100%; text-align:center">
+      <img src = {{food_detail.thumbnail}} style="width:75%"/>
+    </div>
+
+    <!-- Datepicker component -->
+    <!-- input-group class allows button to be next to input box -->
+    <br>
+    <div class="input-group">
+      <label for="dp">Date: &nbsp;</label>
+      <input class="form-control" placeholder="yyyy-mm-dd"
+           name="fdp" [(ngModel)]="foodDate" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #fdp="ngbDatepicker" style="width: auto;">
+      <button class="btn btn-outline-secondary input-group-addon" (click)="fdp.toggle()" type="button">
+        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+      </button>
+    </div>
+    <p>Period: 
+    <select [(ngModel)]="period">
+      <option value="auto">Auto</option>
+      <option value="breakfast">Breakfast</option>
+      <option value="lunch">Lunch</option>
+      <option value="dinner">Dinner</option>
+      <option value="snack">Snack</option>
+    </select>
+    </p>
+    <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}} g</p>
+    <p>Sugar: {{food_detail.sugar * food_detail.quantity}} g</p>
+    <p>Protein: {{food_detail.protein * food_detail.quantity}} g</p>
+    <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
+    <label for="quantity">Quantity: </label>
+    <input type="number" [(ngModel)]="food_detail.quantity">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+  </div>
+</ng-template>
+
+
+<!-- Main body -->
 <div class="container-fluid">
   <div class="row">
     <div class="col-12" id="resultsCalendarContainer">
@@ -5,7 +58,7 @@
             <div class="input-group col-8" id="resultsCalendar">
                 <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
                     name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
-                    ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="getResults()">
+                    ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
                 <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
                   <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
                 </button>
@@ -71,6 +124,19 @@
       <div class="row">
         <div class="col">
           <h3 class="text-center">Food Diary</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="mb-3" *ngFor="let food of foodList">
+            <div class="media">
+              <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
+              <div class="media-body align-self-center">
+                <span>{{food.brand_name}} {{food.food_name}}</span>
+              </div>
+            </div>
+            <button (click)="getDetail(food, modal)" class="btn">Details</button>
+          </div>
         </div>
       </div>
       <!-- Food entries (*ngFor)-->

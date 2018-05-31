@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import {FoodService} from '../../services/food.service';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, ModalDismissReasons, NgbActiveModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const now:Date = new Date();
 
@@ -14,12 +15,13 @@ const now:Date = new Date();
 export class FoodComponent implements OnInit {
   period = "Auto";
   food_entries = {"auto": [], "breakfast": [], "lunch":[], "dinner":[], "snack":[]};
-  food_query:Food[] = [];
+  foodList:Food[] = [];
   food_detail:Food = new Food();
   detail_loading = false;
   is_searching = false;
   minDate:NgbDateStruct = {year: 1900, month:1, day:1};
   maxDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
+  modalRef:NgbModalRef = null;
 
   // Date picker model
   datePicker:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
@@ -30,8 +32,6 @@ export class FoodComponent implements OnInit {
   ngOnInit() {
     // Retrieve user's previous food entries
     this.userService.getFood().subscribe((results) => {
-      console.log(this.food_entries);
-
       for (let i:number= 0; i < results["length"]; i++){
         let new_food:Food = new Food();
         new_food.brand_name = results[i]["brand_name"];
@@ -40,16 +40,13 @@ export class FoodComponent implements OnInit {
         new_food.thumbnail = results[i]["thumbnail"];
         new_food.period = results[i]["period"];
         this.food_entries[new_food.period].push(new_food);
-
       }
     });
   }
 
   search(query:string){
     // Clear previous search from results
-    if (this.food_query.length > 0){
-      this.food_query = [];
-    }
+    this.foodList = [];
 
     // Boolean value used to toggle loading animation
     this.is_searching = true;
@@ -59,25 +56,23 @@ export class FoodComponent implements OnInit {
       results => {
         // Branded results
         if (results["branded"] != null){
-          results["branded"].forEach(element => {
-            this.pushSearch(element);
+          results["branded"].forEach(item => {
+            this.pushSearch(item);
           });
         }
 
         // Common results
         if (results["common"] != null){
-          results["common"].forEach(element => {
-            this.pushSearch(element);
+          results["common"].forEach(item => {
+            this.pushSearch(item);
           });
         }
 
-        // Set to false within subscribe, because this occurs asynchronously
         this.is_searching = false;
       },
-      err => {
-        console.log(err.body);
+      (err:HttpErrorResponse) => {
+        console.error(err);
         this.is_searching = false;
-
       }
     );
   }
@@ -88,7 +83,7 @@ export class FoodComponent implements OnInit {
     // Show loading animation while waiting
     this.detail_loading = true;
     // Open Modal to display details
-    this.modalService.open(modal);
+    this.modalRef = this.modalService.open(modal);
 
     // Retrieve details from the item id for branded foods
     if (food.brand_name){
@@ -102,8 +97,8 @@ export class FoodComponent implements OnInit {
           // End loading animation
           this.detail_loading = false;
         },
-       err => {
-         console.log(err.body);
+       (err:HttpErrorResponse) => {
+         console.error(err);
        }
      );
     }else{
@@ -113,8 +108,8 @@ export class FoodComponent implements OnInit {
           this.resultToDetail(results);
           this.detail_loading = false;
         },
-        err => {
-          console.log(err.body);
+        (err:HttpErrorResponse) => {
+          console.error(err);
         }
       );
     }
@@ -132,23 +127,28 @@ export class FoodComponent implements OnInit {
 
     this.food_detail.period = this.period.toLowerCase();
     
-    this.userService.postFood(this.food_detail, timestamp).subscribe((results) => {
-      console.log(results);
-    });
+    this.userService.postFood(this.food_detail, timestamp).subscribe(
+      (results) => {
+        this.modalRef.close();
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+      }
+    );
   }
 
     /* Convenience methods to add results to class members *///////////////////
     
     // Converts search for food detail into the food_detail object
     resultToDetail(results){
-      this.food_detail.total_fiber = results["nf_dietary_fiber"];
+      this.food_detail.total_fiber = results["nf_dietary_fiber"] == null ? 0 : results["nf_dietary_fiber"];
       this.food_detail.serving_quantity = results["serving_qty"];
-      this.food_detail.carbohydrates = results["nf_total_carbohydrate"];
-      this.food_detail.fat = results["nf_total_fat"];
+      this.food_detail.carbohydrates = results["nf_total_carbohydrate"] == null ? 0 : results["nf_total_carbohydrate"];
+      this.food_detail.fat = results["nf_total_fat"] == null ? 0 : results["nf_total_fat"];
       this.food_detail.nix_item = results["nix_item_name"];
       this.food_detail.food_name = results["food_name"];
-      this.food_detail.sugar = results["nf_sugars"];
-      this.food_detail.calories = results["nf_calories"];
+      this.food_detail.sugar = results["nf_sugars"] == null ? 0 : results["nf_sugars"];
+      this.food_detail.calories = results["nf_calories"] == null ? 0 : results["nf_calories"];
       this.food_detail.nix_item_id = results["nix_item_id"];
       if (results["photo"]["highres"]){
         this.food_detail.thumbnail = results["photo"]["highres"]; // Note this is not actually thumbnail
@@ -168,7 +168,7 @@ export class FoodComponent implements OnInit {
       new_food.food_name = element["food_name"];
       new_food.nix_item_id = element["nix_item_id"];
       new_food.thumbnail = element["photo"]["thumb"];
-      this.food_query.push(new_food);
+      this.foodList.push(new_food);
     }
 
 // End class
