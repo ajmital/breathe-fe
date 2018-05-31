@@ -32,6 +32,7 @@ export class UserDataComponent implements OnInit {
   }
 
   ngOnInit() {
+    /*
     // Retrieves user info
     this.userService.getUser().subscribe((user_data) => {
       if (user_data["email"]){
@@ -61,19 +62,19 @@ export class UserDataComponent implements OnInit {
 
     // Gets latest results
     this.userService.getResults().subscribe((results) => {
- /*     this.userService.user.maintain = results["maintain"];
+     this.userService.user.maintain = results["maintain"];
       this.userService.user.gradual = results["gradual"];
       this.userService.user.moderate = results["moderate"];
       this.userService.user.aggressive = results["aggressive"];      
-      this.userService.user.co2 = results["co2"];*/
+      this.userService.user.co2 = results["co2"];
     });
 
-   // this.user = this.userService.user;
+    this.user = this.userService.user;*/
   }
 
   // Posts user details
   setUser(){
-   this.user.birth_month = this.datePicker.month;
+   /*this.user.birth_month = this.datePicker.month;
    this.user.birth_year = this.datePicker.year;
 
 
@@ -91,7 +92,7 @@ export class UserDataComponent implements OnInit {
   //  this.userService.user = this.user;
     return this.userService.setUser().subscribe((results) => {
       console.log(results);
-    });
+    });*/
   }
 
   // Toggles the edit form
@@ -102,7 +103,7 @@ export class UserDataComponent implements OnInit {
 
   // Adds current weight to database
   addWeight(weight:number){
-    let date = new Date();
+   /* let date = new Date();
     let month = date.getMonth() + 1;
     let hour = date.getHours();
 
@@ -123,7 +124,7 @@ export class UserDataComponent implements OnInit {
     console.log(results);
   });
 
-    return false;
+    return false;*/
   }
 
 }

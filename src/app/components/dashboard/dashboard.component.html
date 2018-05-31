@@ -1,31 +1,83 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-8" id="meterContainer">
-      <div class="row">
-        <div class="col-12" id="meter">
+    <div class="col-12" id="resultsCalendarContainer">
+        <div class="col-lg-4 col-md-6 col-sm-8">
+            <div class="input-group col-8" id="resultsCalendar">
+                <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
+                    name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
+                    ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="getResults()">
+                <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
+                  <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col" id="addWeight">
-          <input type="text" placeholder="Weight (lbs)">
-        </div>
-      </div>
-    </div>
-
-    <div class="col-4" id="foodDiary">
-      <div class="row">
-        <div class="col">
-          <p class="text-center">Food Diary</p>
-        </div>
-      </div>
-
     </div>
   </div>
 
   <div class="row">
-    <div class="col">
+
+    <div class="col-sm-8">
+      <!-- Meter/progress on insulin index-->
+
+      <div class="row">
+        <div class="col-4">
+          <h3 class="text-center">Insulin Index</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4" id="meter">
+          <p><ngb-progressbar type="info" [value]="result.co2" [max]="goal">{{result.co2}} / {{goal}}</ngb-progressbar></p>
+        </div>
+      </div>
+
+      <!-- Form to add weight entry-->
+      <div class="row">
+        <div class="col-8">
+          <h3 class="text-center">Add Weight Entry</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <form (submit)="addWeight(weight.value)">
+            <div class="form-row">
+              <div class="col-md-4">
+                <label for="weightInput">Weight (lbs)</label>
+                <input id="weightInput" class="form-control" type="number" placeholder="Weight" min="1" #weight>
+              </div>
+              <div class="col-md-4">
+                <label for="weightCalendar">Date</label>
+                <div class="input-group">
+                  <input id="weightCalendar" class="form-control" placeholder="yyyy-mm-dd"
+                      name="wdp" [(ngModel)]="weightDate" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker">
+                  <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
+                    <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <button type="submit" class="btn submitButton">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- End weight entry form-->
 
     </div>
+
+    <div class="col-sm-4" id="foodDiary">
+      <div class="row">
+        <div class="col">
+          <h3 class="text-center">Food Diary</h3>
+        </div>
+      </div>
+      <!-- Food entries (*ngFor)-->
+    </div>
+
+    <!-- End outermost row-->
   </div>
 
+<!-- End container-->
 </div>

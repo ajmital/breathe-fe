@@ -1,0 +1,24 @@
+#resultsCalendarContainer{
+    background-color: #363636;
+}
+
+#resultsCalendar{
+    margin: 0 auto;
+    float: none;
+}
+
+#resultsCalendarInput{
+    color: #ffffff;
+    border: none;
+    background-color: #00555400;
+}
+
+#addWeight{
+    padding: 2rem;
+}
+
+.submitButton{
+    margin-top: 1rem;
+    background-color: #26b2a9;
+    color: #ffffff;
+}

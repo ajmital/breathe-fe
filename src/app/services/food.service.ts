@@ -56,19 +56,6 @@ export class FoodService {
     );
   }
 
-  postFood(food:Food, timestamp:string){
-    return this.http.post(
-      api_url + "api/foods/",
-      {
-        nix_item_id: food.nix_item_id,
-        food_name: food.food_name,
-        period: "auto",
-        timestamp:timestamp
-      },
-    {headers: this.headers}
-    );
-  }
-
 }
 
 class Food{

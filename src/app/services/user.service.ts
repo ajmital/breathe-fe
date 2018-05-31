@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const api_url:string = "http://localhost:8000/";
 const CSRF_COOKIE:string = "csrftoken";
@@ -12,6 +13,8 @@ const CSRF_COOKIE:string = "csrftoken";
 export class UserService {
 
   user:User = new User();
+  weights:Weight[] = [];
+  user_loaded:boolean = false;
   csrf_tok:string = null;
   headers:HttpHeaders = null;
 
@@ -40,24 +43,49 @@ export class UserService {
   }
 
   getWeights(){
-    return this.http.get(
+    this.http.get(
       api_url + "api/weights/",
       {headers: this.headers}
+    ).subscribe(
+      (response:Weight[]) => {
+        this.weights = response;
+      },
+      (err:HttpErrorResponse) =>{
+        console.error(err);
+      }
     );
   }
 
-  addWeight(weight:number, time:string){
+  addWeight(weight:Object){
     return this.http.post(
       api_url + "api/weights/",
-      {"email":this.user.email,"value":weight, "timestamp":time},
+      JSON.stringify(weight),
       {headers: this.headers}
-    );
+    ).subscribe(
+      (response:any) => {
+        this.weights.push(response);
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+      });
   }
 
   getUser(){
-    return this.http.get(
+    this.user_loaded = true;
+    this.http.get(
       api_url + "api/users/me/",
       {headers: this.headers}
+    ).subscribe(
+      (user_data:any) => {
+        this.user = user_data;
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+        if (err.status == 403){
+          // Access denied, return to login page
+          //window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
+        }
+      }
     );
   }
 
@@ -81,10 +109,23 @@ export class UserService {
     );
   }
 
-  getResults(){
+  getResults(date:string){
     return this.http.get(
-      api_url + "api/results/me/",
+      api_url + "api/results/me/?date=" + date,
       {headers: this.headers}
+    );
+  }
+
+  postFood(food:Food, timestamp:string){
+    return this.http.post(
+      api_url + "api/foods/",
+      {
+        nix_item_id: food.nix_item_id,
+        food_name: food.food_name,
+        period: "auto",
+        timestamp:timestamp
+      },
+    {headers: this.headers}
     );
   }
 
@@ -131,4 +172,11 @@ class Food{
   serving_unit:string;
   protein:number;
   constructor(){}
+}
+
+interface Weight{
+  id:string;
+  email:string;
+  value:number;
+  timestamp:string;  
 }
