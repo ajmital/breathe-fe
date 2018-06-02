@@ -6,8 +6,11 @@ import { HttpClientModule } from '@angular/common/http';
 // Styling module
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
+// Charting module
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+
+
 import { AppComponent } from './app.component';
-import { UserDataComponent } from './components/user-data/user-data.component';
 import { FoodComponent } from './components/food/food.component';
 
 import { UserService } from './services/user.service';
@@ -30,7 +33,6 @@ import { ProgressComponent } from './components/progress/progress.component';
 @NgModule({
   declarations: [
     AppComponent,
-    UserDataComponent,
     FoodComponent,
     MainComponent,
     DashboardComponent,
@@ -40,7 +42,8 @@ import { ProgressComponent } from './components/progress/progress.component';
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    NgxChartsModule
   ],
   providers: [UserService, FoodService],
   bootstrap: [AppComponent]

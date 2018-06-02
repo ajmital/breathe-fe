@@ -247,13 +247,6 @@ interface Result{
   training:string;
 }
 
-interface Weight{
-  id:string;
-  email:string;
-  value:number;
-  timestamp:string;  
-}
-
 class Food{
   brand_name:string;
   total_fiber:number;
