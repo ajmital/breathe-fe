@@ -72,7 +72,7 @@
     <div class="col-sm-8">
       <!-- Meter/progress on insulin index-->
 
-      <div class="row">
+      <div class="row my-2">
         <div class="col-4">
           <h3 class="text-center">Insulin Index</h3>
         </div>
@@ -108,11 +108,15 @@
                 </div>
               </div>
             </div>
+            <small class="form-text text-muted">
+                Tip: Weight can fluctuate during the day. Aim to weigh yourself at about the same time each day.
+            </small>
             <div class="row">
               <div class="col-md-4">
                 <button type="submit" class="btn submitButton">Submit</button>
               </div>
             </div>
+            <span *ngIf="weightAddSuccess" class="text-info">Weight entry added</span>
           </form>
         </div>
       </div>
@@ -121,9 +125,9 @@
     </div>
 
     <div class="col-sm-4" id="foodDiary">
-      <div class="row">
+      <div class="row my-2">
         <div class="col">
-          <h3 class="text-center">Food Diary</h3>
+          <h3 class="text-center">Today's Food</h3>
         </div>
       </div>
       <div class="row">
@@ -132,10 +136,10 @@
             <div class="media">
               <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
               <div class="media-body align-self-center">
-                <span>{{food.brand_name}} {{food.food_name}}</span>
+                <p>{{food.brand_name}} {{food.food_name}}</p>
+                <button (click)="getDetail(food, modal)" class="btn">Details</button>
               </div>
             </div>
-            <button (click)="getDetail(food, modal)" class="btn">Details</button>
           </div>
         </div>
       </div>

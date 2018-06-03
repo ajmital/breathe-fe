@@ -1,7 +1,7 @@
 <div class="container-fluid" id="content">
 
     <nav class="navbar navbar-expand-md">
-        <img class="navbar-brand" src="../../assets/img/breathe_white.png" />
+        <img class="navbar-brand" src="assets/img/breathe_white.png" />
         <div class="mr-auto"></div>
         <div class="navbar-nav">
             <span class="nav-item nav-link" [ngStyle]="{'color': dashboard ? '#ffffff' : '#363636'}"  (click)="show('dashboard')">Dashboard</span>
@@ -11,6 +11,9 @@
             <div ngbDropdown class="d-inline-block" placement="bottom-right">
                 <button class="btn btn-dark" id="dropdownToggle" ngbDropdownToggle>Menu</button>
                 <div ngbDropdownMenu aria-labelledby="dropdownToggle">
+                    <h5 class="dropdown-header">{{this.userService.user.full_name}}</h5>
+                    <h6 class="dropdown-header">{{this.userService.user.email}}</h6>
+                    <div class="dropdown-divider"></div>
                     <button class="dropdown-item">Payment</button>
                     <button class="dropdown-item">Placeholder</button>
                     <button class="dropdown-item">Something else is here</button>

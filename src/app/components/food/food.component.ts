@@ -14,7 +14,8 @@ const now:Date = new Date();
 })
 export class FoodComponent implements OnInit {
   period = "Auto";
-  food_entries = {"auto": [], "breakfast": [], "lunch":[], "dinner":[], "snack":[]};
+  historyPeriod = "any";
+  food_entries = {"any": [], "breakfast": [], "lunch":[], "dinner":[], "snack":[]};
   foodList:Food[] = [];
   food_detail:Food = new Food();
   detail_loading = false;
@@ -40,6 +41,7 @@ export class FoodComponent implements OnInit {
         new_food.thumbnail = results[i]["thumbnail"];
         new_food.period = results[i]["period"];
         this.food_entries[new_food.period].push(new_food);
+        this.food_entries["any"].push(new_food);
       }
     });
   }
@@ -78,6 +80,14 @@ export class FoodComponent implements OnInit {
   }
   
   getDetails(food:Food, modal){
+    this.food_detail = new Food();
+
+    if (this.historyPeriod != "any"){
+      this.period = this.historyPeriod;
+    }else{
+      this.period = "auto";
+    }
+
     let item_id = food.nix_item_id;
 
     // Show loading animation while waiting

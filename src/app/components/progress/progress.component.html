@@ -1,14 +1,83 @@
-<ngx-charts-line-chart
-[scheme]="colorScheme"
-[results]="data"
-[gradient]="gradient"
-[xAxis]="showXAxis"
-[yAxis]="showYAxis"
-[legend]="showLegend"
-[showXAxisLabel]="showXAxisLabel"
-[showYAxisLabel]="showYAxisLabel"
-[xAxisLabel]="xAxisLabel"
-[yAxisLabel]="yAxisLabel"
-[autoScale]="autoScale"
-(select)="onSelect($event)">
-</ngx-charts-line-chart>
+<div class="container-fluid">
+
+
+    <div class="row justify-content-between" id="rangeSelectContainer">
+        <div class="col">
+            <div class="row">
+                <div class="input-group col-lg-4 col-6 rangeCalendar" id="startCalendar">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Start: </span>
+                    </div>
+                    <input class="form-control" placeholder="yyyy-mm-dd"
+                        name="sdp" [(ngModel)]="startDate" [minDate]="minDate" [maxDate]="endDate"
+                        ngbDatepicker #sdp="ngbDatepicker" (ngModelChange)="update()">
+                    <button class="btn btn-outline-secondary input-group-addon" (click)="sdp.toggle()" type="button">
+                        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                    </button>
+                </div>
+                <div class="input-group col-lg-4 col-6 rangeCalendar" id="endCalendar">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">End: </span>
+                    </div>
+                    <input class="form-control" placeholder="yyyy-mm-dd"
+                        name="edp" [(ngModel)]="endDate" [minDate]="minDate" [maxDate]="maxDate"
+                        ngbDatepicker #edp="ngbDatepicker" (ngModelChange)="update()">
+                    <button class="btn btn-outline-secondary input-group-addon" (click)="edp.toggle()" type="button">
+                        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 btn-group" role="group">
+            <button class="btn btn-outline-secondary rangeButton" (click)="setWeek()">
+                1 Week
+            </button>
+            <button class="btn btn-outline-secondary rangeButton" (click)="setMonth()">
+                1 Month
+            </button>
+            <button class="btn btn-outline-secondary rangeButton" (click)="setYear()">
+                1 Year
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="!weightsLoaded" class="my-4">
+        <div class="row justify-content-center mt-2">
+            <div class="col-sm-8 col-md-6 col-lg-4">
+                <img src="assets/loading_gif.gif">
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="weightsLoaded" class="my-4">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <ngx-charts-line-chart
+                    [scheme]="colorScheme"
+                    [results]="data"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    [autoScale]="autoScale"
+                    (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-8">
+                <table>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

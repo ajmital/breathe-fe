@@ -10,3 +10,10 @@ ul{
     overflow-y: scroll;
     max-height: 40em;
 }
+
+#radioSelectContainer{
+    background-color: #363636;
+}
+#radioSelect > label{
+    color: #FFFFFF;
+}

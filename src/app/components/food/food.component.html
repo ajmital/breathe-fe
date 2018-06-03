@@ -1,111 +1,137 @@
-<h2>Food Search</h2>
-
-<!-- Radio group to select food period -->
-<div class="btn-group btn-group-toggle" style="padding: 1em" ngbRadioGroup name="radioBasic" [(ngModel)]="period">
-  <label ngbButtonLabel class="btn-primary">
-    <input ngbButton type="radio" value="Auto"> Auto
-  </label>
-  <label ngbButtonLabel class="btn-primary">
-    <input ngbButton type="radio" value="Breakfast"> Breakfast
-  </label>
-  <label ngbButtonLabel class="btn-primary">
-    <input ngbButton type="radio" value="Lunch"> Lunch
-  </label>
-  <label ngbButtonLabel class="btn-primary">
-    <input ngbButton type="radio" value="Dinner"> Dinner
-  </label>
-
-  <label ngbButtonLabel class="btn-primary">
-    <input ngbButton type="radio" value="Snack"> Snack
-  </label>
-</div>
-
-<!-- Pop up to show food details -->
-<ng-template #modal let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <!-- Show loading gif while loading details -->
-  <div class="modal-body" *ngIf="detail_loading">
-    <img src="assets/loading_gif.gif" style="width:50%;">
-  </div>
-  <!-- Show results, note this is mutually exclusive to loading image -->
-  <div class="modal-body text-center" *ngIf="!detail_loading">
-    <!-- Food image, centered -->
-    <div style="width: 100%; text-align:center">
-      <img src = {{food_detail.thumbnail}} style="width:75%"/>
-    </div>
-
-    <!-- Datepicker component -->
-    <!-- input-group class allows button to be next to input box -->
-    <br>
-    <div class="input-group">
-      <label for="dp">Date: &nbsp;</label>
-      <input class="form-control" placeholder="yyyy-mm-dd"
-           name="dp" [(ngModel)]="datePicker" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker" style="width: auto;">
-      <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
-        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+ <!-- Pop up to show food details -->
+ <ng-template #modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <p>Period: {{period}}</p>
-    <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}} g</p>
-    <p>Sugar: {{food_detail.sugar * food_detail.quantity}} g</p>
-    <p>Protein: {{food_detail.protein * food_detail.quantity}} g</p>
-    <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
-    <label for="quantity">Quantity: </label>
-    <input type="number" [(ngModel)]="food_detail.quantity">
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" (click)="addFood()">Add Food</button>
-  </div>
-</ng-template>
-
-<!-- Food search form -->
-<form (submit)="search(food.value)">
-  <div>
-    <label for="food">Food:</label>
-    <input type="text" #food>
-  </div>
-</form>
-
-<!-- Loading animation -->
-
-<div class="row">
-<!-- Food search results -->
-    <div class="col-6">
-      <h4>Search Results</h4>
+    <!-- Show loading gif while loading details -->
+    <div class="modal-body" *ngIf="detail_loading">
+      <img src="assets/loading_gif.gif" style="width:50%;">
     </div>
-    <div class="col-6">
-      <h4>History: {{period}}</h4>
+    <!-- Show results, note this is mutually exclusive to loading image -->
+    <div class="modal-body text-center" *ngIf="!detail_loading">
+      <!-- Food image, centered -->
+      <div style="width: 100%; text-align:center">
+        <img src = {{food_detail.thumbnail}} style="width:75%"/>
+      </div>
+
+      <!-- Datepicker component -->
+      <!-- input-group class allows button to be next to input box -->
+      <br>
+      <div class="input-group">
+        <label for="dp">Date: &nbsp;</label>
+        <input class="form-control" placeholder="yyyy-mm-dd"
+            name="dp" [(ngModel)]="datePicker" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker" style="width: auto;">
+        <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
+          <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+        </button>
+      </div>
+      <p>Period: 
+          <select [(ngModel)]="period">
+            <option value="auto">Auto</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+          </select>
+          </p>
+      <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}} g</p>
+      <p>Sugar: {{food_detail.sugar * food_detail.quantity}} g</p>
+      <p>Protein: {{food_detail.protein * food_detail.quantity}} g</p>
+      <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
+      <label for="quantity">Quantity: </label>
+      <input type="number" [(ngModel)]="food_detail.quantity">
     </div>
-</div>
-<div class="row">
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+    </div>
+  </ng-template>
+
+<div class="container-fluid">
+  <div class="row" id="radioSelectContainer">
+    <div class="col">
+      <!-- Radio group to select food period -->
+      
+      <div class="btn-group btn-group-toggle" ngbRadioGroup id="radioSelect" [(ngModel)]="historyPeriod">
+          <label ngbButtonLabel class="btn btn-outline-secondary">
+            <input ngbButton type="radio" value="any"> Any
+          </label>
+          <label ngbButtonLabel class="btn btn-outline-secondary">
+            <input ngbButton type="radio" value="breakfast"> Breakfast
+          </label>
+          <label ngbButtonLabel class="btn btn-outline-secondary">
+            <input ngbButton type="radio" value="lunch"> Lunch
+          </label>
+          <label ngbButtonLabel class="btn btn-outline-secondary">
+            <input ngbButton type="radio" value="dinner"> Dinner
+          </label>
+      
+          <label ngbButtonLabel class="btn btn-outline-secondary">
+            <input ngbButton type="radio" value="snack"> Snack
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- Loading animation -->
+
+  <div class="row my-2">
+  <!-- Food search results -->
+      <div class="col-6">
+        <h4>Add Food</h4>
+      </div>
+      <div class="col-6">
+        <h4>History: {{historyPeriod.charAt(0).toUpperCase() + historyPeriod.slice(1)}}</h4>
+      </div>
+  </div>
+
+  <div class="row">
+      <div class="col-6">
+        <div class="row">
+          <form (submit)="search(food.value)">
+
+            <div class="col input-group">
+              <!-- Food search form -->
+                  <input type="text" class="form-control" placeholder="Search Food" #food>
+                  <div class="input-group-addon">
+                      <button type="submit" class="btn">Search</button>
+                  </div>
+            </div>
+          </form>
+
+        </div>
+        <!-- Search results-->
+        <div class="row">
+          <div class="col-12 scroll-column">
+            <img *ngIf=is_searching src="assets/loading_gif.gif" />
+            <div class="mb-3" *ngFor="let food of foodList">
+              <div class="media">
+                <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
+                <div class="media-body align-self-center">
+                  <span>{{food.brand_name}} {{food.food_name}}</span>
+                </div>
+              </div>
+              <button (click)="getDetails(food, modal)" class="btn">Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
     <div class="col-6 scroll-column">
-     <img *ngIf=is_searching src="assets/loading_gif.gif" />
-      <div class="mb-3" *ngFor="let food of foodList">
+      <div class="mb-3" *ngFor="let food of food_entries[historyPeriod]">
         <div class="media">
           <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
           <div class="media-body align-self-center">
-            <span>{{food.brand_name}} {{food.food_name}}</span>
+            <p>{{food.brand_name}} {{food.food_name}}</p>
+            <button (click)="getDetails(food, modal)" class="btn">Details</button>
           </div>
         </div>
-        <button (click)="getDetail(food, modal)" class="btn">Details</button>
       </div>
     </div>
 
-  <div class="col-6 scroll-column">
-    <div class="mb-3" *ngFor="let food of food_entries[period.toLowerCase()]">
-      <div class="media">
-        <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
-        <div class="media-body align-self-center">
-          <span>{{food.brand_name}} {{food.food_name}}</span>
-        </div>
-      </div>
-      <button (click)="getDetail(food, modal)" class="btn">Details</button>
-    </div>
   </div>
-
 </div>

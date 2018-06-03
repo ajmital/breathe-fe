@@ -38,6 +38,9 @@ export class DashboardComponent implements OnInit {
   // User's goal (varies by user)
   goal:number = 0;
 
+
+  weightAddSuccess:boolean = false;
+
   constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
 
@@ -95,6 +98,7 @@ export class DashboardComponent implements OnInit {
   addWeight(value:number){
     let weight:Object = {value: value, email: this.userService.user.email, timestamp: this.dateStructToTimestamp(this.weightDate)};
     this.userService.addWeight(weight);
+    this.weightAddSuccess = true;
   }
 
   // Gets food for the results date
@@ -120,6 +124,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getDetail(food:Food, modal){
+    this.food_detail = new Food();
     let item_id = food.nix_item_id;
     this.food_detail.food_name = food.food_name;
     this.food_detail.brand_name = food.brand_name;

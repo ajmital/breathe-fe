@@ -16,6 +16,7 @@ export class MainComponent implements OnInit {
   constructor(private userService:UserService) { }
 
   ngOnInit() {
+    this.userService.getUser();
   }
 
 

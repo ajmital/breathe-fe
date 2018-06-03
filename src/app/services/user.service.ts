@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 const api_url:string = "http://localhost:8000/";
 const CSRF_COOKIE:string = "csrftoken";
@@ -13,7 +14,6 @@ const CSRF_COOKIE:string = "csrftoken";
 export class UserService {
 
   user:User = new User();
-  weights:Weight[] = [];
   user_loaded:boolean = false;
   csrf_tok:string = null;
   headers:HttpHeaders = null;
@@ -49,16 +49,9 @@ export class UserService {
   }
 
   getWeights(){
-    this.http.get(
+    return this.http.get(
       api_url + "api/weights/",
       {headers: this.headers}
-    ).subscribe(
-      (response:Weight[]) => {
-        this.weights = response;
-      },
-      (err:HttpErrorResponse) =>{
-        console.error(err);
-      }
     );
   }
 
@@ -69,7 +62,6 @@ export class UserService {
       {headers: this.headers}
     ).subscribe(
       (response:any) => {
-        this.weights.push(response);
       },
       (err:HttpErrorResponse) => {
         console.error(err);
@@ -77,13 +69,13 @@ export class UserService {
   }
 
   getUser(){
-    this.user_loaded = true;
     this.http.get(
       api_url + "api/users/me/",
       {headers: this.headers}
     ).subscribe(
       (user_data:any) => {
         this.user = user_data;
+        this.user_loaded = true;
       },
       (err:HttpErrorResponse) => {
         console.error(err);
