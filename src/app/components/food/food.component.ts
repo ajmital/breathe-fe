@@ -80,6 +80,9 @@ export class FoodComponent implements OnInit {
   }
   
   getDetails(food:Food, modal){
+    // Show loading animation while waiting
+    this.detail_loading = true;
+
     this.food_detail = new Food();
 
     if (this.historyPeriod != "any"){
@@ -88,16 +91,12 @@ export class FoodComponent implements OnInit {
       this.period = "auto";
     }
 
-    let item_id = food.nix_item_id;
-
-    // Show loading animation while waiting
-    this.detail_loading = true;
     // Open Modal to display details
     this.modalRef = this.modalService.open(modal);
 
     // Retrieve details from the item id for branded foods
-    if (food.brand_name){
-      this.foodService.getDetails(item_id).subscribe(
+    if (food.nix_item_id){
+      this.foodService.getDetails(food.nix_item_id).subscribe(
         (results) =>{
       
           if (results["brand_name"] != null){
@@ -150,26 +149,27 @@ export class FoodComponent implements OnInit {
     /* Convenience methods to add results to class members *///////////////////
     
     // Converts search for food detail into the food_detail object
-    resultToDetail(results){
-      this.food_detail.total_fiber = results["nf_dietary_fiber"] == null ? 0 : results["nf_dietary_fiber"];
-      this.food_detail.serving_quantity = results["serving_qty"];
-      this.food_detail.carbohydrates = results["nf_total_carbohydrate"] == null ? 0 : results["nf_total_carbohydrate"];
-      this.food_detail.fat = results["nf_total_fat"] == null ? 0 : results["nf_total_fat"];
-      this.food_detail.nix_item = results["nix_item_name"];
-      this.food_detail.food_name = results["food_name"];
-      this.food_detail.sugar = results["nf_sugars"] == null ? 0 : results["nf_sugars"];
-      this.food_detail.calories = results["nf_calories"] == null ? 0 : results["nf_calories"];
-      this.food_detail.nix_item_id = results["nix_item_id"];
-      if (results["photo"]["highres"]){
-        this.food_detail.thumbnail = results["photo"]["highres"]; // Note this is not actually thumbnail
-      }else{
-        this.food_detail.thumbnail = results["photo"]["thumb"];
-      }
-      this.food_detail.serving_unit = results["serving_unit"];
-      this.food_detail.protein = results["nf_protein"];
-      this.food_detail.quantity = 1;
-      this.food_detail.water = 0;
-    }
+ // Converts search for food detail into the food_detail object
+ resultToDetail(results){
+  this.food_detail.total_fiber = (+results["nf_dietary_fiber"]);
+  this.food_detail.serving_quantity = results["serving_qty"];
+  this.food_detail.carbohydrates = (+results["nf_total_carbohydrate"]);
+  this.food_detail.fat = (+results["nf_total_fat"]);
+  this.food_detail.nix_item = results["nix_item_name"];
+  this.food_detail.food_name = results["food_name"];
+  this.food_detail.sugar = (+results["nf_sugars"]);
+  this.food_detail.calories = (+results["nf_calories"]);
+  this.food_detail.nix_item_id = results["nix_item_id"];
+  if (results["photo"]["highres"]){
+    this.food_detail.thumbnail = results["photo"]["highres"]; // Note this is not actually thumbnail
+  }else{
+    this.food_detail.thumbnail = results["photo"]["thumb"];
+  }
+  this.food_detail.serving_unit = results["serving_unit"];
+  this.food_detail.protein = (+results["nf_protein"]);
+  this.food_detail.quantity = 1;
+  this.food_detail.water = 0;
+}
   
     // Pushes food search results to food_query object
     pushSearch(element){

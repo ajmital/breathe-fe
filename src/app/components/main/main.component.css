@@ -23,6 +23,10 @@
   color: #ffffff;
 }
 
+.dropdown-item:hover{
+  color: #363636;
+}
+
 
 /*Navbar styling*/
 .navbar {

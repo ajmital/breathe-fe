@@ -111,10 +111,10 @@
               <div class="media">
                 <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
                 <div class="media-body align-self-center">
-                  <span>{{food.brand_name}} {{food.food_name}}</span>
+                  <p>{{food.brand_name}} {{food.food_name}}</p>
+                  <button (click)="getDetails(food, modal)" class="btn">Details</button>
                 </div>
               </div>
-              <button (click)="getDetails(food, modal)" class="btn">Details</button>
             </div>
           </div>
         </div>

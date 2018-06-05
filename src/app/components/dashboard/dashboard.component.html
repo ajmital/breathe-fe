@@ -54,8 +54,8 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12" id="resultsCalendarContainer">
-        <div class="col-lg-4 col-md-6 col-sm-8">
-            <div class="input-group col-8" id="resultsCalendar">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="input-group" id="resultsCalendar">
                 <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
                     name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
                     ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
@@ -69,23 +69,35 @@
 
   <div class="row">
 
-    <div class="col-sm-8">
+    <div class="col-lg-8">
       <!-- Meter/progress on insulin index-->
 
       <div class="row my-2">
-        <div class="col-4">
+        <div class="col-sm-6">
           <h3 class="text-center">Insulin Index</h3>
         </div>
       </div>
       <div class="row">
-        <div class="col-4" id="meter">
+        <div class="col-sm-6" id="meter">
           <p><ngb-progressbar type="info" [value]="result.co2" [max]="goal">{{result.co2}} / {{goal}}</ngb-progressbar></p>
+        </div>
+        <div class="col-sm-6" id="nutrition">
+          <div class="row">
+            <div class="col-md">Sugar: {{sugar}} g</div>
+            <div class="col-md">Fiber: {{fiber}} g</div>
+            <div class="col-md">Carbs: {{carbs}} g</div>
+          </div>
+          <div class="row">
+              <div class="col-md">Protein: {{protein}} g</div>
+              <div class="col-md">Fat: {{fat}} g</div>
+              <div class="col-md">Calories: {{calories}}</div>
+          </div>
         </div>
       </div>
 
       <!-- Form to add weight entry-->
       <div class="row">
-        <div class="col-8">
+        <div class="col-md-8 col-12">
           <h3 class="text-center">Add Weight Entry</h3>
         </div>
       </div>
@@ -124,7 +136,7 @@
 
     </div>
 
-    <div class="col-sm-4" id="foodDiary">
+    <div class="col-lg-4" id="foodDiary">
       <div class="row my-2">
         <div class="col">
           <h3 class="text-center">Today's Food</h3>

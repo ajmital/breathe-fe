@@ -38,6 +38,13 @@ export class DashboardComponent implements OnInit {
   // User's goal (varies by user)
   goal:number = 0;
 
+  // Nutrition summary
+  sugar:number = 0;
+  carbs:number = 0;
+  fiber:number = 0;
+  protein:number = 0;
+  fat:number = 0;
+  calories:number = 0;
 
   weightAddSuccess:boolean = false;
 
@@ -56,6 +63,12 @@ export class DashboardComponent implements OnInit {
 
   update(){
     this.getResults();
+    this.sugar = 0;
+    this.carbs = 0;
+    this.fiber = 0;
+    this.protein = 0;
+    this.fat = 0;
+    this.calories = 0;
     this.getFood();
   }
 
@@ -113,6 +126,20 @@ export class DashboardComponent implements OnInit {
           new_food.nix_item_id = results[i]["nix_item_id"];
           new_food.thumbnail = results[i]["thumbnail"];
           new_food.period = results[i]["period"];
+          new_food.calories = +results[i]["calories"];
+          new_food.total_fiber = +results[i]["total_fiber"];
+          new_food.sugar = +results[i]["sugar"];
+          new_food.carbohydrates = +results[i]["carbohydrates"];
+          new_food.protein = +results[i]["protein"];
+          new_food.fat = +results[i]["fat"];
+
+          this.calories += new_food.calories;
+          this.fiber += new_food.total_fiber;
+          this.sugar += new_food.sugar;
+          this.carbs += new_food.carbohydrates;
+          this.protein += new_food.protein;
+          this.fat += new_food.fat;
+
           this.foodList.push(new_food);
         }
 
@@ -124,18 +151,20 @@ export class DashboardComponent implements OnInit {
   }
 
   getDetail(food:Food, modal){
+    // Show loading animation while waiting
+    this.detail_loading = true;
+
     this.food_detail = new Food();
     let item_id = food.nix_item_id;
     this.food_detail.food_name = food.food_name;
-    this.food_detail.brand_name = food.brand_name;
-    // Show loading animation while waiting
-    this.detail_loading = true;
+    this.food_detail.brand_name = null;
+
     // Open Modal to display details
     this.modalRef = this.modalService.open(modal);
 
     // Retrieve details from the item id for branded foods
-    if (food.brand_name){
-      this.foodService.getDetails(item_id).subscribe(
+    if (food.nix_item_id){
+      this.foodService.getDetails(food.nix_item_id).subscribe(
         (results) =>{
       
           if (results["brand_name"] != null){
@@ -177,6 +206,7 @@ export class DashboardComponent implements OnInit {
     this.userService.postFood(this.food_detail, timestamp).subscribe(
       (results) => {
         this.modalRef.close();
+        this.update();
       },
       (err:HttpErrorResponse) => {
         console.error(err);
@@ -196,14 +226,14 @@ export class DashboardComponent implements OnInit {
 
   // Converts search for food detail into the food_detail object
   foodToDetail(results){
-    this.food_detail.total_fiber = results["nf_dietary_fiber"] == null ? 0 : results["nf_dietary_fiber"];
+    this.food_detail.total_fiber = (+results["nf_dietary_fiber"]);
     this.food_detail.serving_quantity = results["serving_qty"];
-    this.food_detail.carbohydrates = results["nf_total_carbohydrate"] == null ? 0 : results["nf_total_carbohydrate"];
-    this.food_detail.fat = results["nf_total_fat"] == null ? 0 : results["nf_total_fat"];
+    this.food_detail.carbohydrates = (+results["nf_total_carbohydrate"]);
+    this.food_detail.fat = (+results["nf_total_fat"]);
     this.food_detail.nix_item = results["nix_item_name"];
     this.food_detail.food_name = results["food_name"];
-    this.food_detail.sugar = results["nf_sugars"] == null ? 0 : results["nf_sugars"];
-    this.food_detail.calories = results["nf_calories"] == null ? 0 : results["nf_calories"];
+    this.food_detail.sugar = (+results["nf_sugars"]);
+    this.food_detail.calories = (+results["nf_calories"]);
     this.food_detail.nix_item_id = results["nix_item_id"];
     if (results["photo"]["highres"]){
       this.food_detail.thumbnail = results["photo"]["highres"]; // Note this is not actually thumbnail
@@ -211,7 +241,7 @@ export class DashboardComponent implements OnInit {
       this.food_detail.thumbnail = results["photo"]["thumb"];
     }
     this.food_detail.serving_unit = results["serving_unit"];
-    this.food_detail.protein = results["nf_protein"];
+    this.food_detail.protein = (+results["nf_protein"]);
     this.food_detail.quantity = 1;
     this.food_detail.water = 0;
   }
