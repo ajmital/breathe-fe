@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
-const api_url:string = "http://localhost:8000/";
 const CSRF_COOKIE:string = "csrftoken";
 
 @Injectable()
@@ -26,7 +25,7 @@ export class FoodService {
 
   getUPC(upc:string){
     return this.http.post(
-      api_url + "api/nutritionix/upc/",
+      "/api/nutritionix/upc/",
       {upc: upc},
       {headers: this.headers}
     );
@@ -34,7 +33,7 @@ export class FoodService {
 
   search(query_string:string){
     return this.http.post(
-      api_url + "api/nutritionix/search/",
+      "/api/nutritionix/search/",
       {query: query_string},
       {headers: this.headers}
     );
@@ -42,7 +41,7 @@ export class FoodService {
 
   getDetails(item_id:string){
     return this.http.post(
-      api_url + "api/nutritionix/item/?nix_item_id=" + item_id,
+      "/api/nutritionix/item/?nix_item_id=" + item_id,
       {nix_item_id: item_id},
       {headers: this.headers}
     );
@@ -50,7 +49,7 @@ export class FoodService {
 
   getCommon(query:string){
     return this.http.post(
-      api_url + "api/nutritionix/common/",
+      "/api/nutritionix/common/",
       {query: query},
       {headers: this.headers}
     );

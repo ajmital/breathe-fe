@@ -14,7 +14,7 @@
                     <h5 class="dropdown-header">{{this.userService.user.full_name}}</h5>
                     <h6 class="dropdown-header">{{this.userService.user.email}}</h6>
                     <div class="dropdown-divider"></div>
-                    <button class="dropdown-item">Payment</button>
+                    <button class="dropdown-item" (click)="this.userService.redirectToPayment()">Payment</button>
                     <a href="/google/oauth2/?device=browser"><button class="dropdown-item">Switch User</button></a>
                 </div>
             </div>

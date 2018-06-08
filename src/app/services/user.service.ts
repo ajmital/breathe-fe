@@ -7,8 +7,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-const api_url:string = "http://localhost:8000/";
 const CSRF_COOKIE:string = "csrftoken";
+const PAYMENT_URL:string = "#";
 
 @Injectable()
 export class UserService {
@@ -35,29 +35,44 @@ export class UserService {
     this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
   }
 
+  /* Payment redirect *///////
+  redirectToPayment(){
+    this.http.put(
+      "/api/account/token/",
+      "",
+      {headers: this.headers}).subscribe(
+        (results) => {
+          window.location.href = PAYMENT_URL;
+        },
+        (err:HttpErrorResponse) => {
+          console.error(err);
+        }
+      );
+  }
+
   /* Profile-related methods */////////////////////////////
   getFood(){
     return this.http.get(
-      api_url + "api/foods/",
+      "/api/foods/",
       {headers: this.headers});
   }
 
   getFoodByDate(date:string){
     return this.http.get(
-      api_url + "api/foods/?date=" + date,
+      "/api/foods/?date=" + date,
       {headers: this.headers});
   }
 
   getWeights(){
     return this.http.get(
-      api_url + "api/weights/",
+      "/api/weights/",
       {headers: this.headers}
     );
   }
 
   addWeight(weight:Object){
     return this.http.post(
-      api_url + "api/weights/",
+      "/api/weights/",
       JSON.stringify(weight),
       {headers: this.headers}
     ).subscribe(
@@ -70,7 +85,7 @@ export class UserService {
 
   getUser(){
     this.http.get(
-      api_url + "api/users/me/",
+      "/api/users/me/",
       {headers: this.headers}
     ).subscribe(
       (user_data:any) => {
@@ -81,7 +96,7 @@ export class UserService {
         console.error(err);
         if (err.status == 403){
           // Access denied, return to login page
-          //window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
+          window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
         }
       }
     );
@@ -101,7 +116,7 @@ export class UserService {
     };
 
     return this.http.put(
-      api_url + "api/users/me/",
+      "/api/users/me/",
       userObject,
       {headers: this.headers}
     );
@@ -109,14 +124,14 @@ export class UserService {
 
   getResults(date:string){
     return this.http.get(
-      api_url + "api/results/me/?date=" + date,
+      "/api/results/me/?date=" + date,
       {headers: this.headers}
     );
   }
 
   postFood(food:Food, timestamp:string){
     return this.http.post(
-      api_url + "api/foods/",
+      "/api/foods/",
       {
         nix_item_id: food.nix_item_id,
         brand_name: food.brand_name,
