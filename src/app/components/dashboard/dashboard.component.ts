@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { FoodService } from '../../services/food.service';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {NgbModal, ModalDismissReasons, NgbActiveModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -46,7 +47,20 @@ export class DashboardComponent implements OnInit {
   fat:number = 0;
   calories:number = 0;
 
-  weightAddSuccess:boolean = false;
+  // Weight chart options
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+  };
+
+  weightData = [
+    {
+      "name":"Weight",
+      "series": [{
+        name: "2018",
+        value: 10
+      }]
+    }
+  ];
 
   constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
@@ -111,7 +125,12 @@ export class DashboardComponent implements OnInit {
   addWeight(value:number){
     let weight:Object = {value: value, email: this.userService.user.email, timestamp: this.dateStructToTimestamp(this.weightDate)};
     this.userService.addWeight(weight);
-    this.weightAddSuccess = true;
+    this.modalRef.close();
+    this.modalRef = null;
+  }
+
+  openWeightModal(modal){
+    this.modalRef = this.modalService.open(modal, {size: "lg"});
   }
 
   // Gets food for the results date

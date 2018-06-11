@@ -1,5 +1,5 @@
 <!-- Modal to add food -->
-<ng-template #modal let-c="close" let-d="dismiss">
+<ng-template #foodModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -25,7 +25,7 @@
       <input class="form-control" placeholder="yyyy-mm-dd"
            name="fdp" [(ngModel)]="foodDate" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #fdp="ngbDatepicker" style="width: auto;">
       <button class="btn btn-outline-secondary input-group-addon" (click)="fdp.toggle()" type="button">
-        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+        <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
       </button>
     </div>
     <p>Period: 
@@ -49,6 +49,39 @@
   </div>
 </ng-template>
 
+<ng-template #weightModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Record Your Weight</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-auto">
+        <ngb-datepicker #wdp [(ngModel)]="weightDate" [minDate]="minDate" [maxDate]="maxDate" [navigation]="arrows"></ngb-datepicker>
+      </div>
+      <div class="col">
+        <form (submit)="addWeight(weight.value)">
+          <h3>Record Your Weight</h3>
+          <small class="form-text text-muted">
+              Tip: Weight can fluctuate during the day. Aim to weigh yourself at about the same time each day.
+          </small>
+          <div class="form-group">
+            <label for="weightInput">Weight</label>
+            <input id="weightInput" type="number" min="1" class="form-control" placeholder="Weight" #weight />
+            <label for="weightDateInput">Date</label>
+            <p>{{weightDate.month}}-{{weightDate.day}}-{{weightDate.year}}</p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+  </div>
+</ng-template>
 
 <!-- Main body -->
 <div class="container-fluid">
@@ -60,7 +93,7 @@
                     name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
                     ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
                 <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
-                  <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                  <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
                 </button>
             </div>
         </div>
@@ -95,44 +128,27 @@
         </div>
       </div>
 
-      <!-- Form to add weight entry-->
       <div class="row">
-        <div class="col-md-8 col-12">
-          <h3 class="text-center">Add Weight Entry</h3>
+        <div class="col" id="weightProgress">
+          <ngx-charts-line-chart
+              [scheme]="colorScheme"
+              [results]="weightData"
+              [gradient]="false"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="true"
+              [showYAxisLabel]="true"
+              [xAxisLabel]="Date"
+              [yAxisLabel]="Weight"
+              [autoScale]="true">
+          </ngx-charts-line-chart>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col">
-          <form (submit)="addWeight(weight.value)">
-            <div class="form-row">
-              <div class="col-md-4">
-                <label for="weightInput">Weight (lbs)</label>
-                <input id="weightInput" class="form-control" type="number" placeholder="Weight" min="1" #weight>
-              </div>
-              <div class="col-md-4">
-                <label for="weightCalendar">Date</label>
-                <div class="input-group">
-                  <input id="weightCalendar" class="form-control" placeholder="yyyy-mm-dd"
-                      name="wdp" [(ngModel)]="weightDate" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker">
-                  <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
-                    <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <small class="form-text text-muted">
-                Tip: Weight can fluctuate during the day. Aim to weigh yourself at about the same time each day.
-            </small>
-            <div class="row">
-              <div class="col-md-4">
-                <button type="submit" class="btn submitButton">Submit</button>
-              </div>
-            </div>
-            <span *ngIf="weightAddSuccess" class="text-info">Weight entry added</span>
-          </form>
+          <button (click)="openWeightModal(weightModal)">+</button>
         </div>
       </div>
-      <!-- End weight entry form-->
 
     </div>
 
@@ -149,7 +165,7 @@
               <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
               <div class="media-body align-self-center">
                 <p>{{food.brand_name}} {{food.food_name}}</p>
-                <button (click)="getDetail(food, modal)" class="btn">Details</button>
+                <button (click)="getDetail(food, foodModal)" class="btn">Details</button>
               </div>
             </div>
           </div>

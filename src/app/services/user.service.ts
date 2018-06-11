@@ -198,10 +198,3 @@ interface Food{
   serving_unit:string;
   protein:number;
 }
-
-interface Weight{
-  id:string;
-  email:string;
-  value:number;
-  timestamp:string;  
-}

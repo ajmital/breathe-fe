@@ -26,3 +26,7 @@
     background-color: #26b2a9;
     color: #ffffff;
 }
+
+#weightProgress{
+    min-height: 20rem;
+}

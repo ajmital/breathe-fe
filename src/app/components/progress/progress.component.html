@@ -12,7 +12,7 @@
                         name="sdp" [(ngModel)]="startDate" [minDate]="minDate" [maxDate]="endDate"
                         ngbDatepicker #sdp="ngbDatepicker" (ngModelChange)="update()">
                     <button class="btn btn-outline-secondary input-group-addon" (click)="sdp.toggle()" type="button">
-                        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                        <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
                     </button>
                 </div>
                 <div class="input-group col-lg-4 col-6 rangeCalendar" id="endCalendar">
@@ -23,7 +23,7 @@
                         name="edp" [(ngModel)]="endDate" [minDate]="minDate" [maxDate]="maxDate"
                         ngbDatepicker #edp="ngbDatepicker" (ngModelChange)="update()">
                     <button class="btn btn-outline-secondary input-group-addon" (click)="edp.toggle()" type="button">
-                        <img src="assets/img/calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                        <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
                     </button>
                 </div>
             </div>
