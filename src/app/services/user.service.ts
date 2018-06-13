@@ -71,16 +71,19 @@ export class UserService {
   }
 
   addWeight(weight:Object){
-    return this.http.post(
+    let addRequest = this.http.post(
       "/api/weights/",
       JSON.stringify(weight),
       {headers: this.headers}
-    ).subscribe(
+    );
+    addRequest.subscribe(
       (response:any) => {
       },
       (err:HttpErrorResponse) => {
         console.error(err);
-      });
+    });
+
+    return addRequest;
   }
 
   getUser(){

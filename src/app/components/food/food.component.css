@@ -6,9 +6,28 @@ ul{
     max-height: 50%;
 }
 
-.scroll-column{
-    overflow-y: scroll;
-    max-height: 40em;
+#foodSearch{
+    font-size: 1.5rem;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 1px solid #DBDBDB;
+    border-top: 1px solid #DBDBDB;
+    border-bottom: 1px solid #DBDBDB;
+}
+
+#foodSearch:focus{
+    box-shadow: 0 0 0 0.2rem rgba(15, 114, 97, 0.25);
+}
+
+#searchButton{
+    font-size: 1.5rem;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 0;
+    border: 1px solid #DBDBDB;
+}
+
+#searchButton:hover{
+    background-color: #DBDBDB;
 }
 
 #radioSelectContainer{
@@ -16,4 +35,17 @@ ul{
 }
 #radioSelect > label{
     color: #FFFFFF;
+}
+
+@media (min-width: 992px){
+    .scroll-column{
+        overflow-y: scroll;
+        max-height: 35rem;
+    }
+
+    .scroll-column-smaller{
+        overflow-y: scroll;
+        max-height: 30rem;
+    }
+
 }

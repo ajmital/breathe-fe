@@ -49,6 +49,7 @@
   </div>
 </ng-template>
 
+<!-- Modal for adding weight-->
 <ng-template #weightModal let-c="close" let-d="dismiss">
   <div class="modal-header green-background">
     <h4 class="modal-title">Record Your Weight</h4>
@@ -73,13 +74,12 @@
             <label for="weightDateInput">Date</label>
             <p>{{weightDate.month}}-{{weightDate.day}}-{{weightDate.year}}</p>
           </div>
-
         </form>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+    <button class="btn btn-primary" (click)="addWeight(weight.value)">Save Changes</button>
   </div>
 </ng-template>
 
@@ -93,7 +93,7 @@
                     name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
                     ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
                 <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
-                  <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                  <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1.2rem; cursor: pointer;"/>
                 </button>
             </div>
         </div>
@@ -102,34 +102,147 @@
 
   <div class="row">
 
-    <div class="col-lg-8">
+    <div class="col-xl-8">
       <!-- Meter/progress on insulin index-->
 
-      <div class="row my-2">
-        <div class="col-sm-6">
-          <h3 class="text-center">Insulin Index</h3>
+      <div class="row breathe-header">
+        <div class="col">
+          Nutrition
         </div>
       </div>
-      <div class="row">
-        <div class="col-sm-6" id="meter">
-          <p><ngb-progressbar type="info" [value]="result.co2" [max]="goal">{{result.co2}} / {{goal}}</ngb-progressbar></p>
-        </div>
-        <div class="col-sm-6" id="nutrition">
+      <div class="row breathe-panel">
+        <div class="col-md-6 col-sm-12 col-12" id="meter">
           <div class="row">
-            <div class="col-md">Sugar: {{sugar}} g</div>
-            <div class="col-md">Fiber: {{fiber}} g</div>
-            <div class="col-md">Carbs: {{carbs}} g</div>
+            <div class="col">
+                <ngb-progressbar type="info" [value]="result.co2" [max]="goal" height="4rem">{{result.co2}} / {{goal}}</ngb-progressbar>
+            </div>
           </div>
-          <div class="row">
-              <div class="col-md">Protein: {{protein}} g</div>
-              <div class="col-md">Fat: {{fat}} g</div>
-              <div class="col-md">Calories: {{calories}}</div>
+          <div class="row mb-4 justify-content-between">
+            <div class="col breathe-label">
+              Insulin index
+            </div>
+            <div class="col-auto">
+              <img src="assets/breathe-icons/breathe-goal.svg" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6" id="nutrition">
+          <div class="row mb-2">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-sugar.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                    {{sugar}} g
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-label">
+                  Sugar
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-fiber.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{fiber}} g
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-label">
+                  Fiber
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-carbs.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{carbs}} g
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col text-center breathe-label">
+                    Carbs
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-protein.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{protein}} g
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col text-center breathe-label">
+                    Protein
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-fat.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{fat}} g
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-label">
+                    Fat
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img src="assets/breathe-icons/breathe-calories.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{calories}} g
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-label">
+                  Calories
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col" id="weightProgress">
+      <div class="row breathe-header">
+        <div class="col">
+          Weight
+        </div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-sm-8 col-11" id="weightProgress">
           <ngx-charts-line-chart
               [scheme]="colorScheme"
               [results]="weightData"
@@ -145,33 +258,88 @@
           </ngx-charts-line-chart>
         </div>
 
-        <div class="col">
-          <button (click)="openWeightModal(weightModal)">+</button>
+        <div class="col-sm-4">
+          <div class="row my-2">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <img id="weightIcon" src="assets/breathe-icons/breathe-scale.svg" class="mx-auto d-block" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-value">
+                  {{latestWeight.value}} lbs
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-center breathe-label">
+                  Weight
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col text-center">
+                <button (click)="openWeightModal(weightModal)" class="breathe-add-button">+</button>
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col text-muted text-center">
+              Last recorded: {{latestWeight.timestamp}}
+            </div>
+          </div>
         </div>
       </div>
 
     </div>
 
-    <div class="col-lg-4" id="foodDiary">
-      <div class="row my-2">
+    <div class="col-xl-4 breathe-shadow-panel" id="foodDiary">
+      <div class="row breathe-header">
         <div class="col">
-          <h3 class="text-center">Today's Food</h3>
+          Today's Food
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="mb-3" *ngFor="let food of foodList">
-            <div class="media">
-              <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
-              <div class="media-body align-self-center">
-                <p>{{food.brand_name}} {{food.food_name}}</p>
-                <button (click)="getDetail(food, foodModal)" class="btn">Details</button>
+      <div class="row scroll-column">
+        <div class="col mt-2">
+          <div class="row my-2 mx-1" *ngFor= "let period of periodList">
+            <div class="col">
+              <div class="card">
+                <div class="card-header breathe-food-header">
+                  <div class="media">
+                    <img class="align-self-center mr-2" src="assets/breathe-icons/breathe-{{period}}.svg" />
+                    <div class="media-body align-self-center">
+                      {{period.charAt(0).toUpperCase() + period.slice(1)}}
+                    </div>
+                  </div>
+                </div>
+               <!-- Food entries (*ngFor)-->
+
+                <div class="card-body" *ngIf="foodList[period].length <= 0">
+                  No food entries.
+                </div>
+                <div class="card-body breathe-food-panel" *ngFor="let food of foodList[period]">
+                   <div class="media" (click)="getDetail(food, foodModal)">
+                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                    <div class="media-body align-self-center">
+                      <div class="row justify-content-between">
+                        <div class="col">
+                          <p>{{food.brand_name}} {{food.food_name}}</p>
+                          <p>{{food.quantity}} {{food.serving_unit}}</p>
+                        </div>
+                        <div class="col-auto breathe-value">
+                          <p>{{food.carbohydrates}} g</p>
+                          <button class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
-      <!-- Food entries (*ngFor)-->
     </div>
 
     <!-- End outermost row-->

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { FoodService } from '../../services/food.service';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {NgbModal, ModalDismissReasons, NgbActiveModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {NgxChartsModule} from '@swimlane/ngx-charts'; // Do not remove this import even if "unused"!
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -25,7 +25,8 @@ export class DashboardComponent implements OnInit {
   foodDate:NgbDateStruct = this.maxDate;
 
   // User's food's
-  foodList:Food[] = [];
+  foodList = {};
+  periodList:string[] = ["breakfast", "lunch", "dinner", "snack"];
 
   // Variables for adding a food from the dashboard
   food_detail:Food = new Food();
@@ -55,12 +56,14 @@ export class DashboardComponent implements OnInit {
   weightData = [
     {
       "name":"Weight",
-      "series": [{
-        name: "2018",
-        value: 10
-      }]
+      "series": []
     }
   ];
+
+  latestWeight = {
+    "timestamp": "N/A",
+    "value": 0
+  };
 
   constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
@@ -71,19 +74,13 @@ export class DashboardComponent implements OnInit {
       this.userService.getUser();
     }
     // Load results every time (may have changed while on other pages)
-    this.getResults();
-    this.getFood();
+    this.update();
   }
 
   update(){
     this.getResults();
-    this.sugar = 0;
-    this.carbs = 0;
-    this.fiber = 0;
-    this.protein = 0;
-    this.fat = 0;
-    this.calories = 0;
     this.getFood();
+    this.getWeights();
   }
 
   // Will need to call whenever resultsDate struct is updated
@@ -124,10 +121,50 @@ export class DashboardComponent implements OnInit {
 
   addWeight(value:number){
     let weight:Object = {value: value, email: this.userService.user.email, timestamp: this.dateStructToTimestamp(this.weightDate)};
-    this.userService.addWeight(weight);
+    this.userService.addWeight(weight).subscribe(
+      (results) => {},
+      (err) => {},
+      () => {
+        // Update weights
+        this.getWeights();
+      }
+    );
     this.modalRef.close();
     this.modalRef = null;
   }
+
+  getWeights(){
+    this.userService.getWeights().subscribe(
+      (results:Weight[]) => {
+        this.weightsToChartData(results);
+        if (results.length > 0){
+          this.latestWeight.timestamp = this.timestampToDateString(results[0].timestamp);
+          this.latestWeight.value = results[0].value;
+        }else{
+          this.latestWeight.timestamp = "N/A"
+          this.latestWeight.value = 0;
+
+        }
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+        this.latestWeight.timestamp = "N/A"
+        this.latestWeight.value = 0;
+      },
+    );
+  }
+
+  weightsToChartData (results:Weight[]) {
+    this.weightData[0].series = [];
+    for (let i = results.length - 1; i >= 0; i -= 1){    
+      this.weightData[0].series.push({
+        name: this.timestampToDateString(results[i].timestamp),
+        value: results[i].value
+      })
+    }
+
+    this.weightData = [...this.weightData];
+  };
 
   openWeightModal(modal){
     this.modalRef = this.modalService.open(modal, {size: "lg"});
@@ -135,7 +172,13 @@ export class DashboardComponent implements OnInit {
 
   // Gets food for the results date
   getFood(){
-    this.foodList = [];
+    this.sugar = 0;
+    this.carbs = 0;
+    this.fiber = 0;
+    this.protein = 0;
+    this.fat = 0;
+    this.calories = 0;
+    this.foodList = {"breakfast": [], "lunch": [], "dinner": [], "snack": []};
     this.userService.getFoodByDate(this.dateStructToDateString(this.resultsDate)).subscribe(
       (results:any) => {
         for (let i:number= 0; i < results["length"]; i++){
@@ -151,6 +194,8 @@ export class DashboardComponent implements OnInit {
           new_food.carbohydrates = +results[i]["carbohydrates"];
           new_food.protein = +results[i]["protein"];
           new_food.fat = +results[i]["fat"];
+          new_food.quantity = +results[i]["quantity"];
+          new_food.serving_unit = results[i]["serving_unit"];
 
           this.calories += new_food.calories;
           this.fiber += new_food.total_fiber;
@@ -159,8 +204,14 @@ export class DashboardComponent implements OnInit {
           this.protein += new_food.protein;
           this.fat += new_food.fat;
 
-          this.foodList.push(new_food);
+          this.foodList[new_food.period].push(new_food);
         }
+        this.calories = Math.round(this.calories * 10)/10;
+        this.fiber = Math.round(this.fiber * 10)/10;
+        this.sugar = Math.round(this.sugar * 10)/10;
+        this.carbs = Math.round(this.carbs * 10)/10;
+        this.protein = Math.round(this.protein * 10)/10;
+        this.fat = Math.round(this.fat * 10)/10;
 
       },
       (err:HttpErrorResponse) => {
@@ -174,7 +225,6 @@ export class DashboardComponent implements OnInit {
     this.detail_loading = true;
 
     this.food_detail = new Food();
-    let item_id = food.nix_item_id;
     this.food_detail.food_name = food.food_name;
     this.food_detail.brand_name = null;
 
@@ -212,19 +262,54 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  addFood(){
-    // These two values not useful in calculation, set to current time
-    let hour = now.getHours();
-    let minutes = now.getMinutes();
+  repeatFood(food, event: MouseEvent){
+    event.stopPropagation(); // Prevent parent from receiving click as well
+    this.food_detail = new Food();
+    this.food_detail.food_name = food.food_name;
+    this.food_detail.period = "auto";
+    this.food_detail.brand_name = null;
 
+    // Retrieve details from the item id for branded foods
+    if (food.nix_item_id){
+      this.foodService.getDetails(food.nix_item_id).subscribe(
+        (results) =>{
+          if (results["brand_name"] != null){
+            this.food_detail.brand_name = results["brand_name"];
+          }
+          this.foodToDetail(results);
+          this.food_detail.quantity = food.quantity; // Repeat quantity
+          this.addFood();
+        },
+       (err:HttpErrorResponse) => {
+         console.error(err);
+       }
+     );
+    }else{
+      // Lookup common foods by name
+      this.foodService.getCommon(food.food_name).subscribe(
+        results => {
+          this.foodToDetail(results);
+          this.food_detail.quantity = food.quantity;
+          this.addFood();
+        },
+        (err:HttpErrorResponse) => {
+          console.error(err);
+        }
+      );
+    }
+  }
+
+  addFood(){
     let timestamp = this.dateStructToTimestamp(this.foodDate);
 
-    console.log(this.period);
     this.food_detail.period = this.period.toLowerCase();
     
     this.userService.postFood(this.food_detail, timestamp).subscribe(
       (results) => {
-        this.modalRef.close();
+        if (this.modalRef){
+          this.modalRef.close();
+          this.modalRef = null;
+        }
         this.update();
       },
       (err:HttpErrorResponse) => {
@@ -233,7 +318,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  /* Utility functions */
+  /* Utility functions */////////////
   dateStructToDateString(dateStruct:NgbDateStruct){
     return dateStruct.year + "-" + dateStruct.month + "-" + dateStruct.day;
   }
@@ -241,6 +326,30 @@ export class DashboardComponent implements OnInit {
   dateStructToTimestamp(dateStruct:NgbDateStruct){
     return dateStruct.year.toString() + "-" + dateStruct.month.toString().padStart(2, "0") + "-" + dateStruct.day.toString().padStart(2, "0") + 
     "T00:00:00Z";
+  }
+
+  timestampToDateString(timestamp:string){
+    let index:number = timestamp.indexOf('T');
+    if (index != -1){
+      timestamp = timestamp.substring(0, index);
+    }
+
+    let vals = timestamp.split('-');
+  
+    // Remove 0 padding
+    for (let i = 0; i < vals.length; i = i + 1){
+      if (vals[i].startsWith('0')){
+        vals[i] = vals[i].substring(1);
+      }
+    }
+
+    // Shorten year
+    if (vals[0].length == 4){
+      vals[0] = vals[0].substring(2);
+    }
+
+    return vals[1] + '/' + vals[2] + '/' + vals[0];
+
   }
 
   // Converts search for food detail into the food_detail object
@@ -321,4 +430,11 @@ class Food{
   serving_unit:string;
   protein:number;
   constructor(){};
+}
+
+interface Weight{
+  id:string;
+  email:string;
+  value:number;
+  timestamp:string;  
 }

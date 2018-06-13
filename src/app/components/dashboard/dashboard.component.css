@@ -27,6 +27,17 @@
     color: #ffffff;
 }
 
+#weightIcon{
+    width: 4rem;
+}
+
 #weightProgress{
     min-height: 20rem;
+}
+
+@media (min-width: 1200px){
+    .scroll-column{
+        overflow-y: scroll;
+        max-height: 35rem;
+    }
 }

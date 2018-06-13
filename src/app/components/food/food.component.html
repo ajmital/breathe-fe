@@ -1,5 +1,5 @@
  <!-- Pop up to show food details -->
- <ng-template #modal let-c="close" let-d="dismiss">
+ <ng-template #foodModal let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
       <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -29,7 +29,7 @@
         </button>
       </div>
       <p>Period: 
-          <select [(ngModel)]="period">
+          <select [(ngModel)]="food_detail.period">
             <option value="auto">Auto</option>
             <option value="breakfast">Breakfast</option>
             <option value="lunch">Lunch</option>
@@ -49,89 +49,102 @@
     </div>
   </ng-template>
 
+<!-- Body content-->
 <div class="container-fluid">
-  <div class="row" id="radioSelectContainer">
-    <div class="col">
-      <!-- Radio group to select food period -->
-      
-      <div class="btn-group btn-group-toggle" ngbRadioGroup id="radioSelect" [(ngModel)]="historyPeriod">
-          <label ngbButtonLabel class="btn btn-outline-secondary">
-            <input ngbButton type="radio" value="any"> Any
-          </label>
-          <label ngbButtonLabel class="btn btn-outline-secondary">
-            <input ngbButton type="radio" value="breakfast"> Breakfast
-          </label>
-          <label ngbButtonLabel class="btn btn-outline-secondary">
-            <input ngbButton type="radio" value="lunch"> Lunch
-          </label>
-          <label ngbButtonLabel class="btn btn-outline-secondary">
-            <input ngbButton type="radio" value="dinner"> Dinner
-          </label>
-      
-          <label ngbButtonLabel class="btn btn-outline-secondary">
-            <input ngbButton type="radio" value="snack"> Snack
-          </label>
-        </div>
-      </div>
-    </div>
-
-
-  <!-- Loading animation -->
-
-  <div class="row my-2">
-  <!-- Food search results -->
-      <div class="col-6">
-        <h4>Add Food</h4>
-      </div>
-      <div class="col-6">
-        <h4>History: {{historyPeriod.charAt(0).toUpperCase() + historyPeriod.slice(1)}}</h4>
-      </div>
-  </div>
 
   <div class="row">
-      <div class="col-6">
-        <div class="row">
-          <form (submit)="search(food.value)">
-
-            <div class="col input-group">
-              <!-- Food search form -->
-                  <input type="text" class="form-control" placeholder="Search Food" #food>
-                  <div class="input-group-addon">
-                      <button type="submit" class="btn">Search</button>
-                  </div>
+  <!-- Food search -->
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col breathe-header">
+          Add Food
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="padding: 0">
+          <!-- Food search form -->
+          <form (submit)="search(food.value)">  
+            <div class="input-group">
+              <input type="text" id="foodSearch" class="form-control" placeholder="Search" #food>
+              <div class="input-group-addon">
+                <button type="submit" id="searchButton" class="btn">Search</button>
+              </div>
             </div>
           </form>
-
         </div>
-        <!-- Search results-->
-        <div class="row">
-          <div class="col-12 scroll-column">
-            <img *ngIf=is_searching src="assets/loading_gif.gif" />
-            <div class="mb-3" *ngFor="let food of foodList">
-              <div class="media">
-                <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
+      </div>
+      <!-- Food search results -->
+      <div class="row breathe-panel scroll-column-smaller">
+        <div class="col">
+
+          <!-- Start ngFor for search results -->
+          <div class="row" *ngFor="let food of foodList">
+            <div class="col breathe-food-panel">
+              <div class="media" (click)="getDetail(food, foodModal)">
+                <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
                 <div class="media-body align-self-center">
                   <p>{{food.brand_name}} {{food.food_name}}</p>
-                  <button (click)="getDetails(food, modal)" class="btn">Details</button>
                 </div>
               </div>
             </div>
           </div>
+          <!-- End ngFor for search results -->
+
         </div>
       </div>
-      
 
-    <div class="col-6 scroll-column">
-      <div class="mb-3" *ngFor="let food of food_entries[historyPeriod]">
-        <div class="media">
-          <img class="align-self-center mr-2 mb-2" src = {{food.thumbnail}} style="width:25%"/>
-          <div class="media-body align-self-center">
-            <p>{{food.brand_name}} {{food.food_name}}</p>
-            <button (click)="getDetails(food, modal)" class="btn">Details</button>
+    </div>
+
+    <!-- Food history -->
+    <div class="col-lg-6 breathe-shadow-panel">
+      <div class="row">
+        <div class="col breathe-header">
+          Food History
+        </div>
+      </div>
+      <div class="row scroll-column">
+        <div class="col mt-2">
+          <!-- Start outer ngFor -->
+          <div class="row my-2 mx-1" *ngFor= "let period of periodList">
+            <div class="col">
+              <div class="card">
+                <div class="card-header breathe-food-header">
+                  <div class="media">
+                    <img class="align-self-center mr-2" src="assets/breathe-icons/breathe-{{period}}.svg" />
+                    <div class="media-body align-self-center">
+                      {{period.charAt(0).toUpperCase() + period.slice(1)}}
+                    </div>
+                  </div>
+                </div>
+                <!-- Food entries (*ngFor)-->
+
+                <div class="card-body" *ngIf="food_entries[period].length <= 0">
+                  No food entries.
+                </div>
+                <div class="card-body breathe-food-panel" *ngFor="let food of food_entries[period]">
+                  <div class="media" (click)="getDetail(food, foodModal)">
+                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                    <div class="media-body align-self-center">
+                      <div class="row justify-content-between">
+                        <div class="col-9">
+                          <p>{{food.brand_name}} {{food.food_name}}</p>
+                          <p>{{food.quantity}} {{food.serving_unit}}</p>
+                        </div>
+                        <div class="col-3 breathe-value">
+                          <p>{{food.carbohydrates}} g</p>
+                          <button class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+          <!-- End outer ngFor -->
         </div>
       </div>
     </div>
-
   </div>
+
 </div>
