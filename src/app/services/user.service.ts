@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 const CSRF_COOKIE:string = "csrftoken";
-const PAYMENT_URL:string = "#";
+const PAYMENT_URL:string = "https://paymenturl.com/";
 
 @Injectable()
 export class UserService {
@@ -42,7 +42,7 @@ export class UserService {
       "",
       {headers: this.headers}).subscribe(
         (results) => {
-          window.location.href = PAYMENT_URL;
+          window.location.href = PAYMENT_URL + "?email=" + results["email"] + "&token=" + results["verification_token"];
         },
         (err:HttpErrorResponse) => {
           console.error(err);

@@ -4,6 +4,18 @@
     color: #FFFFFF;
 }
 
+.breathe-submit-button{
+    color: #FFFFFF;
+    background-color: #FF5900;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.breathe-modal-title{
+    font-weight: 700;
+}
+
 .breathe-label{
     text-transform: uppercase;
     letter-spacing: .1rem;

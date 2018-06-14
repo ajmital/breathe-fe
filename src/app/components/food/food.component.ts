@@ -13,7 +13,6 @@ const now:Date = new Date();
   styleUrls: ['./food.component.css']
 })
 export class FoodComponent implements OnInit {
-  period = "Auto";
   food_entries = {"breakfast": [], "lunch":[], "dinner":[], "snack":[]};
   periodList:string[] = ["breakfast", "lunch", "dinner", "snack"];
   foodList:Food[] = [];
@@ -25,7 +24,7 @@ export class FoodComponent implements OnInit {
   modalRef:NgbModalRef = null;
 
   // Date picker model
-  datePicker:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
+  foodDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
 
   constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
@@ -48,6 +47,7 @@ export class FoodComponent implements OnInit {
         new_food.fat = (+results[i]["fat"]);
         new_food.quantity = (+results[i]["quantity"]);
         new_food.serving_unit = results[i]["serving_unit"];
+        new_food.serving_quantity = (+results[i]["serving_quantity"]);
 
         this.food_entries[new_food.period].push(new_food);
       }
@@ -97,7 +97,7 @@ export class FoodComponent implements OnInit {
     this.food_detail.brand_name = null;
 
     // Open Modal to display details
-    this.modalRef = this.modalService.open(modal);
+    this.modalRef = this.modalService.open(modal, {size: 'lg'});
 
     // Retrieve details from the item id for branded foods
     if (food.nix_item_id){
@@ -168,7 +168,7 @@ export class FoodComponent implements OnInit {
 
 
   addFood(){
-    let timestamp = this.dateStructToTimestamp(this.datePicker);
+    let timestamp = this.dateStructToTimestamp(this.foodDate);
     
     this.userService.postFood(this.food_detail, timestamp).subscribe(
       (results) => {

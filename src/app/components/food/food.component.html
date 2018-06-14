@@ -1,7 +1,8 @@
  <!-- Pop up to show food details -->
- <ng-template #foodModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-      <h4 class="modal-title">{{food_detail.brand_name}} {{food_detail.food_name}}</h4>
+ <!-- Modal to add food -->
+<ng-template #foodModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">Food Detail</h4>
       <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -13,39 +14,175 @@
     <!-- Show results, note this is mutually exclusive to loading image -->
     <div class="modal-body text-center" *ngIf="!detail_loading">
       <!-- Food image, centered -->
-      <div style="width: 100%; text-align:center">
-        <img src = {{food_detail.thumbnail}} style="width:75%"/>
+  
+      <div class="row">
+        <div class="col breathe-modal-title">
+          {{food_detail.brand_name}} {{food_detail.food_name}}
+        </div>
       </div>
-
-      <!-- Datepicker component -->
-      <!-- input-group class allows button to be next to input box -->
-      <br>
-      <div class="input-group">
-        <label for="dp">Date: &nbsp;</label>
-        <input class="form-control" placeholder="yyyy-mm-dd"
-            name="dp" [(ngModel)]="datePicker" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #d="ngbDatepicker" style="width: auto;">
-        <button class="btn btn-outline-secondary input-group-addon" (click)="d.toggle()" type="button">
-          <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
-        </button>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="row">
+            <div class="col">
+              <img src= {{food_detail.thumbnail}} style="width: 100%"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Serving size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <div class="row my-2">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-sugar.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                        {{food_detail.sugar * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-label">
+                      Sugar
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-fiber.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                      {{food_detail.total_fiber * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-label">
+                      Fiber
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-carbs.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                      {{food_detail.carbohydrates * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col text-center breathe-label">
+                        Carbs
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-protein.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                      {{food_detail.protein * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col text-center breathe-label">
+                        Protein
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-fat.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                      {{food_detail.fat * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-label">
+                        Fat
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <img src="assets/breathe-icons/breathe-calories.svg" class="mx-auto d-block" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-value">
+                      {{food_detail.calories * food_detail.quantity}} g
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center breathe-label">
+                      Calories
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row my-2">
+            <label class="col-3 col-form-label">Date: </label>
+            <div class="col">
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                    name="fdp" [(ngModel)]="foodDate" [minDate]="minDate" [maxDate]="maxDate" ngbDatepicker #fdp="ngbDatepicker" />
+                <button class="btn btn-outline-secondary input-group-addon" (click)="fdp.toggle()" type="button">
+                  <img src="assets/breathe-icons/breathe-calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-3 col-form-label">Period: </label>
+            <div class="col-auto">
+              <select class="form-control" [(ngModel)]="food_detail.period">
+                <option value="auto">Auto</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+              </select>
+            </div>
+          </div>
+  
+        </div>
       </div>
-      <p>Period: 
-          <select [(ngModel)]="food_detail.period">
-            <option value="auto">Auto</option>
-            <option value="breakfast">Breakfast</option>
-            <option value="lunch">Lunch</option>
-            <option value="dinner">Dinner</option>
-            <option value="snack">Snack</option>
-          </select>
-          </p>
-      <p>Carbohydrates: {{food_detail.carbohydrates * food_detail.quantity}} g</p>
-      <p>Sugar: {{food_detail.sugar * food_detail.quantity}} g</p>
-      <p>Protein: {{food_detail.protein * food_detail.quantity}} g</p>
-      <p>Serving Size: {{food_detail.serving_quantity}} {{food_detail.serving_unit}}</p>
-      <label for="quantity">Quantity: </label>
-      <input type="number" [(ngModel)]="food_detail.quantity">
+  
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" (click)="addFood()">Add Food</button>
+      <div class="form-group row">
+        <label for="quantity" class="col-auto col-form-label">Quantity: </label>
+        <div class="col-sm-3 col-4">
+          <input type="number" class="form-control" [(ngModel)]="food_detail.quantity">
+        </div>
+        <div class="col-auto">
+          <button class="btn breathe-submit-button" (click)="addFood()">Add Food</button>
+        </div>
+      </div>
     </div>
   </ng-template>
 
@@ -128,7 +265,7 @@
                       <div class="row justify-content-between">
                         <div class="col-9">
                           <p>{{food.brand_name}} {{food.food_name}}</p>
-                          <p>{{food.quantity}} {{food.serving_unit}}</p>
+                          <p>{{food.quantity * food.serving_quantity}} {{food.serving_unit}}</p>
                         </div>
                         <div class="col-3 breathe-value">
                           <p>{{food.carbohydrates}} g</p>
