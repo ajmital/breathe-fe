@@ -15,6 +15,7 @@
                     <h6 class="dropdown-header">{{this.userService.user.email}}</h6>
                     <div class="dropdown-divider"></div>
                     <button class="dropdown-item" (click)="this.userService.redirectToPayment()">Payment</button>
+                    <button class="dropdown-item" (click)="show('settings')">Settings</button>
                     <a href="/google/oauth2/?device=browser"><button class="dropdown-item">Switch User</button></a>
                 </div>
             </div>
@@ -24,5 +25,6 @@
     <app-dashboard *ngIf="dashboard"></app-dashboard>
     <app-progress *ngIf="progress"></app-progress>
     <app-food *ngIf="food"></app-food>
+    <app-settings *ngIf="settings"></app-settings>
 
 </div>

@@ -1,0 +1,27 @@
+<form (submit)="save()">
+  <input type="text" name="full_name" [(ngModel)]="userService.user.full_name" placeholder="Full Name" />
+  <input type="number" name="birth_year" [(ngModel)]="userService.user.birth_year" placeholder="Birth Year" />
+  <input type="number" name="birth_month" [(ngModel)]="userService.user.birth_month" placeholder="Birth Month" />
+
+  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="male" > Male<br>
+  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="female"> Female <br>
+  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="other"> Other <br>
+
+  <input type="number" name="feet" [(ngModel)]="userService.user.feet" placeholder="Feet" />
+  <input type="number" name="inches" [(ngModel)]="userService.user.inches" placeholder="Inches" />
+  <input type="number" name="weight" [(ngModel)]="userService.user.weight" placeholder="Weight" />
+
+  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="maintain" >Maintain <br>
+  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="gradual" >Gradual <br>
+  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="moderate" >Moderate <br>
+  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="aggressive" >Aggressive <br>
+
+  <button type="submit" >Save Changes</button>
+  <button type="button" (click)="cancel()">Cancel</button>
+
+</form>
+
+<p>Token source: {{userService.user.token_source}}</p>
+<p>Status: {{userService.user.status}}</p>
+<p>Last HR sync: {{userService.user.last_hr_sync}}</p>
+<p>Last sync attempt: {{userService.user.last_hr_sync_attempt}}</p>

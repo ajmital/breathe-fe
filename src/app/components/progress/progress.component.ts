@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {NgxChartsModule} from '@swimlane/ngx-charts'; // Keep this even if "unused"
 import { UserService } from '../../services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';

@@ -20,6 +20,7 @@ import {FoodService} from './services/food.service';
 import { MainComponent } from './components/main/main.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProgressComponent } from './components/progress/progress.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 /*const appRoutes: Routes = [
   { path: 'welcome', component: LandingPageComponent },
@@ -38,6 +39,7 @@ import { ProgressComponent } from './components/progress/progress.component';
     MainComponent,
     DashboardComponent,
     ProgressComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

@@ -12,6 +12,7 @@ export class MainComponent implements OnInit {
   dashboard:boolean = true;
   progress:boolean = false;
   food:boolean = false;
+  settings:boolean = false;
 
   constructor(private userService:UserService) { }
 
@@ -24,6 +25,7 @@ export class MainComponent implements OnInit {
     this.dashboard = false;
     this.progress = false;
     this.food = false;
+    this.settings = false;
 
     switch(component){
       case "dashboard": {
@@ -38,6 +40,11 @@ export class MainComponent implements OnInit {
         this.food = true;
         break;
       }
+      case "settings": {
+        this.settings = true;
+        break;
+      }
+
       default: {
         this.dashboard = true;
       }

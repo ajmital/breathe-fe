@@ -63,75 +63,6 @@ export class UserService {
       {headers: this.headers});
   }
 
-  getWeights(){
-    return this.http.get(
-      "/api/weights/",
-      {headers: this.headers}
-    );
-  }
-
-  addWeight(weight:Object){
-    let addRequest = this.http.post(
-      "/api/weights/",
-      JSON.stringify(weight),
-      {headers: this.headers}
-    );
-    addRequest.subscribe(
-      (response:any) => {
-      },
-      (err:HttpErrorResponse) => {
-        console.error(err);
-    });
-
-    return addRequest;
-  }
-
-  getUser(){
-    this.http.get(
-      "/api/users/me/",
-      {headers: this.headers}
-    ).subscribe(
-      (user_data:any) => {
-        this.user = user_data;
-        this.user_loaded = true;
-      },
-      (err:HttpErrorResponse) => {
-        console.error(err);
-        if (err.status == 403){
-          // Access denied, return to login page
-          window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
-        }
-      }
-    );
-  }
-
-  setUser(){
-
-    let userObject = {
-      weight: this.user.weight,
-      gender: this.user.gender,
-      feet: this.user.feet,
-      inches: this.user.inches,
-      full_name: this.user.full_name,
-      birth_month: this.user.birth_month,
-      email: this.user.email,
-      birth_year: this.user.birth_year
-    };
-
-    return this.http.put(
-      "/api/users/me/",
-      userObject,
-      {headers: this.headers}
-    );
-  }
-
-  getResults(date:string){
-    return this.http.get(
-      "/api/results/me/?date=" + date,
-      {headers: this.headers}
-    );
-  }
-
   postFood(food:Food, timestamp:string){
     return this.http.post(
       "/api/foods/",
@@ -157,6 +88,83 @@ export class UserService {
     {headers: this.headers}
     );
   }
+
+  getWeights(){
+    return this.http.get(
+      "/api/weights/",
+      {headers: this.headers}
+    );
+  }
+
+  addWeight(weight:Object){
+    let addRequest = this.http.post(
+      "/api/weights/",
+      JSON.stringify(weight),
+      {headers: this.headers}
+    );
+    addRequest.subscribe(
+      (response:any) => {
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+    });
+
+    return addRequest;
+  }
+
+  getUser(){
+    this.user_loaded = false;
+    let request = this.http.get(
+      "/api/users/me/",
+      {headers: this.headers}
+    );
+    request.subscribe(
+      (user_data:any) => {
+        this.user = user_data;
+        this.user_loaded = true;
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+        if (err.status == 403){
+          // Access denied, return to login page
+          window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
+        }
+      }
+    );
+    return request;
+  }
+
+  setUser(){
+
+    let userObject = {
+      weight: this.user.weight,
+      gender: this.user.gender,
+      feet: this.user.feet,
+      inches: this.user.inches,
+      full_name: this.user.full_name,
+      birth_month: this.user.birth_month,
+      email: this.user.email,
+      birth_year: this.user.birth_year,
+      weight_goal: this.user.weight_goal,
+      eula: this.user.eula,
+      eula_date: this.user.eula_date
+    };
+
+    return this.http.put(
+      "/api/users/me/",
+      userObject,
+      {headers: this.headers}
+    );
+  }
+
+  getResults(date:string){
+    return this.http.get(
+      "/api/results/me/?date=" + date,
+      {headers: this.headers}
+    );
+  }
+
+  
 
 }
 
