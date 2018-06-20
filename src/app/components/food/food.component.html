@@ -180,7 +180,7 @@
           <input type="number" class="form-control" [(ngModel)]="food_detail.quantity">
         </div>
         <div class="col-auto">
-          <button class="btn breathe-submit-button" (click)="addFood()">Add Food</button>
+          <button class="btn breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
         </div>
       </div>
     </div>
@@ -211,20 +211,50 @@
         </div>
       </div>
       <!-- Food search results -->
-      <div class="row breathe-panel scroll-column-smaller">
+      <div class="row scroll-column-smaller">
         <div class="col">
 
-          <!-- Start ngFor for search results -->
-          <div class="row" *ngFor="let food of foodList">
-            <div class="col breathe-food-panel">
-              <div class="media" (click)="getDetail(food, foodModal)">
-                <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
-                <div class="media-body align-self-center">
-                  <p>{{food.brand_name}} {{food.food_name}}</p>
+          <div class="row search-category">
+            <div class="col">
+              <div class="search-header row" *ngIf="foodList['common'].length > 0">
+                <div class="col">
+                  Common
+                </div>
+              </div>
+              <!-- Start ngFor for search results -->
+              <div class="row" *ngFor="let food of foodList['common']">
+                <div class="col breathe-food-panel">
+                  <div class="media h5-rem" (click)="getDetail(food, foodModal)">
+                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                    <div class="media-body align-self-center">
+                      <span class="align-middle">{{food.brand_name}} {{food.food_name}}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="row search-category">
+            <div class="col">
+              <div class="search-header row" *ngIf="foodList['branded'].length > 0">
+                <div class="col">
+                  Branded
+                </div>
+              </div>
+              <div class="row" *ngFor="let food of foodList['branded']">
+                <div class="col breathe-food-panel">
+                  <div class="media h5-rem" (click)="getDetail(food, foodModal)">
+                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                    <div class="media-body align-self-center">
+                      <span class="align-middle">{{food.brand_name}} {{food.food_name}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- End ngFor for search results -->
 
         </div>
@@ -234,9 +264,12 @@
 
     <!-- Food history -->
     <div class="col-lg-6 breathe-shadow-panel">
-      <div class="row">
-        <div class="col breathe-header">
+      <div class="row justify-content-between breathe-header">
+        <div class="col">
           Food History
+        </div>
+        <div class="col-auto" *ngIf="multiSelect">
+          <button class="btn breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
         </div>
       </div>
       <div class="row scroll-column">
@@ -259,17 +292,33 @@
                   No food entries.
                 </div>
                 <div class="card-body breathe-food-panel" *ngFor="let food of food_entries[period]">
-                  <div class="media" (click)="getDetail(food, foodModal)">
-                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
-                    <div class="media-body align-self-center">
-                      <div class="row justify-content-between">
-                        <div class="col-9">
-                          <p>{{food.brand_name}} {{food.food_name}}</p>
-                          <p>{{food.quantity * food.serving_quantity}} {{food.serving_unit}}</p>
-                        </div>
-                        <div class="col-3 breathe-value">
-                          <p>{{food.carbohydrates}} g</p>
-                          <button class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                  <div class="row align-items-center">
+                    <div class="col-2">
+                      <label class="control control-checkbox">
+                        <input type="checkbox" (change)="selectFood($event, food)" (click)="stopPropogation($event)"/>
+                        <div class="control_indicator"></div>
+                      </label>
+                    </div>
+                    <div class="col media" (click)="getDetail(food, foodModal)">
+                      <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                      <div class="media-body align-self-center">
+                        <div class="row justify-content-between">
+                          <div class="col">
+                            <p>{{food.brand_name}} {{food.food_name}}</p>
+                            <p>{{food.quantity * food.serving_quantity}} {{food.serving_unit}}</p>
+                          </div>
+                          <div class="col-auto breathe-value">
+                            <div class="row">
+                              <div class="col">
+                                {{food.carbohydrates}} g
+                              </div>
+                            </div>
+                            <div class="row justify-content-end">
+                              <div class="col-auto">
+                                <button *ngIf="!multiSelect" class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

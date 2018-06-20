@@ -1,9 +1,17 @@
-ul{
-    list-style: none;
+.search-header{
+    background-color: #DBDBDB;
+    font-size: 1rem;
+    font-weight: 500;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
-.pre-scrollable{
-    max-height: 50%;
+.h5-rem{
+    height: 5rem;
+}
+
+.search-category{
+    margin-bottom: 2rem;
 }
 
 #foodSearch{
@@ -40,7 +48,7 @@ ul{
 @media (min-width: 992px){
     .scroll-column{
         overflow-y: scroll;
-        max-height: 35rem;
+        max-height: 33rem;
     }
 
     .scroll-column-smaller{

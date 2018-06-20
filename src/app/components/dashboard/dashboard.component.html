@@ -179,7 +179,7 @@
         <input type="number" class="form-control" [(ngModel)]="food_detail.quantity">
       </div>
       <div class="col-auto">
-        <button class="btn breathe-submit-button" (click)="addFood()">Add Food</button>
+        <button class="btn breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
       </div>
     </div>
   </div>
@@ -221,18 +221,16 @@
 
 <!-- Main body -->
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12" id="resultsCalendarContainer">
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="input-group" id="resultsCalendar">
-                <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
-                    name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
-                    ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
-                <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
-                  <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1.2rem; cursor: pointer;"/>
-                </button>
-            </div>
-        </div>
+  <div class="row" id="resultsCalendarContainer">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-10">
+      <div class="input-group" id="resultsCalendar">
+        <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
+            name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
+            ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
+        <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
+          <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1.2rem; cursor: pointer;"/>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -430,11 +428,15 @@
     </div>
 
     <div class="col-xl-4 breathe-shadow-panel" id="foodDiary">
-      <div class="row breathe-header">
+      <div class="row justify-content-between breathe-header">
         <div class="col">
           Today's Food
         </div>
+        <div class="col-auto" *ngIf="multiSelect">
+          <button class="btn breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
+        </div>
       </div>
+
       <div class="row scroll-column">
         <div class="col mt-2">
           <div class="row my-2 mx-1" *ngFor= "let period of periodList">
@@ -454,17 +456,33 @@
                   No food entries.
                 </div>
                 <div class="card-body breathe-food-panel" *ngFor="let food of foodList[period]">
-                   <div class="media" (click)="getDetail(food, foodModal)">
-                    <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
-                    <div class="media-body align-self-center">
-                      <div class="row justify-content-between">
-                        <div class="col">
-                          <p>{{food.brand_name}} {{food.food_name}}</p>
-                          <p>{{food.quantity * food.serving_quantity}} {{food.serving_unit}}</p>
-                        </div>
-                        <div class="col-auto breathe-value">
-                          <p>{{food.carbohydrates}} g</p>
-                          <button class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                  <div class="row align-items-center">
+                    <div class="col-2">
+                      <label class="control control-checkbox">
+                        <input type="checkbox" (change)="selectFood($event, food)" (click)="stopPropogation($event)"/>
+                        <div class="control_indicator"></div>
+                      </label>
+                    </div>
+                    <div class="col media" (click)="getDetail(food, foodModal)">
+                      <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
+                      <div class="media-body align-self-center">
+                        <div class="row justify-content-between">
+                          <div class="col">
+                            <p>{{food.brand_name}} {{food.food_name}}</p>
+                            <p>{{food.quantity * food.serving_quantity}} {{food.serving_unit}}</p>
+                          </div>
+                          <div class="col-auto breathe-value">
+                            <div class="row">
+                              <div class="col">
+                                {{food.carbohydrates}} g
+                              </div>
+                            </div>
+                            <div class="row justify-content-end">
+                              <div class="col-auto"> <!-- Ensures button position is consistent across foods with differing carb amounts-->
+                                <button *ngIf="!multiSelect" class="breathe-add-button" (click)="repeatFood(food, $event)" data-toggle="tooltip" data-placement="left" title="Repeat this entry">+</button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -476,6 +494,7 @@
 
         </div>
       </div>
+
     </div>
 
     <!-- End outermost row-->

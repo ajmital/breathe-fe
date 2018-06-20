@@ -1,27 +1,186 @@
-<form (submit)="save()">
-  <input type="text" name="full_name" [(ngModel)]="userService.user.full_name" placeholder="Full Name" />
-  <input type="number" name="birth_year" [(ngModel)]="userService.user.birth_year" placeholder="Birth Year" />
-  <input type="number" name="birth_month" [(ngModel)]="userService.user.birth_month" placeholder="Birth Month" />
+<div class="container-fluid">  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col breathe-header">
+          Edit User
+        </div>
+      </div>
+      <div class="row">
+        <div class="col breathe-panel">
+          <form class="mb-2" (submit)="save()">
+              
+            <div class="form-row form-group">
+              <label class="col-sm-2 col-form-label">Full Name</label>
+              <div class="col-sm-5">
+                <input type="text" name="full_name" class="form-control" [(ngModel)]="tempUser.full_name" placeholder="Full Name" />
+              </div>
+            </div>
 
-  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="male" > Male<br>
-  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="female"> Female <br>
-  <input type="radio" name="gender" [(ngModel)]="userService.user.gender" value="other"> Other <br>
 
-  <input type="number" name="feet" [(ngModel)]="userService.user.feet" placeholder="Feet" />
-  <input type="number" name="inches" [(ngModel)]="userService.user.inches" placeholder="Inches" />
-  <input type="number" name="weight" [(ngModel)]="userService.user.weight" placeholder="Weight" />
+            <div class="form-row form-group">
+              <label class="col-sm-2 col-form-label">Birth Date</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <input type="number" name="birth_month" class="form-control" [(ngModel)]="tempUser.birth_month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" />
+                  <span class="input-group-text">/</span>
+                  <input type="number" name="birth_year" class="form-control" [(ngModel)]="tempUser.birth_year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" />
+                </div>
+              </div>
+            </div>
 
-  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="maintain" >Maintain <br>
-  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="gradual" >Gradual <br>
-  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="moderate" >Moderate <br>
-  <input type="radio" name="goal" [(ngModel)]="userService.user.weight_goal" value="aggressive" >Aggressive <br>
+            <div class="form-row" *ngIf="birthError">
+              <div class="col">
+                  <ngb-alert type="danger" (close)="birthError = false">Please input a valid birth date!</ngb-alert>
+              </div>
+            </div>
+          
+            <fieldset class="form-group">
+              <div class="form-row">
+                <legend class="col-sm-2 col-form-label pt-0">Gender</legend>
+                <div class="col-sm-10">
+                  <div class="form-check">
+                    <input type="radio" name="gender" class="form-check-input" [(ngModel)]="tempUser.gender" value="male" />
+                    <label class="form-check-label">Male</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" name="gender" class="form-check-input" [(ngModel)]="tempUser.gender" value="female" />
+                    <label class="form-check-label">Female</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" name="gender" class="form-check-input" [(ngModel)]="tempUser.gender" value="other" />
+                    <label class="form-check-label">Other</label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
 
-  <button type="submit" >Save Changes</button>
-  <button type="button" (click)="cancel()">Cancel</button>
+            <div class="form-row form-group">
+              <label class="col-sm-2 col-form-label">Height</label>
+              <div class="col-sm-3 col-6 input-group">
+                <input type="number" name="feet" class="form-control" [(ngModel)]="tempUser.feet" data-toggle="tooltip" title="Enter your height in feet" placeholder="Feet" />
+                <div class="input-group-append">
+                  <span class="input-group-text">ft</span>
+                </div>
+              </div>
+              <div class="col-sm-3 col-6 input-group">
+                <input type="number" name="inches" class="form-control" [(ngModel)]="tempUser.inches" data-toggle="tooltip" title="Enter your height in inches" placeholder="Inches" />
+                <div class="input-group-append">
+                  <span class="input-group-text">in</span>
+                </div>
+              </div>
+            </div>
 
-</form>
+            <div class="form-row" *ngIf="heightError">
+              <div class="col">
+                <ngb-alert type="danger" (close)="heightError = false">Please input a valid height!</ngb-alert>
+              </div>
+            </div>
 
-<p>Token source: {{userService.user.token_source}}</p>
-<p>Status: {{userService.user.status}}</p>
-<p>Last HR sync: {{userService.user.last_hr_sync}}</p>
-<p>Last sync attempt: {{userService.user.last_hr_sync_attempt}}</p>
+            <div class="form-row form-group">
+              <label class="col-sm-2">Weight</label>
+              <div class="col-sm-3 input-group">
+                <input type="number" name="weight" class="form-control" [(ngModel)]="tempUser.weight" placeholder="Weight" />
+                <div class="input-group-append">
+                  <span class="input-group-text">lbs</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row" *ngIf="weightError">
+              <div class="col">
+                <ngb-alert type="danger" (close)="weightError = false">Please input a valid weight!</ngb-alert>
+              </div>
+            </div>
+          
+
+            <fieldset class="form-group">
+              <div class="form-row">
+                <legend class="col-sm-2 col-form-label pt-0">Weight Loss Goal</legend>
+                <div class="col-sm-10">
+                  <div class="form-check">
+                    <input type="radio" name="goal" class="form-check-input" [(ngModel)]="tempUser.weight_goal" value="maintain" />
+                    <label class="form-check-label">Maintain</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" name="goal" class="form-check-input" [(ngModel)]="tempUser.weight_goal" value="gradual" />
+                    <label class="form-check-label">Gradual</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" name="goal" class="form-check-input" [(ngModel)]="tempUser.weight_goal" value="moderate" />
+                    <label class="form-check-label">Moderate</label>
+                  </div>
+                  <div class="form-check">
+                    <input type="radio" name="goal" class="form-check-input" [(ngModel)]="tempUser.weight_goal" value="aggressive" />
+                    <label class="form-check-label">Aggressive</label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <button type="submit" class="btn breathe-submit-button">Save Changes</button>
+            <button type="button" class="btn breathe-cancel-button" (click)="cancel()">Cancel</button>
+          
+          </form>
+
+          <ngb-alert *ngIf="showSuccess" type="success" (close)="showSuccess = false">Information successfully updated</ngb-alert>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 breathe-panel mt-0">
+      <div class="row">
+        <div class="col breathe-header">
+          Sync Status
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mt-2">
+            <div class="row my-1">
+              <div class="col-sm-4">
+                HR Source
+              </div>
+              <div class="col-auto">
+                {{tempUser.token_source}}
+              </div>
+            </div>
+
+            <div class="row my-1">
+              <div class="col-sm-4">
+                Status
+              </div>
+              <div class="col-auto">
+                {{tempUser.status}}
+              </div>
+              <div class="col">
+                <img src="assets/breathe-icons/breathe-hr-danger.svg" *ngIf="tempUser.status != 'connected'" />
+                <img src="assets/breathe-icons/breathe-hr-ok.svg" *ngIf="tempUser.status == 'connected'" />
+              </div>
+            </div>
+
+            <div class="row my-1">
+              <div class="col-sm-4">
+                Last HR Sync
+              </div>
+              <div class="col-auto">
+                {{hrSync}}
+              </div>
+            </div>
+
+            <div class="row my-1">
+              <div class="col-sm-4">
+                Last sync attempt
+              </div>
+              <div class="col-auto">
+                {{syncAttempt}}
+              </div>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>
