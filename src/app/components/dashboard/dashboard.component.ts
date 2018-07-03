@@ -369,6 +369,7 @@ export class DashboardComponent implements OnInit {
   }
 
   timestampToDateString(timestamp:string){
+    if (!timestamp) return "";
     let index:number = timestamp.indexOf('T');
     if (index != -1){
       timestamp = timestamp.substring(0, index);

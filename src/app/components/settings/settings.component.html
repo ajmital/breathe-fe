@@ -13,7 +13,7 @@
             <div class="form-row form-group">
               <label class="col-sm-2 col-form-label">Full Name</label>
               <div class="col-sm-5">
-                <input type="text" name="full_name" class="form-control" [(ngModel)]="tempUser.full_name" placeholder="Full Name" />
+                <input type="text" name="full_name" autocomplete="name" class="form-control" [(ngModel)]="tempUser.full_name" placeholder="Full Name" />
               </div>
             </div>
 
@@ -22,9 +22,9 @@
               <label class="col-sm-2 col-form-label">Birth Date</label>
               <div class="col-sm-5">
                 <div class="input-group">
-                  <input type="number" name="birth_month" class="form-control" [(ngModel)]="tempUser.birth_month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" />
+                  <input type="number" name="birth_month" autocomplete="bday-month" class="form-control" [(ngModel)]="tempUser.birth_month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" />
                   <span class="input-group-text">/</span>
-                  <input type="number" name="birth_year" class="form-control" [(ngModel)]="tempUser.birth_year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" />
+                  <input type="number" name="birth_year" autocomplete="bday-year" class="form-control" [(ngModel)]="tempUser.birth_year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" />
                 </div>
               </div>
             </div>

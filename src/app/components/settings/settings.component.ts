@@ -111,6 +111,7 @@ export class SettingsComponent implements OnInit {
 
   /* Utility functions */
   timestampToDateString(timestamp:string){
+    if (!timestamp) return "";
     let index:number = timestamp.indexOf('T');
     let date:string;
     let time:string = '';

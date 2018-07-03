@@ -1,11 +1,97 @@
-<div class="container-fluid" id="content">
+<!-- First time setup modal -->
+<ng-template #setupModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">First Time Setup</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+
+        <div class="col">
+            <form class="mb-2" (submit)="setUser()">
+              
+                <div class="form-row form-group">
+                  <label class="col-sm-2 col-form-label">Full Name (optional)</label>
+                  <div class="col-sm-5">
+                    <input type="text" name="full_name" autocomplete="name" class="form-control" [(ngModel)]="fullName" placeholder="Full Name" />
+                  </div>
+                </div>
+    
+                <div class="form-row form-group">
+                  <label class="col-sm-2 col-form-label">Birth Date</label>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <input type="number" name="birth_month" autocomplete="bday-month" class="form-control" [(ngModel)]="month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" />
+                      <span class="input-group-text">/</span>
+                      <input type="number" name="birth_year" autocomplete="bday-year" class="form-control" [(ngModel)]="year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" />
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="form-row" *ngIf="birthError">
+                  <div class="col">
+                      <ngb-alert type="danger" (close)="birthError = false">Please input a valid birth date!</ngb-alert>
+                  </div>
+                </div>
+    
+                <div class="form-row form-group">
+                  <label class="col-sm-2 col-form-label">Height</label>
+                  <div class="col-sm-3 col-6 input-group">
+                    <input type="number" name="feet" class="form-control" [(ngModel)]="feet" data-toggle="tooltip" title="Enter your height in feet" placeholder="Feet" />
+                    <div class="input-group-append">
+                      <span class="input-group-text">ft</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-6 input-group">
+                    <input type="number" name="inches" class="form-control" [(ngModel)]="inches" data-toggle="tooltip" title="Enter your height in inches" placeholder="Inches" />
+                    <div class="input-group-append">
+                      <span class="input-group-text">in</span>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="form-row" *ngIf="heightError">
+                  <div class="col">
+                    <ngb-alert type="danger" (close)="heightError = false">Please input a valid height!</ngb-alert>
+                  </div>
+                </div>
+    
+                <div class="form-row form-group">
+                  <label class="col-sm-2">Weight</label>
+                  <div class="col-sm-3 input-group">
+                    <input type="number" name="weight" class="form-control" [(ngModel)]="weight" placeholder="Weight" />
+                    <div class="input-group-append">
+                      <span class="input-group-text">lbs</span>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="form-row" *ngIf="weightError">
+                  <div class="col">
+                    <ngb-alert type="danger" (close)="weightError = false">Please input a valid weight!</ngb-alert>
+                  </div>
+                </div>
+
+              </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn breathe-submit-button" (click)="setUser()">Save Changes</button>
+    </div>
+  </ng-template>
+
+<div class="loader" *ngIf="!isLoaded"></div>
+
+
+
+<div class="container-fluid" id="content" *ngIf="isLoaded">
+
 
     <nav class="navbar navbar-expand-md">
         <img class="navbar-brand" src="assets/img/breathe-logo.svg" />
         <div class="mr-auto"></div>
         <div class="navbar-nav">
             <span class="nav-item nav-link" [ngStyle]="{'color': dashboard ? '#ffffff' : '#363636'}"  (click)="show('dashboard')">Dashboard</span>
-            <span class="nav-item nav-link" [ngStyle]="{'color': progress ? '#ffffff' : '#363636'}" (click)="show('progress')">Progress</span>
             <span class="nav-item nav-link" [ngStyle]="{'color': food ? '#ffffff' : '#363636'}" (click)="show('food')">Food</span>
 
             <div ngbDropdown class="d-inline-block" placement="bottom-right">
@@ -23,7 +109,6 @@
         </div>
     </nav>
     <app-dashboard *ngIf="dashboard"></app-dashboard>
-    <app-progress *ngIf="progress"></app-progress>
     <app-food *ngIf="food"></app-food>
     <app-settings *ngIf="settings"></app-settings>
 
