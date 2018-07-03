@@ -3,9 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 
 const CSRF_COOKIE:string = "csrftoken";
 const PAYMENT_URL:string = "https://paymenturl.com/";
@@ -29,7 +27,7 @@ export class UserService {
 
     // Redirect to login if no CSRF token found
     if (this.csrf_tok == null){
-      document.location.href = "/fe/";
+      this.redirectToLogin();
     }
       // Set token header
     this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
@@ -48,6 +46,12 @@ export class UserService {
           console.error(err);
         }
       );
+  }
+
+
+  /* Login redirect *///////////
+  redirectToLogin(){
+    window.location.href = "/google/oauth2/?device=browser";
   }
 
   /* Profile-related methods */////////////////////////////
@@ -127,7 +131,7 @@ export class UserService {
         console.error(err);
         if (err.status == 403){
           // Access denied, return to login page
-          window.location.href = window.location.protocol + "//" + window.location.host + "/google/oauth2/?device=browser";
+          this.redirectToLogin();
         }
       }
     );
