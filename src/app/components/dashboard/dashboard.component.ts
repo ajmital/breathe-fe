@@ -51,6 +51,9 @@ export class DashboardComponent implements OnInit {
   calories:number = 0;
 
   // Weight chart options
+  xLabel:string = "Date";
+  yLabel:string = "Weight";
+
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };

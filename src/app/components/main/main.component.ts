@@ -14,7 +14,7 @@ export class MainComponent implements OnInit {
   food:boolean = false;
   settings:boolean = false;
 
-  constructor(private userService:UserService) { }
+  constructor(public userService:UserService) { }
 
   ngOnInit() {
     this.userService.getUser();

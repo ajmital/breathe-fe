@@ -248,7 +248,9 @@
         <div class="col-md-6 col-sm-12 col-12" id="meter">
           <div class="row">
             <div class="col">
-                <ngb-progressbar type="info" [value]="result.co2" [max]="goal" height="4rem">{{result.co2}} / {{goal}}</ngb-progressbar>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" [style.width.%]="result.co2/goal * 100"></div>
+              </div>
             </div>
           </div>
           <div class="row mb-4 justify-content-between">
@@ -386,8 +388,8 @@
               [legend]="false"
               [showXAxisLabel]="true"
               [showYAxisLabel]="true"
-              [xAxisLabel]="Date"
-              [yAxisLabel]="Weight"
+              [xAxisLabel]="xLabel"
+              [yAxisLabel]="yLabel"
               [autoScale]="true">
           </ngx-charts-line-chart>
         </div>

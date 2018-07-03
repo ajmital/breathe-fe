@@ -31,6 +31,14 @@
     min-height: 20rem;
 }
 
+.progress{
+    height: 4rem;
+}
+
+.progress-bar{
+    background-color: #FF5900;
+}
+
 @media (min-width: 1200px){
     .scroll-column{
         overflow-y: scroll;
