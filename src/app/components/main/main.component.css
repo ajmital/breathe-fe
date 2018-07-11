@@ -1,10 +1,111 @@
-/* Global page styles */
+/* Global page styles *********/
 #content{
     font-family: 'Roboto';
     margin: 0;
     padding: 0;
 }
 
+p{
+  margin-bottom: 0;
+}
+
+/* Sidenav *****************/
+.sidenav-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.breathe-sidenav{
+  transition: 0.5s;
+  z-index: 10;
+  background-color: #424351;
+  position: fixed;
+  padding-left: 0;
+  padding-right: 0;
+  left: 101vw;
+  top: 0;
+  width: 40vw;
+  height: 100%;
+  color: #FFFFFF;
+}
+
+.breathe-sidenav-open{
+  left: 60vw;
+}
+
+@media (max-width: 768px){
+  .breathe-sidenav{
+    width: 100vw;
+  }
+
+  .breathe-sidenav-open{
+    left: 0;
+  }
+
+
+}
+
+.sidenav-header{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 4rem;
+}
+
+.sidenav-profile{
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+/* X to exit menu */
+.sidenav-exit{
+  cursor: pointer;
+}
+.sidenav-exit > img{
+  width: 2rem;
+}
+
+.sidenav-exit:hover{
+  color: #DDDDDD;
+}
+
+/* sidenav progress bar for animation */
+#algorithmMenu{
+  margin-left: 0;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 4rem;
+  background-color: #393944;
+}
+
+.algorithm-progress{
+  padding-left: 0;
+  padding-right: 0;
+  height: 1rem;
+  border-radius: 15px;
+  border: 2px solid #FFFFFF;
+  background-color: #FFFFFF;
+}
+
+.algorithm-progress > div{
+  border-radius: 15px;
+  background: #FF5900;
+  background: linear-gradient(#ff9d00, #ff6501);
+  height: 100%;
+}
+
+.algorithm-status{
+  font-size: 1rem;
+  color: #DDDDDD;
+}
+
+/* Loading animation **********/
 .loader{
   position: absolute;
   left: 50%;
@@ -31,7 +132,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Dropdown styling */
+/* Dropdown styling ********************/
 #dropdownToggle{
   border: none;
   background-color: #005554;
@@ -54,14 +155,33 @@
 }
 
 
-/*Navbar styling*/
+/*Navbar styling*************************/
+
+/* Menu icon */
+.menu-icon{
+  cursor: pointer;
+}
+.menu-icon > div{
+  margin-top: 6px;
+  width: 35px;
+  height: 4px;
+  background-color: #FFFFFF;
+  transition: background-color 0.5s;
+}
+
+.menu-icon:hover > div{
+  background-color: #DDDDDD;
+}
+
+/* Semi-auto-generated navbar styles */
+
 .navbar {
     background-color: #26b2a9;
-    padding: 1em;
+    padding: 0.5rem, 1rem, 0.5rem, 1rem;
   }
   .navbar .navbar-brand {
     color: #363636;
-    width: 10em;
+    width: 9rem;
   }
   .navbar .navbar-brand:hover,
   .navbar .navbar-brand:focus {
@@ -79,13 +199,20 @@
   }
   .navbar .navbar-nav .nav-link {
     cursor: pointer;
-    color: #363636;
     border-radius: .25rem;
     margin: 0 0.25em;
     font-weight: bold;
     margin-left: 1em;
     margin-right: 1em;
+    transition: color 0.5s, border-bottom 0.25s;
   }
+
+  .navbar .navbar-nav .nav-link:not(.breathe-active){
+    color: #363636;
+  }
+
+
+
   .navbar .navbar-nav .nav-link:not(.disabled):hover,
   .navbar .navbar-nav .nav-link:not(.disabled):focus {
     color: #ffffff;
@@ -98,6 +225,7 @@
   .navbar .navbar-nav .nav-item.show .nav-link:focus {
     color: #ffffff;
     background-color: #26b2a9;
+    border-bottom: 5px solid #FFFFFF;
   }
   .navbar .navbar-toggle {
     border-color: #26b2a9;
@@ -119,3 +247,9 @@
   .navbar .navbar-link:hover {
     color: #ffffff;
   }
+
+/* Denotes active 'page' */
+.breathe-active{
+  color: #FFFFFF;
+  border-bottom: 	5px solid #FFFFFF;
+}

@@ -51,7 +51,7 @@ export class UserService {
 
   /* Login redirect *///////////
   redirectToLogin(){
-    window.location.href = "/google/oauth2/?device=browser";
+    window.location.href = "/fe/home.html";
   }
 
   /* Profile-related methods */////////////////////////////

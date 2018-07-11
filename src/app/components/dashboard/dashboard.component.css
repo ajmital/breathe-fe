@@ -36,7 +36,10 @@
 }
 
 .progress-bar{
-    background-color: #FF5900;
+
+    background: #FF5900;
+    background: linear-gradient(#ff9d00, #ff6501);
+
 }
 
 @media (min-width: 1200px){

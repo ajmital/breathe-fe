@@ -14,13 +14,17 @@ const now:Date = new Date();
 export class MainComponent implements OnInit {
 
   // Switch to control loading animation
-  isLoaded:boolean = false;
+  isLoaded:boolean = true; // TODO
 
   // Control showing initial setup page
   firstTimeSetup:boolean = false;
   modalRef:NgbModalRef = null;
   @ViewChild('setupModal')
   modalTemplate:TemplateRef<any>;
+
+  // String to display algorithm training status
+  training_status:string = null;
+  training_width:number = 20; // Width of progressbar (as a percentage)
 
 
   // Temporary values to modify user for first time setup
@@ -34,6 +38,9 @@ export class MainComponent implements OnInit {
   birthError:boolean = false;
   fullName:string = null;
 
+  // Side nav control
+  navOpen:boolean = true;
+
   // Switches to control which component is displayed
   dashboard:boolean = true;
   food:boolean = false;
@@ -42,6 +49,7 @@ export class MainComponent implements OnInit {
   constructor(public userService:UserService, private modalService:NgbModal) { }
 
   ngOnInit() {
+    let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
     this.userService.getUser().subscribe(
       (user_data:any) => {
         if ( user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
@@ -61,6 +69,21 @@ export class MainComponent implements OnInit {
         this.isLoaded = true;
       }
     );
+    this.userService.getResults(nowString).subscribe(
+      (response:any) => {
+        this.training_status = response["training"];
+        switch(this.training_status){
+          case "beginner":{
+            this.training_width = 20;
+            break;
+          }
+        }
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err);
+      }
+    );
+
   }
 
   setUser(){
@@ -138,6 +161,16 @@ export class MainComponent implements OnInit {
         this.dashboard = true;
       }
     }
+  }
+
+
+  /* Controls side nav */
+  openNav(){
+    this.navOpen = true;
+  }
+
+  closeNav(){
+    this.navOpen = false;
   }
 
 }

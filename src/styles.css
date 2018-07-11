@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* MISC ********************/
 .green-background{
     background-color: #26b2a9;
     color: #FFFFFF;
@@ -91,7 +93,7 @@
     <input type="checkbox" />
     <div class="control_indicator"></div>
 </label>
-*/
+******************************************/
 .control {
     font-family: arial;
     display: block;
@@ -102,11 +104,12 @@
     cursor: pointer;
     font-size: 16px;
 }
-    .control input {
-        position: absolute;
-        z-index: -1;
-        opacity: 0;
-    }
+
+.control input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
 .control_indicator {
     position: absolute;
     top: 4px;
@@ -117,9 +120,6 @@
     border: 2px solid #595959;
     border-radius: 2px;
 }
-/*.control-radio .control_indicator {
-    border-radius: 2px;
-}*/
 
 .control:hover input ~ .control_indicator,
 .control input:focus ~ .control_indicator {
