@@ -54,6 +54,24 @@ export class UserService {
     window.location.href = "/fe/home.html";
   }
 
+  logout(){
+    /* Slice CSRF token and redirect to login */
+    let ca:Array<String> = document.cookie.split(';');
+    let i:number;
+    if (ca.length <= 0){
+      for (i = 0; i < ca.length; i += 1){
+        if (ca[i].indexOf(CSRF_COOKIE) == 0){
+          break;
+        }
+      }
+      if (i < ca.length){
+        ca = ca.splice(i, 1);
+      }
+      document.cookie = ca.join(';');
+    }
+    this.redirectToLogin();
+  }
+
   /* Profile-related methods */////////////////////////////
   getFood(){
     return this.http.get(

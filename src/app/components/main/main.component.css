@@ -29,13 +29,26 @@ p{
   padding-right: 0;
   left: 101vw;
   top: 0;
-  width: 40vw;
+  width: 50vw;
   height: 100%;
   color: #FFFFFF;
 }
 
+.breathe-sidenav > div.row{
+  margin: 0;
+}
+
 .breathe-sidenav-open{
-  left: 60vw;
+  left: 50vw;
+}
+
+@media(max-width: 922px){
+  .breathe-sidenav{
+    width: 60vw;
+  }
+  .breathe-sidenav-open{
+    left: 40vw;
+  }
 }
 
 @media (max-width: 768px){
@@ -47,18 +60,20 @@ p{
     left: 0;
   }
 
-
+  #leftMenu{
+    border-bottom: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .sidenav-header{
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
   padding-left: 2rem;
   padding-right: 4rem;
 }
 
 .sidenav-profile{
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 
@@ -76,9 +91,8 @@ p{
 
 /* sidenav progress bar for animation */
 #algorithmMenu{
-  margin-left: 0;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
   padding-left: 2rem;
   padding-right: 4rem;
   background-color: #393944;
@@ -101,8 +115,41 @@ p{
 }
 
 .algorithm-status{
-  font-size: 1rem;
+  font-size: 2.5vh;
   color: #DDDDDD;
+}
+
+.sidenav-option img{
+  /* Why are our icons all black? */
+  width: 4vh;
+  -webkit-filter: invert(100%); /* Safari 6.0 - 9.0 */
+  filter: invert(100%);
+}
+
+.sidenav-option{
+  padding-left: 2rem;
+  padding-top: 2.5vh;
+  padding-bottom: 2.5vh;
+  color: #FFFFFF;
+  font-size: 3vh;
+}
+
+.sidenav-suboption{
+  padding-left: 2rem;
+  padding-top: 2.5vh;
+  padding-bottom: 2.5vh;
+  color: #DDDDDD;
+  font-size: 2.5vh;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidenav-hover{
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.sidenav-hover:hover{
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Loading animation **********/

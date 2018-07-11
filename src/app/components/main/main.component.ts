@@ -3,6 +3,9 @@ import { UserService } from '../../services/user.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DashboardComponent } from '../dashboard/dashboard.component';
+import { FoodComponent } from '../food/food.component';
+import { SettingsComponent } from '../settings/settings.component';
 
 const now:Date = new Date();
 
@@ -12,6 +15,16 @@ const now:Date = new Date();
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+
+  @ViewChild(DashboardComponent)
+  private dashboardComponent:DashboardComponent;
+
+  @ViewChild(FoodComponent)
+  private foodComponent:FoodComponent;
+
+  @ViewChild(SettingsComponent)
+  private settingsComponent:SettingsComponent;
+
 
   // Switch to control loading animation
   isLoaded:boolean = true; // TODO
@@ -138,31 +151,68 @@ export class MainComponent implements OnInit {
     )
   }
 
+  /* Chooses which page to display */
   show(component:string){
-    this.dashboard = false;
-    this.food = false;
-    this.settings = false;
-
     switch(component){
       case "dashboard": {
-        this.dashboard = true;
+        this.food = false;
+        this.settings = false;
+        if (!this.dashboard){
+          this.dashboard = true;
+          this.dashboardComponent.update(); // Components not actually reloaded
+        }
         break;
       }
       case "food": {
-        this.food = true;
+        this.dashboard = false;
+        this.settings = false;
+        if (!this.food){
+          this.food = true;
+          this.foodComponent.update();
+        }
         break;
       }
       case "settings": {
-        this.settings = true;
+        this.food = false;
+        this.dashboard = false;
+        if (!this.settings){
+          this.settings = true;
+          this.settingsComponent.update();
+        }
         break;
       }
 
       default: {
-        this.dashboard = true;
+        this.food  = false;
+        this.settings = false;
+        if (!this.dashboard){
+          this.dashboard = true;
+          this.dashboardComponent.update();
+        }
       }
     }
   }
 
+
+  /* Switches to a page and closes the menu */
+  menuSwitch(component:string){
+    this.closeNav();
+    this.show(component);
+  }
+
+  /* Sets weight option, switches to dashboard, closes menu */
+  addWeight(){
+    this.menuSwitch('dashboard');
+    this.dashboardComponent.openWeightModal();
+  }
+
+  logout(){
+    this.userService.logout();
+  }
+
+  openTab(url:string){
+    window.open(url, '_blank');
+  }
 
   /* Controls side nav */
   openNav(){

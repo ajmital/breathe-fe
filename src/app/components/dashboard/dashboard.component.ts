@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, SimpleChanges } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { FoodService } from '../../services/food.service';
 import {NgxChartsModule} from '@swimlane/ngx-charts'; // Do not remove this import even if "unused"!
@@ -23,6 +23,10 @@ export class DashboardComponent implements OnInit {
   resultsDate:NgbDateStruct = this.maxDate;
   weightDate:NgbDateStruct = this.maxDate;
   foodDate:NgbDateStruct = this.maxDate;
+
+  // Reference to weight modal
+  @ViewChild('weightModal')
+  weightModal:TemplateRef<any>;
 
   // User's food's
   foodList = {};
@@ -70,7 +74,9 @@ export class DashboardComponent implements OnInit {
     "value": 0
   };
 
-  constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
+  constructor(private userService:UserService, 
+    private foodService:FoodService, 
+    private modalService:NgbModal) {
   }
 
   ngOnInit() {
@@ -80,6 +86,7 @@ export class DashboardComponent implements OnInit {
     }
     // Load results every time (may have changed while on other pages)
     this.update();
+
   }
 
   update(){
@@ -171,8 +178,8 @@ export class DashboardComponent implements OnInit {
     this.weightData = [...this.weightData];
   };
 
-  openWeightModal(modal){
-    this.modalRef = this.modalService.open(modal, {size: "lg"});
+  openWeightModal(){
+    this.modalRef = this.modalService.open(this.weightModal, {size: "lg"});
   }
 
   // Gets food for the results date

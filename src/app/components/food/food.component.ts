@@ -34,28 +34,34 @@ export class FoodComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Retrieve user's previous food entries
-    this.userService.getFood().subscribe((results) => {
-      for (let i:number= 0; i < results["length"]; i++){
-        let new_food:Food = new Food();
-        new_food.brand_name = results[i]["brand_name"];
-        new_food.food_name = results[i]["food_name"];
-        new_food.nix_item_id = results[i]["nix_item_id"];
-        new_food.thumbnail = results[i]["thumbnail"];
-        new_food.period = results[i]["period"];
-        new_food.calories = (+results[i]["calories"]);
-        new_food.total_fiber = (+results[i]["total_fiber"]);
-        new_food.sugar = (+results[i]["sugar"]);
-        new_food.carbohydrates = (+results[i]["carbohydrates"]);
-        new_food.protein = (+results[i]["protein"]);
-        new_food.fat = (+results[i]["fat"]);
-        new_food.quantity = (+results[i]["quantity"]);
-        new_food.serving_unit = results[i]["serving_unit"];
-        new_food.serving_quantity = (+results[i]["serving_quantity"]);
+   this.update();
+  }
 
-        this.food_entries[new_food.period].push(new_food);
-      }
-    });
+  update(){
+  // Retrieve user's previous food entries
+  this.food_entries = {"breakfast": [], "lunch":[], "dinner":[], "snack":[]};
+
+  this.userService.getFood().subscribe((results) => {
+    for (let i:number= 0; i < results["length"]; i++){
+      let new_food:Food = new Food();
+      new_food.brand_name = results[i]["brand_name"];
+      new_food.food_name = results[i]["food_name"];
+      new_food.nix_item_id = results[i]["nix_item_id"];
+      new_food.thumbnail = results[i]["thumbnail"];
+      new_food.period = results[i]["period"];
+      new_food.calories = (+results[i]["calories"]);
+      new_food.total_fiber = (+results[i]["total_fiber"]);
+      new_food.sugar = (+results[i]["sugar"]);
+      new_food.carbohydrates = (+results[i]["carbohydrates"]);
+      new_food.protein = (+results[i]["protein"]);
+      new_food.fat = (+results[i]["fat"]);
+      new_food.quantity = (+results[i]["quantity"]);
+      new_food.serving_unit = results[i]["serving_unit"];
+      new_food.serving_quantity = (+results[i]["serving_quantity"]);
+
+      this.food_entries[new_food.period].push(new_food);
+    }
+  });
   }
 
   search(query:string){

@@ -92,15 +92,88 @@
   </div>
   <div class="row" id="algorithmMenu">
     <div class="col">
-      <div class="row">
-        <div class="col algorithm-progress">
-          <div [style.width.%]="training_width"></div> <!-- Progress bar-->
+      <p class="algorithm-status">
+        Algorithm Training Status: {{training_status ? (training_status.charAt(0).toUpperCase() + training_status.slice(1)) : "Unknown"}}
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6" id="leftMenu">
+      <div class="row sidenav-option sidenav-hover" (click)="menuSwitch('food')">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/breathe-food.svg" />
+        </div>
+        <span>Add Food</span>
+      </div>
+
+      <div class="row sidenav-option sidenav-hover" (click)="addWeight()">
+          <div class="col-auto">
+            <img src="assets/breathe-icons/breathe-scale.svg" />
+          </div>
+          <span>Enter Weight</span>
+      </div>
+
+      <div class="row sidenav-option sidenav-hover" (click)="menuSwitch('settings')">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/breathe-watch.svg" />
+        </div>
+        <span>Device Status</span>
+      </div>
+
+      <div class="row sidenav-option sidenav-hover" (click)="logout()">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/logout.png" />
+        </div>
+        <span>Logout</span>
+      </div>
+
+    </div>
+
+    <div class="col-sm-6">
+      <div class="row sidenav-option">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/breathe-help.svg" />
+        </div>
+        <span>Help &amp; Learn</span>
+      </div>
+      <div class="row sidenav-hover" (click)="openTab('/fe/science.html')">
+        <div class="col-10 sidenav-suboption">
+          <span>Science</span>
         </div>
       </div>
-      <p class="algorithm-status">
-        Algorithm Training: {{training_width}}% - 
-        {{training_status ? (training_status.charAt(0).toUpperCase() + training_status.slice(1)) : "Unknown"}}
-      </p>
+      <div class="row sidenav-hover" (click)="openTab('/fe/help.html')">
+        <div class="col-10 sidenav-suboption">
+          <span>Device Help</span>
+        </div>
+      </div>
+      <div class="row sidenav-hover" (click)="openTab('/fe/contact.html')">
+        <div class="col-10 sidenav-suboption">
+          <span>Contact Us</span>
+        </div>
+      </div>
+
+      <div class="row sidenav-option">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/breathe-user.svg" />
+        </div>
+        <span>Account</span>
+      </div>
+      <div class="row sidenav-hover" (click)="menuSwitch('settings')">
+        <div class="col-10 sidenav-suboption">
+          <span>Update Account</span>
+        </div>
+      </div>
+      <div class="row sidenav-hover" (click)="menuSwitch('settings')">
+        <div class="col-10 sidenav-suboption">
+          <span>Change Goals</span>
+        </div>
+      </div>
+      <div class="row sidenav-hover">
+        <div class="col-10 sidenav-suboption">
+          <span>Payment Info</span>
+       </div>
+      </div>
     </div>
   </div>
 
@@ -127,8 +200,8 @@
           <div></div>
         </div>
     </nav>
-    <app-dashboard *ngIf="dashboard"></app-dashboard>
-    <app-food *ngIf="food"></app-food>
-    <app-settings *ngIf="settings"></app-settings>
+    <app-dashboard [ngStyle]="{'display': dashboard ? 'initial' : 'none'}"></app-dashboard>
+    <app-food [ngStyle]="{'display': food ? 'initial' : 'none'}"></app-food>
+    <app-settings [ngStyle]="{'display': settings ? 'initial' : 'none'}"></app-settings>
 
 </div>
