@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { FoodService } from '../../services/food.service';
 import {NgxChartsModule} from '@swimlane/ngx-charts'; // Do not remove this import even if "unused"!
@@ -27,6 +27,8 @@ export class DashboardComponent implements OnInit {
   // Reference to weight modal
   @ViewChild('weightModal')
   weightModal:TemplateRef<any>;
+
+  @Output() switchToFood = new EventEmitter();
 
   // User's food's
   foodList = {};
@@ -359,8 +361,34 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  /* Sends event to parent component (main) to redirect to the food page */
+  addFood(){
+    this.switchToFood.emit();
+  }
+
+  nextDay(){
+    let tomorrow:Date = new Date();
+    tomorrow.setFullYear(this.resultsDate.year);
+    tomorrow.setMonth(this.resultsDate.month - 1); // Count from 0 vs 1
+    tomorrow.setDate(this.resultsDate.day + 1);
+    if (tomorrow <= now){
+      this.resultsDate = {year: tomorrow.getFullYear(), month: tomorrow.getMonth() + 1, day: tomorrow.getDate()};
+    }
+    // Even though the model changed, does not trigger update unless click on calendar
+    this.update();
+  }
+
+  previousDay(){
+    let yesterday:Date = new Date();
+    yesterday.setFullYear(this.resultsDate.year);
+    yesterday.setMonth(this.resultsDate.month - 1); // Count from 0 vs 1
+    yesterday.setDate(this.resultsDate.day - 1);    
+    this.resultsDate = {year: yesterday.getFullYear(), month: yesterday.getMonth() + 1, day: yesterday.getDate()};
+    this.update();
+  }
 
   /* Utility functions */////////////
+
   stopPropogation(event:MouseEvent){
     event.stopPropagation();
   }

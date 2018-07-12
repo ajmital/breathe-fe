@@ -76,7 +76,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn breathe-submit-button" (click)="setUser()">Save Changes</button>
+      <button class="breathe-submit-button" (click)="setUser()">Save Changes</button>
     </div>
 </ng-template>
 <!-- End setup modal -->
@@ -87,7 +87,7 @@
 <!--Side nav -->
 <div id="sideMenu" [ngClass]="{'breathe-sidenav-open' : navOpen}" class="breathe-sidenav" *ngIf="isLoaded">
   <div class="row justify-content-between sidenav-header">
-    <div class="col sidenav-profile">Hannibal Buress {{this.userService.user.full_name}}</div>
+    <div class="col sidenav-profile">{{this.userService.user.full_name}}</div>
     <div class="col-auto sidenav-exit" (click)="closeNav()"><img src="assets/img/breathe-exit.png" /></div>
   </div>
   <div class="row" id="algorithmMenu">
@@ -189,19 +189,22 @@
     <nav class="navbar navbar-expand">
         <img class="navbar-brand" src="assets/img/breathe-logo.svg" />
         <div class="mr-auto"></div>
-        <div class="navbar-nav">
+        <div class="navbar-nav pr-sm-2">
             <span class="nav-item nav-link" [ngClass]="{'breathe-active': dashboard}"  (click)="show('dashboard')">Dashboard</span>
             <span class="nav-item nav-link" [ngClass]="{'breathe-active': food}" (click)="show('food')">Food</span>
-
         </div>
+        <div class="d-inline-block navbar-profile" (click)="show('settings')">
+          {{userService.user.full_name}}
+        </div>
+
         <div class="d-inline-block menu-icon" (click)="openNav()">
           <div></div>
           <div></div>
           <div></div>
         </div>
     </nav>
-    <app-dashboard [ngStyle]="{'display': dashboard ? 'initial' : 'none'}"></app-dashboard>
-    <app-food [ngStyle]="{'display': food ? 'initial' : 'none'}"></app-food>
+    <app-dashboard [ngStyle]="{'display': dashboard ? 'initial' : 'none'}" (switchToFood)="show('food')"></app-dashboard>
+    <app-food [ngStyle]="{'display': food ? 'initial' : 'none'}" (cancel)="show('dashboard')" ></app-food>
     <app-settings [ngStyle]="{'display': settings ? 'initial' : 'none'}"></app-settings>
 
 </div>

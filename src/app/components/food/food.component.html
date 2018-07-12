@@ -3,7 +3,7 @@
 <ng-template #foodModal let-c="close" let-d="dismiss">
     <div class="modal-header green-background">
       <h4 class="modal-title">Food Detail</h4>
-      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <button type="button" class="breathe-close" aria-label="Close" (click)="d('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -180,7 +180,7 @@
           <input type="number" class="form-control" [(ngModel)]="food_detail.quantity">
         </div>
         <div class="col-auto">
-          <button class="btn breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
+          <button class="breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
         </div>
       </div>
     </div>
@@ -188,6 +188,35 @@
 
 <!-- Body content-->
 <div class="container-fluid">
+  <div class="row breathe-header-calendar-container">
+    <div class="col-auto">
+      <div class="form-row breathe-header-calendar">
+        <div class="col breathe-header-calendar-label">
+          <span>Add Food For</span>
+        </div>
+        <div class="col breathe-header-calendar-input">
+          <div class="input-group">
+            <div class="input-group-prepend" (click)="previousDay()">
+              <button>&lt;</button>
+            </div>
+            <input class="form-control" placeholder="yyyy-mm-dd"
+              name="rdp" [(ngModel)]="foodDate" [minDate]="minDate" [maxDate]="maxDate"
+              ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
+            <div class="input-group-append" (click)="nextDay()">
+              <button>&gt;</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto breathe-header-calendar-button" (click)="rdp.toggle()">
+            <img src="assets/breathe-icons/breathe-calendar.png" />
+        </div>
+      </div>
+    </div>
+    <div class="col-auto ml-auto mr-0 breathe-page-header-button" id="breatheHeaderCancel" (click)="cancelEvent()">
+      <span>Cancel</span>
+    </div>
+  </div>
+
 
   <div class="row">
   <!-- Food search -->
@@ -216,18 +245,24 @@
 
           <div class="row search-category">
             <div class="col">
+              <div class="search-results-header row" *ngIf="didSearch">
+                <div class="col">
+                  Search Results
+                </div>
+              </div>
               <div class="search-header row" *ngIf="foodList['common'].length > 0">
                 <div class="col">
                   Common
                 </div>
               </div>
+              
               <!-- Start ngFor for search results -->
               <div class="row" *ngFor="let food of foodList['common']">
                 <div class="col breathe-food-panel">
                   <div class="media h5-rem" (click)="getDetail(food, foodModal)">
                     <img class="align-self-center mr-2 breathe-food-img" src= {{food.thumbnail}} />
                     <div class="media-body align-self-center">
-                      <span class="align-middle">{{food.brand_name}} {{food.food_name}}</span>
+                      <span class="align-middle">{{food.food_name}}</span>
                     </div>
                   </div>
                 </div>
@@ -269,7 +304,7 @@
           Food History
         </div>
         <div class="col-auto" *ngIf="multiSelect">
-          <button class="btn breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
+          <button class="breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
         </div>
       </div>
       <div class="row scroll-column">

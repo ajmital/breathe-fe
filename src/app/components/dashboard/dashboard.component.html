@@ -2,7 +2,7 @@
 <ng-template #foodModal let-c="close" let-d="dismiss">
   <div class="modal-header green-background">
     <h4 class="modal-title">Food Detail</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="breathe-close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -179,7 +179,7 @@
         <input type="number" class="form-control" [(ngModel)]="food_detail.quantity">
       </div>
       <div class="col-auto">
-        <button class="btn breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
+        <button class="breathe-submit-button" (click)="addCurrentFood()">Add Food</button>
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@
 <ng-template #weightModal let-c="close" let-d="dismiss">
   <div class="modal-header green-background">
     <h4 class="modal-title">Record Your Weight</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="breathe-close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -201,13 +201,13 @@
       <div class="col">
         <form (submit)="addWeight(weight.value)">
           <h3>Record Your Weight</h3>
-          <small class="form-text text-muted">
+          <small class="form-text text-muted font-italic">
               Tip: Weight can fluctuate during the day. Aim to weigh yourself at about the same time each day.
           </small>
-          <div class="form-group">
-            <label for="weightInput">Weight</label>
+          <div class="form-group pt-2">
+            <label class="text-secondary text-uppercase" for="weightInput">Weight (lbs)</label>
             <input id="weightInput" type="number" min="1" class="form-control" placeholder="Weight" #weight />
-            <label for="weightDateInput">Date</label>
+            <label class="text-secondary text-uppercase" for="weightDateInput">Date</label>
             <p>{{weightDate.month}}-{{weightDate.day}}-{{weightDate.year}}</p>
           </div>
         </form>
@@ -215,22 +215,42 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn breathe-submit-button" (click)="addWeight(weight.value)">Save Changes</button>
+    <button class="breathe-submit-button" (click)="addWeight(weight.value)">Save Changes</button>
   </div>
 </ng-template>
 
-<!-- Main body -->
+<!-- Main body --------------------- -->
 <div class="container-fluid">
-  <div class="row" id="resultsCalendarContainer">
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-10">
-      <div class="input-group" id="resultsCalendar">
-        <input id="resultsCalendarInput" class="form-control" placeholder="yyyy-mm-dd"
-            name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
-            ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
-        <button class="btn btn-outline-secondary input-group-addon" (click)="rdp.toggle()" type="button">
-          <img src="assets/breathe-icons/breathe-calendar.png" style="width: 1.2rem; height: 1.2rem; cursor: pointer;"/>
-        </button>
+  <div class="row breathe-header-calendar-container">
+    <div class="col-auto">
+      <div class="form-row breathe-header-calendar">
+        <div class="col breathe-header-calendar-label" >
+          <span>Daily Progress</span>
+        </div>
+        <div class="col breathe-header-calendar-input">
+          <div class="input-group">
+            <div class="input-group-prepend" (click)="previousDay()">
+              <button>&lt;</button>
+            </div>
+            <input class="form-control" placeholder="yyyy-mm-dd"
+              name="rdp" [(ngModel)]="resultsDate" [minDate]="minDate" [maxDate]="maxDate"
+              ngbDatepicker #rdp="ngbDatepicker" (ngModelChange)="update()">
+            <div class="input-group-append" (click)="nextDay()">
+              <button>&gt;</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto breathe-header-calendar-button" (click)="rdp.toggle()">
+            <img src="assets/breathe-icons/breathe-calendar.png" />
+        </div>
       </div>
+    </div>
+    <div class="ml-auto"></div>
+    <div class="col-auto" id="breatheHeaderEnterWeight" class="breathe-page-header-button" (click)="openWeightModal()">
+      <span>+ Enter Weight</span>
+    </div>
+    <div class="col-auto" id="breatheHeaderAddFood" class="breathe-page-header-button" (click)="addFood()">
+      <span>+ Add Food</span>
     </div>
   </div>
 
@@ -244,8 +264,8 @@
           Nutrition
         </div>
       </div>
-      <div class="row breathe-panel">
-        <div class="col-md-6 col-sm-12 col-12" id="meter">
+      <div class="row breathe-panel pb-5">
+        <div class="col-md-5 col-sm-12 col-12" id="meter">
           <div class="row">
             <div class="col">
               <div class="progress">
@@ -253,16 +273,13 @@
               </div>
             </div>
           </div>
-          <div class="row mb-4 justify-content-between">
+          <div class="row mb-4">
             <div class="col breathe-label">
               Insulin index
             </div>
-            <div class="col-auto">
-              <img src="assets/breathe-icons/breathe-goal.svg" />
-            </div>
           </div>
         </div>
-        <div class="col-md-6" id="nutrition">
+        <div class="col-md-7" id="nutrition">
           <div class="row mb-2">
             <div class="col">
               <div class="row">
@@ -272,7 +289,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                    {{sugar}} g
+                    {{sugar}} <span class="breathe-value-unit">g</span>
                 </div>
               </div>
               <div class="row">
@@ -289,7 +306,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                  {{fiber}} g
+                  {{fiber}} <span class="breathe-value-unit">g</span>
                 </div>
               </div>
               <div class="row">
@@ -306,7 +323,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                  {{carbs}} g
+                  {{carbs}} <span class="breathe-value-unit">g</span>
                 </div>
               </div>
               <div class="row">
@@ -325,7 +342,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                  {{protein}} g
+                  {{protein}} <span class="breathe-value-unit">g</span>
                 </div>
               </div>
               <div class="row">
@@ -342,7 +359,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                  {{fat}} g
+                  {{fat}} <span class="breathe-value-unit">g</span>
                 </div>
               </div>
               <div class="row">
@@ -404,7 +421,7 @@
               </div>
               <div class="row">
                 <div class="col text-center breathe-value">
-                  {{latestWeight.value}} lbs
+                  {{latestWeight.value}} <span class="breathe-value-unit">lbs</span>
                 </div>
               </div>
               <div class="row">
@@ -420,7 +437,7 @@
             </div>
           </div>
           <div class="row my-2">
-            <div class="col text-muted text-center">
+            <div class="col text-muted text-center font-italic">
               Last recorded: {{latestWeight.timestamp}}
             </div>
           </div>
@@ -435,7 +452,7 @@
           Today's Food
         </div>
         <div class="col-auto" *ngIf="multiSelect">
-          <button class="btn breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
+          <button class="breathe-submit-button" (click)="addSelectedFoods()">Add Selected</button>
         </div>
       </div>
 
@@ -476,7 +493,7 @@
                           <div class="col-auto breathe-value">
                             <div class="row">
                               <div class="col">
-                                {{food.carbohydrates}} g
+                                {{food.carbohydrates}} <span class="breathe-value-unit">g</span>
                               </div>
                             </div>
                             <div class="row justify-content-end">

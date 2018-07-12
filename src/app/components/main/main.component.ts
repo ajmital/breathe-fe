@@ -52,7 +52,7 @@ export class MainComponent implements OnInit {
   fullName:string = null;
 
   // Side nav control
-  navOpen:boolean = true;
+  navOpen:boolean = false;
 
   // Switches to control which component is displayed
   dashboard:boolean = true;

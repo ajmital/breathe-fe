@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import {FoodService} from '../../services/food.service';
 import {NgbModal, ModalDismissReasons, NgbActiveModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -13,12 +13,18 @@ const now:Date = new Date();
   styleUrls: ['./food.component.css']
 })
 export class FoodComponent implements OnInit {
+
+  @Output() cancel = new EventEmitter();
+
   food_entries = {"breakfast": [], "lunch":[], "dinner":[], "snack":[]};
   periodList:string[] = ["breakfast", "lunch", "dinner", "snack"];
   foodList = {"common": [], "branded": []};
   food_detail:Food = new Food();
   detail_loading = false;
   is_searching = false;
+
+  didSearch:boolean = false; // Did user perform a search yet?
+
   minDate:NgbDateStruct = {year: 1900, month:1, day:1};
   maxDate:NgbDateStruct = {year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()};
   modalRef:NgbModalRef = null;
@@ -65,6 +71,7 @@ export class FoodComponent implements OnInit {
   }
 
   search(query:string){
+    this.didSearch = true;
     // Clear previous search from results
     this.foodList["common"] = [];
     this.foodList["branded"] = [];
@@ -171,8 +178,7 @@ export class FoodComponent implements OnInit {
 
   // Adds foods from selectedFood
   addSelectedFoods(){
-    this.foodDate = this.maxDate;
-    let timestamp:string = this.dateStructToTimestamp(this.maxDate);
+    let timestamp:string = this.dateStructToTimestamp(this.foodDate);
     while (this.selectedFood.length > 0){
       let currentFood = this.selectedFood.pop();
       let request:any;
@@ -225,7 +231,35 @@ export class FoodComponent implements OnInit {
     );
   }
   
-  /* Utility methods */
+  /* Resets current date to present, navigates to dashboard */
+  cancelEvent(){
+    this.foodDate = this.maxDate;
+    this.cancel.emit();
+  }
+
+
+  nextDay(){
+    let tomorrow:Date = new Date();
+    tomorrow.setFullYear(this.foodDate.year);
+    tomorrow.setMonth(this.foodDate.month - 1); // Count from 0 vs 1
+    tomorrow.setDate(this.foodDate.day + 1);
+    if (tomorrow <= now){
+      this.foodDate = {year: tomorrow.getFullYear(), month: tomorrow.getMonth() + 1, day: tomorrow.getDate()};
+    }
+    // Even though the model changed, does not trigger update unless click on calendar
+    this.update();
+  }
+
+  previousDay(){
+    let yesterday:Date = new Date();
+    yesterday.setFullYear(this.foodDate.year);
+    yesterday.setMonth(this.foodDate.month - 1); // Count from 0 vs 1
+    yesterday.setDate(this.foodDate.day - 1);
+    this.foodDate = {year: yesterday.getFullYear(), month: yesterday.getMonth() + 1, day: yesterday.getDate()};
+    this.update();
+  }
+
+  /* Utility methods ******************************/
   stopPropogation(event:MouseEvent){
     event.stopPropagation();
   }

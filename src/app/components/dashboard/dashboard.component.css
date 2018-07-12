@@ -1,20 +1,9 @@
-#resultsCalendarContainer{
-    background-color: #363636;
-}
-
-#resultsCalendar{
-    margin: 0 auto;
-    float: none;
-}
-
-#resultsCalendarInput{
-    color: #ffffff;
-    border: none;
-    background-color: #00555400;
-}
-
 #addWeight{
     padding: 2rem;
+}
+
+#nutrition img{
+    min-height: 2.5rem;
 }
 
 .submitButton{
@@ -31,12 +20,19 @@
     min-height: 20rem;
 }
 
+#breatheHeaderEnterWeight{
+    min-width: 12rem;
+}
+
+#breatheHeaderAddFood{
+    min-width: 10rem;
+}
+
 .progress{
     height: 4rem;
 }
 
 .progress-bar{
-
     background: #FF5900;
     background: linear-gradient(#ff9d00, #ff6501);
 
@@ -45,6 +41,7 @@
 @media (min-width: 1200px){
     .scroll-column{
         overflow-y: scroll;
-        max-height: 35rem;
+        height: 40rem;
+        max-height: 40rem;
     }
 }

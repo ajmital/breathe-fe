@@ -1,25 +1,213 @@
 /* You can add global styles to this file, and also import other style files */
+@media(max-width: 576px){
+    html{
+        font-size: 0.7rem;
+    }
+}
+
+/* Styles to allow calendar in header */
+.breathe-header-calendar-container{
+    background-color: #424351;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.breathe-header-calendar{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin: 0 auto;
+    float: none;
+}
+
+.breathe-header-calendar-label{
+    width: 10rem;
+}
+
+.breathe-header-calendar-label > span{
+    font-size: 1.3rem;
+    color: #FFFFFF;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.breathe-header-calendar-input{
+    width: 11rem;
+    z-index: 8;
+}
+
+
+.breathe-header-calendar-input div.input-group-append{
+    margin-left: 0;
+}
+
+.breathe-header-calendar-input div.input-group-prepend {
+    margin-right: 0;
+}
+
+.breathe-header-calendar-input div.input-group-append > button{
+    border-left: 1px solid #DDDDDD;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}
+
+.breathe-header-calendar-input div.input-group-prepend > button{
+    border-right: 1px solid #DDDDDD;
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+}
+
+.breathe-header-calendar-input div.input-group-prepend > button,
+.breathe-header-calendar-input div.input-group-append > button{
+    background-color: #FFFFFF;
+    border-radius: 0;
+    transition: background-color 0.5s;
+}
+
+.breathe-header-calendar-input div.input-group-prepend > button:hover,
+.breathe-header-calendar-input div.input-group-append > button:hover{
+    background-color: #DDDDDD;
+}
+
+
+.breathe-header-calendar-input > div{
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.breathe-header-calendar-input input{
+    width: 8rem;
+    color: #000000;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 0;
+}
+
+@media (max-width: 768px){
+    .breathe-header-calendar-label{
+        display: none;
+    }
+}
+
+.breathe-header-calendar-button{
+    margin-left: 1rem;
+    padding: 1rem;
+    transition: background-color 0.5s;
+}
+
+.breathe-header-calendar-button > img{
+    width: 2rem;
+}
+
+.breathe-header-calendar-button:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Override Calendar picker styles ***********/
+.btn-link{
+    color: #26b2a9;
+}
+
+.bg-primary{
+    background: #FF5900!important;
+    background: linear-gradient(#ff9d00, #ff6501)!important;
+    border-radius: 0!important;
+}
+
+.bg-light{
+    background-color: transparent!important;
+}
 
 /* MISC ********************/
+
+.breathe-status-danger{
+    color: rgb(200, 0, 0);
+    font-weight: 600;
+}
+
 .green-background{
     background-color: #26b2a9;
     color: #FFFFFF;
 }
 
-.breathe-submit-button{
+.breathe-page-header-button{
+    padding-left: 1rem;
+    position: relative;
     color: #FFFFFF;
-    background-color: #FF5900;
+    font-size: 1.4rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.5s;
+}
+
+.breathe-page-header-button:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.breathe-page-header-button > span{
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: 1rem;
+}
+
+@media (max-width: 800px){
+    .breathe-page-header-button{
+        display: none;
+    }
+}
+
+.breathe-submit-button{
+    border: none;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    color: #FFFFFF;
+    background: #FF5900;
+    background: linear-gradient(#ff9d00, #ff6501);
     font-weight: 600;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.5s;
+}
+
+.breathe-submit-button:hover{
+    background: #fda41e;
+    background: linear-gradient(#ffc15c, #fda41e);
 }
 
 .breathe-cancel-button{
+    border: none;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     color: #FFFFFF;
-    background-color: rgb(124, 124, 124);
+    background: #909090;
+    background: linear-gradient(#AAAAAA, #7C7C7C);
     font-weight: 600;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.5s;
+}
+
+.breathe-cancel-button:hover{
+    background: #BDBDBD;
+    background: linear-gradient(#DADADA, #ACACAC);
+}
+
+.modal-body{
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1) inset;
 }
 
 .breathe-modal-title{
@@ -47,7 +235,12 @@
 
 .breathe-value{
     color: #0F7261;
-    font-size: 1.2rem;
+    font-size: 2rem;
+}
+
+.breathe-value-unit{
+    color: #0F7261;
+    font-size: 1rem;
 }
 
 .breathe-shadow-panel{
@@ -62,6 +255,7 @@
 
 .breathe-food-panel{
     box-shadow: 0 1px 1px rgba(10, 10, 10, 0.1);
+    transition: background-color 0.5s;
 }
 
 .breathe-food-panel:hover{
@@ -83,9 +277,29 @@
     border: 1px solid white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
     font-weight: 700;
+    font-size: 16px;
+    line-height: 1.5;
     cursor: pointer;
 }
+/* 'x' on modals */
+.breathe-close{
+    color: #FFFFFF;
+    font-size: 2rem;
+    margin: -1rem -1rem -1rem auto;
+    padding: 1rem;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    float: right;
+    line-height: 1;
+    font-weight: 700rem;
+    cursor: pointer;
+    transition: color 0.5s;
+}
 
+.breathe-close:hover{
+    color: #DDDDDD;
+}
 
 /* Checkboxes 
 <label class="control control-checkbox">
@@ -119,6 +333,7 @@
     background: #ffffff;
     border: 2px solid #595959;
     border-radius: 2px;
+    transition: background-color 0.5s;
 }
 
 .control:hover input ~ .control_indicator,

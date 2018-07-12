@@ -3,7 +3,7 @@
     <div class="col-md-8">
       <div class="row">
         <div class="col breathe-header">
-          Edit User
+          Update Profile
         </div>
       </div>
       <div class="row">
@@ -118,8 +118,8 @@
               </div>
             </fieldset>
 
-            <button type="submit" class="btn breathe-submit-button">Save Changes</button>
-            <button type="button" class="btn breathe-cancel-button" (click)="cancel()">Cancel</button>
+            <button type="submit" class="breathe-submit-button">Save Changes</button>
+            <button type="button" class="breathe-cancel-button" (click)="cancel()">Cancel</button>
           
           </form>
 
@@ -129,50 +129,49 @@
     </div>
 
     <div class="col-md-4 breathe-panel mt-0">
-      <div class="row">
-        <div class="col breathe-header">
+      <div class="row breathe-header justify-content-between">
+        <div class="col">
           Sync Status
         </div>
+        <div class="col-auto" id="statusIcon">
+          <img src="assets/breathe-icons/breathe-hr-danger.svg" class="breathe-icon-danger" *ngIf="tempUser.status != 'connected'" />
+          <img src="assets/breathe-icons/breathe-hr-ok.svg" class="breathe-icon-okay" *ngIf="tempUser.status == 'connected'" />        </div>
       </div>
       <div class="row">
         <div class="col mt-2">
-            <div class="row my-1">
+            <div class="row py-2">
               <div class="col-sm-4">
                 HR Source
               </div>
-              <div class="col-auto">
-                {{tempUser.token_source}}
+              <div class="col-auto text-capitalize">
+                {{tempUser.token_source ? tempUser.token_source : "N/A"}}
               </div>
             </div>
 
-            <div class="row my-1">
+            <div class="row py-2">
               <div class="col-sm-4">
                 Status
               </div>
-              <div class="col-auto">
-                {{tempUser.status}}
-              </div>
-              <div class="col">
-                <img src="assets/breathe-icons/breathe-hr-danger.svg" *ngIf="tempUser.status != 'connected'" />
-                <img src="assets/breathe-icons/breathe-hr-ok.svg" *ngIf="tempUser.status == 'connected'" />
+              <div class="col-auto text-capitalize" [ngClass]= "{'breathe-status-danger': tempUser.status != 'connected'}">
+                {{tempUser.status ? tempUser.status : "Unknown"}}
               </div>
             </div>
 
-            <div class="row my-1">
+            <div class="row py-2">
               <div class="col-sm-4">
                 Last HR Sync
               </div>
               <div class="col-auto">
-                {{hrSync}}
+                {{hrSync ? hrSync : "Unknown"}}
               </div>
             </div>
 
-            <div class="row my-1">
+            <div class="row py-2">
               <div class="col-sm-4">
                 Last sync attempt
               </div>
               <div class="col-auto">
-                {{syncAttempt}}
+                {{syncAttempt ? syncAttempt : "Unknown"}}
               </div>
             </div>
             

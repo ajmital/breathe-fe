@@ -4,6 +4,29 @@
     font-weight: 500;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
+    color: #525252;
+}
+
+.search-results-header{
+    background: #26b2a9;
+    background: linear-gradient(#27b3aa, #4ec0b9);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.search-results-header > div{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.search-results-header a{
+    color: #FFFFFF;
+}
+
+.search-results-header a:hover{
+    color: #DDDDDD;
+    text-decoration: none;
 }
 
 .h5-rem{
@@ -12,6 +35,10 @@
 
 .search-category{
     margin-bottom: 2rem;
+}
+
+#breatheHeaderCancel{
+    min-width: 7rem;
 }
 
 #foodSearch{
