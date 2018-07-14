@@ -1,3 +1,39 @@
 #statusIcon{
     height: 1.2rem;
 }
+
+
+/* Dialogue that displays results of subscription attempt */
+/*
+    <div class="payment-response" *ngIf="paymentProcessed">
+        <span>{{paymentResponseText}}</span>
+        <button (click)="paymentProcessed = false">Dismiss</button>
+    </div>
+*/
+.payment-response{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9001; /* Over 9000 */
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.payment-response > span{
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+    font-size: 2rem;
+}
+
+.payment-response > button{
+    position: absolute;
+    top: 50%;
+    margin-top: 2rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+}

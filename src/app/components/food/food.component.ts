@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import {FoodService} from '../../services/food.service';
-import {NgbModal, ModalDismissReasons, NgbActiveModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {FoodService, Food} from '../../services/food.service';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -39,9 +39,7 @@ export class FoodComponent implements OnInit {
   constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
   }
 
-  ngOnInit() {
-   this.update();
-  }
+  ngOnInit() {}// Allow parent component to call update(), to prevent unecessary initial requests
 
   update(){
   // Retrieve user's previous food entries
@@ -312,42 +310,4 @@ export class FoodComponent implements OnInit {
   }
 
 // End class
-}
-
-class Food{
-  brand_name:string;
-  total_fiber:number;
-  timestamp:string;
-  serving_quantity:number;
-  carbohydrates:number;
-  fat:number;
-  nix_item:string;
-  food_name:string;
-  sugar:number;
-  quantity:number;
-  calories:number;
-  water:number;
-  period:string;
-  nix_item_id:string;
-  created_on:string;
-  thumbnail:string;
-  serving_unit:string;
-  protein:number;
-  constructor(){}
-}
-
-interface User{
-  email:string;
-  weight:number;
-  gender:string;
-  age:number;
-  height:number;
-  full_name:string;
-  birth_month:number;
-  birth_year:number;
-  maintain:number;
-  gradual:number;
-  moderate:number;
-  aggressive:number;
-  co2:number;
 }

@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+html{
+    font-size: 16px;
+}
+
 @media(max-width: 576px){
     html{
         font-size: 0.7rem;
@@ -124,6 +128,51 @@
 }
 
 /* MISC ********************/
+
+/* Loading overlay with optional message text */
+/*  
+<div class="breathe-loader" *ngIf="isLoading">
+  <div>
+    <div></div>
+    <span>{{loadingText}}</span>
+  </div>
+</div>
+*/
+.breathe-loader{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9001; /* Over 9000 */
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+
+.breathe-loader > div{
+    position: absolute;
+    height: 150px;
+    width: 150px;
+    top: 50%;
+    left: 50%;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #26b2a9;
+    -webkit-animation: spin 2s ease-in-out infinite; /* Safari */
+    animation: spin 2s ease-in-out infinite;
+}
+
+.breathe-loader > span{
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 100px;
+    color: #FFFFFF;
+    font-size: 1.5rem;
+}
 
 .breathe-status-danger{
     color: rgb(200, 0, 0);

@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {PaymentService} from '../../services/payment.service';
+import {User} from '../../services/user.service';
+import { TreeMapModule } from '../../../../node_modules/@swimlane/ngx-charts';
 
 const now = new Date();
+const MONTHLY_RATE:number = 1495;
+const ANNUAL_RATE:number = 9995;
+
 
 @Component({
   selector: 'app-settings',
@@ -10,30 +16,50 @@ const now = new Date();
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-
+  /* Generic loading indicator (most useful for payment-related requests, due to synchronous requests made on the server side) */
   isLoading:boolean = false;
-  showSuccess:boolean = false;
+  loadingText:string = ""; // Used to provide message while loading
+
+  showSuccess:boolean = false; // Shows success message on saving user
   birthError:boolean = false; // Controls alert for birth month/year input validation
   heightError:boolean = false;
   weightError:boolean = false;
+  
+  /* Payment-related switches */
+  paymentProcessed:boolean = false; // Controls dialogue screen after payment interaction
+  paymentError:boolean = false; // Indicates that some point in the payment interaction failed
+  paymentResponseText:string = "";
+  subscriptionError:boolean = false; // User has no subscription
+
   hrSync:string = null;
   syncAttempt:string = null;
 
+  stripeHandler:any; // Form for verifying stripe information
+
+  /* Temporary user object for modifying */
   tempUser:User = new User();
 
-  constructor(private userService:UserService) { }
+  constructor(private userService:UserService, private paymentService:PaymentService) { }
 
-  ngOnInit() {
-    if (!this.userService.user_loaded){
-      this.update();
-    }else{
-      this.tempUser = this.userService.user;
-      this.hrSync = this.timestampToDateString(this.tempUser.last_hr_sync);
-      this.syncAttempt = this.timestampToDateString(this.tempUser.last_hr_sync_attempt);
-    }
+  ngOnInit() {} // Allow parent component to call update() method
+
+  /* Configure stripe handler for creating customers */
+  configureStripe(email:string){
+    this.stripeHandler = StripeCheckout.configure({
+      name: 'Breathe',
+      key: "pk_test_zeaM0ynDnovC8wopeewHcOz3",
+      image: 'assets/img/breathe-logo.svg',
+      locale: 'auto',
+      allowRememberMe: false,
+      zipCode: true, // Additional verification step
+      panelLabel: 'Subscribe', // Button text in stripe handler
+      email: email,
+    });  
   }
 
+  /* Save tempUser as actual user */
   save(){
+    this.loadingText = "Saving user...";
     this.isLoading = true;
     this.birthError = false;
     this.heightError = false;
@@ -87,29 +113,115 @@ export class SettingsComponent implements OnInit {
     )
   }
 
+  /* Replace tempUser with actual one */
   cancel(){
-    this.isLoading = true;
     this.birthError = false;
     this.heightError = false;
     this.weightError = false;
-    this.update();
+    this.update(null);
   }
 
-  update(){
-    this.userService.getUser().subscribe(
-      (results:any) => {
-        this.tempUser = results;
-        this.hrSync = this.timestampToDateString(this.tempUser.last_hr_sync);
-        this.syncAttempt = this.timestampToDateString(this.tempUser.last_hr_sync_attempt);
+  /* Get up-to-date user info */
+  /* If argument is supplied (from parent component) use that to initialize user */
+  update(user:User){
+    if (user){
+      this.tempUser = user;
+      this.hrSync = this.timestampToDateString(this.tempUser.last_hr_sync);
+      this.syncAttempt = this.timestampToDateString(this.tempUser.last_hr_sync_attempt);
+      this.configureStripe(this.tempUser.email); // Only configure once
+    }else{
+      this.userService.getUser().subscribe(
+        (results:any) => {
+          this.tempUser = results;
+          this.hrSync = this.timestampToDateString(this.tempUser.last_hr_sync);
+          this.syncAttempt = this.timestampToDateString(this.tempUser.last_hr_sync_attempt);
+        },
+        (err) => {},
+        () => {
+          this.isLoading = false;
+        }
+      );
+    }
+  }
+
+  /* Opens handler with configuration/callback for monthly plan */
+  openStripeMonthly(){
+    this.stripeHandler.open({
+      description: 'Monthly subscription plan',
+      amount: MONTHLY_RATE,
+      token: token => {
+        this.loadingText = "Subscribing user..."
+        this.isLoading = true;
+        this.paymentService.processMonthlyPayment(token).subscribe(
+          (results) => {
+            this.verifyPaymentStatus();
+          },
+          (err:HttpErrorResponse) => {
+            console.error("COMPONENT ERR: " + err.error);
+            this.paymentResponseText = "Failed to subscribe to Breathe: " + err.error;
+            this.paymentProcessed = true;
+            this.paymentError = true;
+            this.isLoading = false;
+          }
+        );
+      }
+    });
+  }
+
+  /* Opens handler with config/callback for annual plan */
+  openStripeAnnual(){
+    this.stripeHandler.open({
+      description: 'Annual subscription plan',
+      amount: ANNUAL_RATE,
+      token: token => {
+        this.paymentService.processAnnualPayment(token).subscribe(
+          (results) => {
+            this.verifyPaymentStatus();
+          },
+          (err:HttpErrorResponse) => {
+            this.paymentResponseText = "Failed to subscribe to Breathe: " + err;
+            this.paymentProcessed = true;
+            this.paymentError = true;
+            this.isLoading = false;
+          }
+        );
+      }
+    });
+  }
+
+  /* Verifies that status after payment is what it should be after subscribing(probably 'active') */
+  verifyPaymentStatus(){
+    this.loadingText = "Verifying that subscription was successful...";
+    this.paymentService.getStatus().subscribe(
+      (results) => {
+        if (results['status']){
+          status = results['status'];
+          this.userService.subscriptionStatus = status;
+          if (status === 'active' ||  status === 'past_due' || status === 'trialing'){
+            // DO SOMETHING HAPPY
+            this.paymentResponseText = "Take a deep breath, and let's begin";
+          }else{
+            this.paymentResponseText = "Subscription verification failed: status was " + status + ".";
+            this.paymentError = true;
+          }
+        }
       },
-      (err) => {},
+      (err) =>{},
       () => {
+        this.paymentProcessed = true;
         this.isLoading = false;
       }
     );
   }
 
-  /* Utility functions */
+  /* Close handler on navigation */
+  @HostListener('window:popstate')
+  onPopstate() {
+    this.stripeHandler.close()
+  }
+
+
+  /* Utility functions ********************/
   timestampToDateString(timestamp:string){
     if (!timestamp) return "";
     let index:number = timestamp.indexOf('T');
@@ -142,25 +254,4 @@ export class SettingsComponent implements OnInit {
     return vals[1] + '/' + vals[2] + '/' + vals[0] + ' ' + time;
   }
 
-}
-
-// Class definitions
-class User{
-  full_name:string;
-  email:string;
-  username:string;
-  birth_year:number;
-  birth_month:number;
-  gender:string;
-  feet:number;
-  inches:number;
-  weight:number;
-  weight_goal:string;
-  token_source:string;
-  status:string;
-  last_hr_sync:string;
-  last_hr_sync_attempt:string;
-  eula:string;
-  eula_date:string;
-  constructor(){}
 }

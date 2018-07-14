@@ -1,3 +1,15 @@
+<!-- Loading screen overlay -->
+<div class="breathe-loader" *ngIf="isLoading">
+  <div></div>
+  <span>{{loadingText}}</span>
+</div>
+
+<div class="payment-response" *ngIf="paymentProcessed">
+  <span>{{paymentResponseText}}</span>
+  <button (click)="paymentProcessed = false" class="breathe-submit-button">Dismiss</button>
+</div>
+
+<!-- Main page content-->
 <div class="container-fluid">  
   <div class="row">
     <div class="col-md-8">
@@ -174,12 +186,14 @@
                 {{syncAttempt ? syncAttempt : "Unknown"}}
               </div>
             </div>
-            
+
+            <button (click)="openStripeMonthly()">Monthly Subscription</button>
+            <button (click)="openStripeAnnual()">Annual Subscription</button>
+
+
         </div>
       </div>
     </div>
   </div>
-
-
 
 </div>

@@ -177,7 +177,7 @@ export class MainComponent implements OnInit {
         this.dashboard = false;
         if (!this.settings){
           this.settings = true;
-          this.settingsComponent.update();
+          this.settingsComponent.update(this.userService.user); // When loading settings, pass in user object to avoid unecessary requests
         }
         break;
       }

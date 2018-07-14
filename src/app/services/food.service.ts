@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import 'rxjs/add/operator/shareReplay';
 
 const CSRF_COOKIE:string = "csrftoken";
 
@@ -19,8 +18,10 @@ export class FoodService {
       }
     }
 
-      // Set token header
-    this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
+    // Set token header (if doesn't exist, UserService will cause a redirect)
+    if (this.csrf_tok){
+      this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
+    }
   }
 
   getUPC(upc:string){
@@ -28,7 +29,7 @@ export class FoodService {
       "/api/nutritionix/upc/",
       {upc: upc},
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   search(query_string:string){
@@ -36,7 +37,7 @@ export class FoodService {
       "/api/nutritionix/search/",
       {query: query_string},
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   getDetails(item_id:string){
@@ -44,7 +45,7 @@ export class FoodService {
       "/api/nutritionix/item/?nix_item_id=" + item_id,
       {nix_item_id: item_id},
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   getCommon(query:string){
@@ -52,12 +53,12 @@ export class FoodService {
       "/api/nutritionix/common/",
       {query: query},
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
 }
 
-class Food{
+export class Food{
   brand_name:string;
   total_fiber:number;
   timestamp:string;

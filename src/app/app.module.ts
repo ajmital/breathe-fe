@@ -16,6 +16,7 @@ import { FoodComponent } from './components/food/food.component';
 
 import { UserService } from './services/user.service';
 import {FoodService} from './services/food.service';
+import {PaymentService} from './services/payment.service';
 
 import { MainComponent } from './components/main/main.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -37,7 +38,7 @@ import { SettingsComponent } from './components/settings/settings.component';
     NgbModule.forRoot(),
     NgxChartsModule
   ],
-  providers: [UserService, FoodService],
+  providers: [UserService, FoodService, PaymentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

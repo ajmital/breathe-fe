@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { UserService, User } from '../../services/user.service';
 import { FoodService } from '../../services/food.service';
 import {NgxChartsModule} from '@swimlane/ngx-charts'; // Do not remove this import even if "unused"!
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -459,25 +459,6 @@ export class DashboardComponent implements OnInit {
 
 
 
-}
-class User{
-  full_name:string;
-  email:string;
-  username:string;
-  birth_year:number;
-  birth_month:number;
-  gender:string;
-  feet:number;
-  inches:number;
-  weight:number;
-  weight_goal:string;
-  token_source:string;
-  status:string;
-  last_hr_sync:string;
-  last_hr_sync_attempt:string;
-  eula:string;
-  eula_date:string;
-  constructor(){}
 }
 
 interface Result{

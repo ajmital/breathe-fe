@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
+import 'rxjs/add/operator/shareReplay';
 
 const CSRF_COOKIE:string = "csrftoken";
 const PAYMENT_URL:string = "https://paymenturl.com/";
@@ -11,6 +12,9 @@ const PAYMENT_URL:string = "https://paymenturl.com/";
 @Injectable()
 export class UserService {
 
+
+  subscriptionStatus:string = null;
+  
   user:User = new User();
   user_loaded:boolean = false;
   csrf_tok:string = null;
@@ -33,39 +37,27 @@ export class UserService {
     this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
   }
 
-  /* Payment redirect *///////
-  redirectToPayment(){
-    this.http.put(
-      "/api/account/token/",
-      "",
-      {headers: this.headers}).subscribe(
-        (results) => {
-          window.location.href = PAYMENT_URL + "?email=" + results["email"] + "&token=" + results["verification_token"];
-        },
-        (err:HttpErrorResponse) => {
-          console.error(err);
-        }
-      );
-  }
-
-
   /* Login redirect *///////////
   redirectToLogin(){
     window.location.href = "/fe/home.html";
   }
 
   logout(){
-    /* Slice CSRF token and redirect to login */
+    /* Slice CSRF token/session ID and redirect to login */
+    /* Why is there not a logout endpoint on the server to clear its session? */
     let ca:Array<String> = document.cookie.split(';');
     let i:number;
-    if (ca.length <= 0){
-      for (i = 0; i < ca.length; i += 1){
-        if (ca[i].indexOf(CSRF_COOKIE) == 0){
-          break;
-        }
-      }
-      if (i < ca.length){
-        ca = ca.splice(i, 1);
+    if (ca.length > 0){
+      for (i = 0; i < ca.length; i += 1)
+        if (ca[i].indexOf(CSRF_COOKIE) == 0) break;
+
+      if (i < ca.length) ca = ca.splice(i, 1);
+
+      if (ca.length > 0){
+        for (i = 0; i < ca.length; i += 1)
+          if (ca[i].indexOf("sessionid") == 0) break;
+
+        if (i < ca.length) ca = ca.splice(i, 1);
       }
       document.cookie = ca.join(';');
     }
@@ -76,16 +68,17 @@ export class UserService {
   getFood(){
     return this.http.get(
       "/api/foods/",
-      {headers: this.headers});
+      {headers: this.headers}).shareReplay();
   }
 
   getFoodByDate(date:string){
     return this.http.get(
       "/api/foods/?date=" + date,
-      {headers: this.headers});
+      {headers: this.headers}).shareReplay();
   }
 
   postFood(food:Food, timestamp:string){
+    
     return this.http.post(
       "/api/foods/",
       {
@@ -108,14 +101,14 @@ export class UserService {
         timestamp:timestamp,
       },
     {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   getWeights(){
     return this.http.get(
       "/api/weights/",
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   addWeight(weight:Object){
@@ -123,7 +116,7 @@ export class UserService {
       "/api/weights/",
       JSON.stringify(weight),
       {headers: this.headers}
-    );
+    ).shareReplay();
     addRequest.subscribe(
       (response:any) => {
       },
@@ -139,7 +132,7 @@ export class UserService {
     let request = this.http.get(
       "/api/users/me/",
       {headers: this.headers}
-    );
+    ).shareReplay();
     request.subscribe(
       (user_data:any) => {
         this.user = user_data;
@@ -176,22 +169,20 @@ export class UserService {
       "/api/users/me/",
       userObject,
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
 
   getResults(date:string){
     return this.http.get(
       "/api/results/me/?date=" + date,
       {headers: this.headers}
-    );
+    ).shareReplay();
   }
-
-  
 
 }
 
 // Class definitions
-class User{
+export class User{
   full_name:string;
   email:string;
   username:string;
