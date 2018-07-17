@@ -4,6 +4,75 @@
   <span>{{loadingText}}</span>
 </div>
 
+<!-- Modal to display confirmation of success/failure of payment operations -->
+<ng-template #paymentProcessedModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">{{paymentProcessedModalTitle}}</h4>
+    </div>
+    <div class="modal-body">
+      {{paymentProcessedModalBody}}
+    </div>
+    <div class="modal-footer">
+      <button class="breathe-submit-button" (click)="dismissActiveModal()">Dismiss</button>
+    </div>
+</ng-template>
+<!-- End payment processed modal -->
+
+<!-- Delete payment info modal-->
+<ng-template #paymentDeleteModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">Are You Sure?</h4>
+    </div>
+    <div class="modal-body">
+      Deleting your payment information will still allow you to finish the current subscription period, 
+      and your subscription will be invalidated the next payment cycle. If you wish to renew or restart 
+      your subsription, you will need to supply a new payment method.
+    </div>
+    <div class="modal-footer">
+      <div class="row justify-content-end">
+        <div class="col-auto">
+          <button class="breathe-danger-button" (click)="deleteInfo()">Delete</button>
+        </div>
+        <div class="col-auto">
+          <button class="breathe-cancel-button" (click)="dismissActiveModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</ng-template>
+<!-- End delete payment info modal -->
+
+<!-- Modify subscription modal -->
+<ng-template #changeSubscriptionModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Modify Subscription</h4>
+  </div>
+  <div class="modal-body" *ngIf="stripeSubscription.plan == 'annual'">
+    <p>Plan: Monthly</p>
+    <p>Price: $14.95/month</p>
+    <p>
+      Modifying your subscription may result in proration. This means that the remainder of your current subscription period 
+      will be billed at the new rate, which will appear on your next invoice. If you are moving to a less expensive plan, you will
+      receive credit for the part of the period you already paid for, decreasing the amount billed on your next invoice.
+    </p>
+  </div>
+  <div class="modal-body" *ngIf="stripeSubscription.plan == 'monthly'">
+      <p>Plan: Annual</p>
+      <p>Price: $99.95/year</p>
+      <p>
+        Modifying your subscription may result in proration. This means that the remainder of your current subscription period 
+        will be billed at the new rate, which will appear on your next invoice. If you are moving to a less expensive plan, you will
+        receive credit for the part of the period you already paid for, decreasing the amount billed on your next invoice.
+      </p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="breathe-submit-button" (click)="changeSubscription()">Subscribe</button>
+    <button class="breathe-submit-button" (click)="dismissActiveModal()">Dismiss</button>
+  </div>
+</ng-template>
+<!-- End modify subscription modal -->
+
+
 <div class="payment-response" *ngIf="paymentProcessed">
   <span>{{paymentResponseText}}</span>
   <button (click)="paymentProcessed = false" class="breathe-submit-button">Dismiss</button>
@@ -18,7 +87,7 @@
           Update Profile
         </div>
       </div>
-      <div class="row">
+      <div class="row pt-3">
         <div class="col breathe-panel">
           <form class="mb-2" (submit)="save()">
               
@@ -140,56 +209,100 @@
       </div>
     </div>
 
-    <div class="col-md-4 breathe-panel mt-0">
-      <div class="row breathe-header justify-content-between">
+    <div class="col-md-4 mt-0">
+      <div class="row breathe-panel pb-2">
         <div class="col">
-          Sync Status
+          <div class="row breathe-header justify-content-between">
+            <div class="col">
+              Sync Status
+            </div>
+            <div class="col-auto" id="statusIcon">
+              <img src="assets/breathe-icons/breathe-hr-danger.svg" class="breathe-icon-danger" *ngIf="tempUser.status != 'connected'" />
+              <img src="assets/breathe-icons/breathe-hr-ok.svg" class="breathe-icon-okay" *ngIf="tempUser.status == 'connected'" />        </div>
+          </div>
+          <div class="row">
+            <div class="col mt-2">
+              <div class="row py-2">
+                <div class="col-sm-4">
+                  HR Source
+                </div>
+                <div class="col-auto text-capitalize">
+                  {{tempUser.token_source ? tempUser.token_source : "N/A"}}
+                </div>
+              </div>
+
+              <div class="row py-2">
+                <div class="col-sm-4">
+                  Status
+                </div>
+                <div class="col-auto text-capitalize" [ngClass]= "{'breathe-status-danger': tempUser.status != 'connected'}">
+                  {{tempUser.status ? tempUser.status : "Unknown"}}
+                </div>
+              </div>
+
+              <div class="row py-2">
+                <div class="col-sm-4">
+                  Last HR Sync
+                </div>
+                <div class="col-auto">
+                  {{hrSync ? hrSync : "Unknown"}}
+                </div>
+              </div>
+
+              <div class="row py-2">
+                <div class="col-sm-4">
+                  Last sync attempt
+                </div>
+                <div class="col-auto">
+                  {{syncAttempt ? syncAttempt : "Unknown"}}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-auto" id="statusIcon">
-          <img src="assets/breathe-icons/breathe-hr-danger.svg" class="breathe-icon-danger" *ngIf="tempUser.status != 'connected'" />
-          <img src="assets/breathe-icons/breathe-hr-ok.svg" class="breathe-icon-okay" *ngIf="tempUser.status == 'connected'" />        </div>
       </div>
-      <div class="row">
-        <div class="col mt-2">
-            <div class="row py-2">
-              <div class="col-sm-4">
-                HR Source
-              </div>
-              <div class="col-auto text-capitalize">
-                {{tempUser.token_source ? tempUser.token_source : "N/A"}}
+      <div class="row breathe-panel pb-5">
+        <div class="col">
+            <div class="row breathe-header">
+              <div class="col">
+                Payment Information
               </div>
             </div>
 
-            <div class="row py-2">
-              <div class="col-sm-4">
-                Status
-              </div>
-              <div class="col-auto text-capitalize" [ngClass]= "{'breathe-status-danger': tempUser.status != 'connected'}">
-                {{tempUser.status ? tempUser.status : "Unknown"}}
+            <div class="row pt-3">
+              <div class="col">
+                <div class="row py-2" *ngIf="stripeCard && stripeCard.brand">
+                  <div class="col">
+                    Method: {{stripeCard.brand}} ending in {{stripeCard.last4}}
+                  </div>
+                  <div class="col-auto" id="stripeCardChange" (click)="openStripeModify()">
+                    Change
+                  </div>
+                  <div class="col-auto" id="stripeCardDelete" (click)="openStripeDelete()">
+                    Delete
+                  </div>
+                </div>
+                <p class="text-capitalize">
+                  Subscription Plan: {{isSubscribed() ? stripeSubscription.plan : "None"}}
+                </p>
+                <p class="text-capitalize">
+                  Subscription Status: <span [ngClass]= "{'breathe-status-danger': isSubscribed()}">{{userService.subcriptionStatus ? userService.subscriptionStatus : "Not Subscribed"}}</span>
+                </p>
+                <div class="row py-2" *ngIf="isSubscribed()">
+                  <div class="col">
+                    <button class="breathe-submit-button" (click)="openSubscriptionModify()">Modify Plan</button>
+                  </div>
+                </div>
+                <div class="row py-2" *ngIf="!isSubscribed()">
+                  <div class="col">
+                    <button class="breathe-submit-button" (click)="openStripeMonthly()">Subscribe to Monthly Plan</button>
+                  </div>
+                  <div class="col">
+                    <button class="breathe-submit-button" (click)="openStripeAnnual()">Subscribe to Annual Plan</button>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div class="row py-2">
-              <div class="col-sm-4">
-                Last HR Sync
-              </div>
-              <div class="col-auto">
-                {{hrSync ? hrSync : "Unknown"}}
-              </div>
-            </div>
-
-            <div class="row py-2">
-              <div class="col-sm-4">
-                Last sync attempt
-              </div>
-              <div class="col-auto">
-                {{syncAttempt ? syncAttempt : "Unknown"}}
-              </div>
-            </div>
-
-            <button (click)="openStripeMonthly()">Monthly Subscription</button>
-            <button (click)="openStripeAnnual()">Annual Subscription</button>
-
 
         </div>
       </div>

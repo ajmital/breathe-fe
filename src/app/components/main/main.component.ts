@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { FoodComponent } from '../food/food.component';
 import { SettingsComponent } from '../settings/settings.component';
+import {PaymentService} from '../../services/payment.service';
 
 const now:Date = new Date();
 
@@ -27,13 +28,21 @@ export class MainComponent implements OnInit {
 
 
   // Switch to control loading animation
-  isLoaded:boolean = true; // TODO
+  isLoaded:boolean = false;
+  statusReady:boolean = false;
 
   // Control showing initial setup page
   firstTimeSetup:boolean = false;
-  modalRef:NgbModalRef = null;
   @ViewChild('setupModal')
-  modalTemplate:TemplateRef<any>;
+  setupModal:TemplateRef<any>;
+
+  @ViewChild('subscribeModal')
+  subscribeModal:TemplateRef<any>;
+
+  @ViewChild('subscribeFirstModal')
+  subscribeFirstModal:TemplateRef<any>;
+
+  activeModal:NgbModalRef = null;
 
   // String to display algorithm training status
   training_status:string = null;
@@ -59,7 +68,7 @@ export class MainComponent implements OnInit {
   food:boolean = false;
   settings:boolean = false;
 
-  constructor(public userService:UserService, private modalService:NgbModal) { }
+  constructor(public userService:UserService, private modalService:NgbModal, public paymentService:PaymentService) { }
 
   ngOnInit() {
     let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
@@ -74,7 +83,7 @@ export class MainComponent implements OnInit {
           this.weight = user_data["weight"];
           this.fullName = user_data["full_name"];
           this.firstTimeSetup = true;
-          this.modalRef= this.modalService.open(this.modalTemplate, {size: 'lg', keyboard: false});
+          this.activeModal = this.modalService.open(this.setupModal, {size: 'lg', keyboard: false});
         }
       },
       (err) => {},
@@ -94,6 +103,16 @@ export class MainComponent implements OnInit {
       },
       (err:HttpErrorResponse) => {
         console.error(err);
+      }
+    );
+
+    this.paymentService.getStatus().subscribe(
+      (results) => {
+        this.userService.subscriptionStatus = results['status'];
+      },
+      (err) => {},
+      () => {
+        this.statusReady = true;
       }
     );
 
@@ -143,10 +162,8 @@ export class MainComponent implements OnInit {
       },
       () => {
         this.firstTimeSetup = false;
-        if (this.modalRef){
-          this.modalRef.close();
-          this.modalRef = null;
-        }
+        this.dismissActiveModal();
+        this.activeModal = this.modalService.open(this.subscribeFirstModal);
       }
     )
   }
@@ -206,6 +223,13 @@ export class MainComponent implements OnInit {
     this.dashboardComponent.openWeightModal();
   }
 
+  dismissActiveModal(){
+    if (this.activeModal){
+      this.activeModal.close();
+      this.activeModal = null;
+    }
+  }
+
   logout(){
     this.userService.logout();
   }
@@ -221,6 +245,15 @@ export class MainComponent implements OnInit {
 
   closeNav(){
     this.navOpen = false;
+  }
+
+  openSubscribeModal(){
+    this.activeModal = this.modalService.open(this.subscribeModal);
+  }
+
+  dismissAndSwitch(component:string){
+    this.dismissActiveModal();
+    this.show(component);
   }
 
 }

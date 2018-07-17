@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/shareReplay';
 
 const CSRF_COOKIE:string = "csrftoken";
+const ANNUAL_PLAN:string = "plan_DDvxdRbzhmimuW";
+const MONTHLY_PLAN:string = "plan_DDvwiRtFyuFZNu";
 
 @Injectable()
 export class PaymentService {
@@ -34,7 +36,10 @@ export class PaymentService {
     return this.processPayment("/api/stripe/customer/subscribe/annual/", token);
   }
 
-  /* Sends payment information and subscribes a user to a payment plan */
+  /*
+  * Sends payment information and subscribes a user to a payment plan
+  * Returns a subscription object (https://stripe.com/docs/api#subscription_object)
+  */
   processPayment(url:string, token:string){
     let request = this.http.post(
       url,
@@ -66,4 +71,137 @@ export class PaymentService {
     return request;
   }
 
+
+  /*
+  * Because of the (necessary evil of) synchronicity of the Stripe API, this should be done only when
+  * the user requests to see their payment details, and the results should be stored in memory.
+  * Returns a stripe customer object (https://stripe.com/docs/api#customer_object)
+  */
+
+  getCustomer(){
+    let request = this.http.get(
+      '/api/stripe/customer/retrieve/',
+      {headers: this.headers}
+    ).shareReplay();
+    
+    request.subscribe(
+      (results) => {
+        if (results['error']){
+          console.error("Customer retrieval failed: " + results['error']);
+        }
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err.message);
+      }
+    );
+    return request;
+  }
+
+  /*
+  * Modifies a customer's default payment method using a stripe token 
+  * Returns a stripe customer object (https://stripe.com/docs/api#customer_object)
+  */
+  modifyCustomer(token:string){
+    let request = this.http.post(
+      '/api/stripe/customer/modify/',
+      {"stripeToken": token},
+      {headers: this.headers}
+    ).shareReplay();
+
+    request.subscribe(
+      (results) => {
+        if (results['error']){
+          console.error("Payment method update failed: " + results['error']);
+        }
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err.message);
+      }
+    );
+
+    return request;
+  }
+
+  /* Removes payment information from the user */
+  deletePaymentInfo(){
+    let request = this.http.delete(
+      '/api/stripe/customer/delete/',
+      {headers: this.headers}
+    ).shareReplay();
+
+    request.subscribe(
+      (results) => {
+        if (results['error']){
+          console.error("Failed to delete payment info: " + results['error']);
+        }
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err.message);
+      }
+    );
+
+    return request;
+  }
+
+
+  /*
+  * Changes subscription plan
+  * 'subscription' should be either 'monthly' or 'annual'
+  * Returns a subscription object (https://stripe.com/docs/api#subscription_object)
+  */
+
+  changeSubscription(subscription:string){
+    let request = this.http.post(
+      '/api/stripe/customer/subscription/modify/',
+      {'subscription': subscription},
+      {headers: this.headers}
+    ).shareReplay();
+
+    request.subscribe(
+      (results) => {
+        if (results['error']){
+          console.error("Failed to modify subscription: " + results['error']);
+        }
+      },
+      (err:HttpErrorResponse) =>{
+        console.error(err.message);
+      }
+    )
+
+    return request;
+  }
+}
+
+
+/* https://stripe.com/docs/api#subscription_object */
+export class StripeSubscription{
+  public id:string;
+  public period_start:Date;
+  public period_end:Date; // UTC
+  public plan:string;
+  constructor(id:string = "", period_start:number = 0, period_end:number = 0, plan_id:string = ""){
+    this.id = id;
+    this.period_start = (period_start == 0) ? null : new Date(period_start * 1000);
+    this.period_end = (period_end == 0) ? null : new Date(period_end * 1000);
+    if (plan_id == ANNUAL_PLAN){
+      this.plan = "annual";
+    }else if (plan_id == MONTHLY_PLAN){
+      this.plan = "monthly";
+    }else{
+      this.plan = "unknown";
+    }
+  };
+}
+
+export class StripeCard{
+  public brand:string; // Visa, AMEX, etc.
+  public last4:string;
+  public expires:string = "";
+  constructor(brand:string = "", last4:string = "", expires_month:string = "", expires_year:string =""){
+    this.brand = brand;
+    this.last4 = last4;
+    if (expires_month && expires_year){
+      this.expires = expires_month + '/' + expires_year;
+    }
+  };
 }

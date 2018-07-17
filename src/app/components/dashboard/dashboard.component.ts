@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit {
   weightModal:TemplateRef<any>;
 
   @Output() switchToFood = new EventEmitter();
+  @Output() showSubscribeMessage = new EventEmitter();
 
   // User's food's
   foodList = {};
@@ -97,6 +98,11 @@ export class DashboardComponent implements OnInit {
     this.getWeights();
   }
 
+  /* Is user subscribed */
+  isSubscribed(){
+    return this.userService.subscriptionStatus === 'active' || this.userService.subscriptionStatus === 'past_due' || this.userService.subscriptionStatus === 'trialing';
+  }
+
   // Will need to call whenever resultsDate struct is updated
   getResults(){
     this.userService.getResults(this.dateStructToDateString(this.resultsDate)).subscribe(
@@ -134,6 +140,11 @@ export class DashboardComponent implements OnInit {
   }
 
   addWeight(value:number){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
+
     let weight:Object = {value: value, email: this.userService.user.email, timestamp: this.dateStructToTimestamp(this.weightDate)};
     this.userService.addWeight(weight).subscribe(
       (results) => {},
@@ -181,6 +192,10 @@ export class DashboardComponent implements OnInit {
   };
 
   openWeightModal(){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
     this.modalRef = this.modalService.open(this.weightModal, {size: "lg"});
   }
 
@@ -263,6 +278,10 @@ export class DashboardComponent implements OnInit {
 
   repeatFood(food:Food, event: MouseEvent){
     event.stopPropagation(); // Prevent parent from receiving click as well
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
     let request:any;
     // Retrieve details from the item id for branded foods
     if (food.nix_item_id){
@@ -306,6 +325,10 @@ export class DashboardComponent implements OnInit {
 
   // Adds foods from selectedFood
   addSelectedFoods(){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
     this.foodDate = this.maxDate;
     let timestamp:string = this.dateStructToTimestamp(this.maxDate);
     while (this.selectedFood.length > 0){
@@ -345,6 +368,10 @@ export class DashboardComponent implements OnInit {
   }
 
   addCurrentFood(){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
     let timestamp = this.dateStructToTimestamp(this.foodDate);
     
     this.userService.postFood(this.food_detail, timestamp).subscribe(
@@ -364,6 +391,14 @@ export class DashboardComponent implements OnInit {
   /* Sends event to parent component (main) to redirect to the food page */
   addFood(){
     this.switchToFood.emit();
+  }
+
+  /* Shows message for operations that require a subscription */
+  showSubscribe(){
+    if (this.modalRef){
+      this.modalRef.close();
+    }
+    this.showSubscribeMessage.emit();
   }
 
   nextDay(){

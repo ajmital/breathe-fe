@@ -15,6 +15,7 @@ const now:Date = new Date();
 export class FoodComponent implements OnInit {
 
   @Output() cancel = new EventEmitter();
+  @Output() showSubscribeMessage = new EventEmitter();
 
   food_entries = {"breakfast": [], "lunch":[], "dinner":[], "snack":[]};
   periodList:string[] = ["breakfast", "lunch", "dinner", "snack"];
@@ -36,8 +37,7 @@ export class FoodComponent implements OnInit {
   selectedFood:Food[] = [];
   multiSelect:boolean = false;
 
-  constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {
-  }
+  constructor(private userService:UserService, private foodService:FoodService, private modalService:NgbModal) {}
 
   ngOnInit() {}// Allow parent component to call update(), to prevent unecessary initial requests
 
@@ -66,6 +66,19 @@ export class FoodComponent implements OnInit {
       this.food_entries[new_food.period].push(new_food);
     }
   });
+  }
+
+  /* Is user subscribed */
+  isSubscribed(){
+    return this.userService.subscriptionStatus === 'active' || this.userService.subscriptionStatus === 'past_due' || this.userService.subscriptionStatus === 'trialing';
+  }
+
+  /* Shows message for operations that require a subscription */
+  showSubscribe(){
+    if (this.modalRef){
+      this.modalRef.close();
+    }
+    this.showSubscribeMessage.emit();
   }
 
   search(query:string){
@@ -132,6 +145,11 @@ export class FoodComponent implements OnInit {
 
   repeatFood(food:Food, event: MouseEvent){
     event.stopPropagation(); // Prevent parent from receiving click as well
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
+
     let request:any;
     // Retrieve details from the item id for branded foods
     if (food.nix_item_id){
@@ -176,6 +194,11 @@ export class FoodComponent implements OnInit {
 
   // Adds foods from selectedFood
   addSelectedFoods(){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
+
     let timestamp:string = this.dateStructToTimestamp(this.foodDate);
     while (this.selectedFood.length > 0){
       let currentFood = this.selectedFood.pop();
@@ -214,6 +237,11 @@ export class FoodComponent implements OnInit {
   }
 
   addCurrentFood(){
+    if (!this.isSubscribed()){
+      this.showSubscribe();
+      return;
+    }
+
     let timestamp = this.dateStructToTimestamp(this.foodDate);
     
     this.userService.postFood(this.food_detail, timestamp).subscribe(

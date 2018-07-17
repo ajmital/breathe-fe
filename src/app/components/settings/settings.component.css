@@ -2,6 +2,46 @@
     height: 1.2rem;
 }
 
+#stripeCardChange{
+    color: #007bff;
+    cursor: pointer;
+}
+
+#stripeCardChange:hover{
+    color: #004b9b;
+}
+
+#stripeCardDelete{
+    color: #ff0000;
+    cursor: pointer;
+}
+
+#stripeCardDelete:hover{
+    color: #d30000;
+}
+
+.breathe-danger-button{
+    border: none;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    color: #FFFFFF;
+    background: #e60000;
+    background: linear-gradient(#ff0000, #d30000);
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.5s;
+}
+
+.breathe-danger-button:hover{
+    background: #fda41e;
+    background: linear-gradient(#ff3636, #d32727);
+}
+
 
 /* Dialogue that displays results of subscription attempt */
 /*

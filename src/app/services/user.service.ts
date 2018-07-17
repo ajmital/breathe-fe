@@ -39,7 +39,7 @@ export class UserService {
 
   /* Login redirect *///////////
   redirectToLogin(){
-    window.location.href = "/fe/home.html";
+    window.location.href = "/google/oauth2/?device=browser";
   }
 
   logout(){

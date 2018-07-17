@@ -81,11 +81,52 @@
 </ng-template>
 <!-- End setup modal -->
 
+<!-- Modal asking first time users to subscribe -->
+<ng-template #subscribeFirstModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">Subscribe</h4>
+    </div>
+    <div class="modal-body">
+      Now that you have your account setup, go to the settings page and subscribe to one of our plans to get the most out of Breathe.
+      You can still log in without a subscription, but will not be able to log your food/weight or retrieve your results until you subscribe.
+    </div>
+    <div class="modal-footer">
+      <div class="row">
+        <div class="col">
+          <button class="breathe-submit-button" (click)="dismissAndSwitch('settings')">Settings</button>
+        </div>
+        <div class="col">
+          <button class="breathe-cancel-button" (click)="dismissActiveModal()">Later</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+<!-- Modal to display for when user attempts to perform subscription-required operation -->
+<ng-template #subscribeModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Subscribe</h4>
+  </div>
+  <div class="modal-body">
+    You must be subscribed to perform this action. If you wish to subscribe, please visit the settings page.
+  </div>
+  <div class="modal-footer">
+    <div class="row">
+      <div class="col">
+        <button class="breathe-submit-button" (click)="dismissAndSwitch('settings')">Settings</button>
+      </div>
+      <div class="col">
+        <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
 <!-- Loading animation -->
-<div class="loader" *ngIf="!isLoaded"></div>
+<div class="loader" *ngIf="!isLoaded || !statusReady"></div>
 
 <!--Side nav -->
-<div id="sideMenu" [ngClass]="{'breathe-sidenav-open' : navOpen}" class="breathe-sidenav" *ngIf="isLoaded">
+<div id="sideMenu" [ngClass]="{'breathe-sidenav-open' : navOpen}" class="breathe-sidenav" *ngIf="isLoaded && statusReady">
   <div class="row justify-content-between sidenav-header">
     <div class="col sidenav-profile">{{this.userService.user.full_name}}</div>
     <div class="col-auto sidenav-exit" (click)="closeNav()"><img src="assets/img/breathe-exit.png" /></div>
@@ -187,7 +228,7 @@
 
 
     <nav class="navbar navbar-expand">
-        <img class="navbar-brand" src="assets/img/breathe-logo.svg" />
+        <a href="/fe/home.html"><img class="navbar-brand" src="assets/img/breathe-logo.svg" /></a>
         <div class="mr-auto"></div>
         <div class="navbar-nav pr-sm-2">
             <span class="nav-item nav-link" [ngClass]="{'breathe-active': dashboard}"  (click)="show('dashboard')">Dashboard</span>
@@ -203,8 +244,8 @@
           <div></div>
         </div>
     </nav>
-    <app-dashboard [ngStyle]="{'display': dashboard ? 'initial' : 'none'}" (switchToFood)="show('food')"></app-dashboard>
-    <app-food [ngStyle]="{'display': food ? 'initial' : 'none'}" (cancel)="show('dashboard')" ></app-food>
+    <app-dashboard [ngStyle]="{'display': dashboard ? 'initial' : 'none'}" (switchToFood)="show('food')" (showSubscribeMessage)="openSubscribeModal()"></app-dashboard>
+    <app-food [ngStyle]="{'display': food ? 'initial' : 'none'}" (cancel)="show('dashboard')" (showSubscribeMessage)="openSubscribeModal()"></app-food>
     <app-settings [ngStyle]="{'display': settings ? 'initial' : 'none'}"></app-settings>
 
 </div>
