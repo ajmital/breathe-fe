@@ -86,7 +86,9 @@ export class MainComponent implements OnInit {
           this.activeModal = this.modalService.open(this.setupModal, {size: 'lg', keyboard: false});
         }
       },
-      (err) => {},
+      (err) => {
+        this.isLoaded = true;
+      },
       () => {
         this.isLoaded = true;
       }
@@ -110,7 +112,9 @@ export class MainComponent implements OnInit {
       (results) => {
         this.userService.subscriptionStatus = results['status'];
       },
-      (err) => {},
+      (err) => {
+        this.statusReady = true; // Should be caught by onComplete, but isn't
+      },
       () => {
         this.statusReady = true;
       }

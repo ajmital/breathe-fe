@@ -54,7 +54,7 @@ export class SettingsComponent implements OnInit {
   /* Temporary user object for modifying */
   tempUser:User = new User();
 
-  constructor(private userService:UserService, private paymentService:PaymentService, private modalService:NgbModal) { }
+  constructor(public userService:UserService, private paymentService:PaymentService, private modalService:NgbModal) { }
 
   ngOnInit() {} // Allow parent component to call update() method
 

@@ -72,12 +72,6 @@
 </ng-template>
 <!-- End modify subscription modal -->
 
-
-<div class="payment-response" *ngIf="paymentProcessed">
-  <span>{{paymentResponseText}}</span>
-  <button (click)="paymentProcessed = false" class="breathe-submit-button">Dismiss</button>
-</div>
-
 <!-- Main page content-->
 <div class="container-fluid">  
   <div class="row">
@@ -286,7 +280,7 @@
                   Subscription Plan: {{isSubscribed() ? stripeSubscription.plan : "None"}}
                 </p>
                 <p class="text-capitalize">
-                  Subscription Status: <span [ngClass]= "{'breathe-status-danger': isSubscribed()}">{{userService.subcriptionStatus ? userService.subscriptionStatus : "Not Subscribed"}}</span>
+                  Subscription Status: <span [ngClass]= "{'breathe-status-danger': isSubscribed()}">{{userService.subscriptionStatus ? userService.subscriptionStatus : "Not Subscribed"}}</span>
                 </p>
                 <div class="row py-2" *ngIf="isSubscribed()">
                   <div class="col">
