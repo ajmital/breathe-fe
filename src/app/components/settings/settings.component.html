@@ -95,10 +95,10 @@
 <!-- Subscription confirm/select -->
 <ng-template #subscribeConfirmationModal let-c="close" let-d="dismiss">
   <div class="modal-header green-background">
-    <h4 class="modal-title">Modify Subscription</h4>
+    <h4 class="modal-title">Subscribe</h4>
   </div>
   <div class="modal-body">
-    <div class="row breathe-panel pb-2">
+    <div class="row breathe-panel pb-2" *ngIf="stripeCard && stripeCard.brand">
       <div class="col">
         <p>Current payment method: {{stripeCard.brand}} ending in {{stripeCard.last4}}</p>
         <div class="row">
@@ -112,6 +112,12 @@
         </div>
       </div>
     </div>
+    <div class="row breathe-panel" *ngIf="couponCode && couponCode !== ''">
+      <div class="col">
+        Coupon: {{couponCode}}
+      </div>
+    </div>
+
     <div class="row pt-2">
       <div class="col-6">Monthly Plan</div>
       <div class="col-auto">$14.95/month</div>
@@ -358,7 +364,7 @@
                 </div>
                 <div class="row py-2" *ngIf="!isSubscribed()">
                   <div class="col">
-                    <input type="text" [(ngModel)]="couponCode" placeholder="Coupon code" />
+                    <input type="text" class="form-control" [(ngModel)]="couponCode" placeholder="Coupon code" />
                   </div>
                 </div>
               </div>

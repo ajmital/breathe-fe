@@ -155,19 +155,7 @@ export class SettingsComponent implements OnInit {
   update(user:User){
     if (this.firstLoad){
       this.firstLoad = false;
-      this.paymentService.getCustomer().subscribe(
-        (results) => {
-          if (results["sources"]["data"].length > 0){
-            let cardObject = results["sources"]["data"][0];
-            this.stripeCard = new StripeCard(cardObject['brand'], cardObject['last4'], cardObject['exp_month'], cardObject['exp_year']);
-          }
-
-          if (results["subscriptions"]["data"].length > 0){
-            let subObject = results["subscriptions"]["data"][0];
-            this.stripeSubscription = new StripeSubscription(subObject['id'], subObject['current_period_start'], subObject['current_period_end'], subObject['plan']['id']);
-          }
-        }
-      );
+      this.getCustomer();
     }
 
     if (user){
@@ -191,16 +179,43 @@ export class SettingsComponent implements OnInit {
     }
   }
 
+  /* Populates subscription and card objects */
+  getCustomer(){
+    this.paymentService.getCustomer().subscribe(
+      (results) => {
+        if (results["sources"]["data"].length > 0){
+          let cardObject = results["sources"]["data"][0];
+          this.stripeCard = new StripeCard(cardObject['brand'], cardObject['last4'], cardObject['exp_month'], cardObject['exp_year']);
+        }
+        if (results["subscriptions"]["data"].length > 0){
+          let subObject = results["subscriptions"]["data"][0];
+          this.stripeSubscription = new StripeSubscription(subObject['id'], subObject['current_period_start'], subObject['current_period_end'], subObject['plan']['id']);
+        }
+      }
+    );
+  }
+
   /* Opens handler with configuration/callback for monthly plan */
   openStripeMonthly(){
     this.dismissActiveModal();
-    if (!this.changePayment){
+
+    if (!this.stripeCard || !this.stripeCard.brand){
+      this.changePayment = true;
+    }
+    if (!this.changePayment && this.stripeCard && this.stripeCard.brand){
       this.isLoading = true;
       this.loadingText = "Subscribing user...";
       this.paymentService.processMonthlyPayment(null, this.couponCode).subscribe(
         (results) => {
-          this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
-          this.verifyPaymentStatus();
+          if (results['error']){
+            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
+            this.paymentProcessedModalTitle = "Error";
+            this.isLoading = false;
+            this.activeModal = this.modalService.open(this.paymentProcessedModal);
+          }else{
+            this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
+            this.verifyPaymentStatus();
+          }
         },
         (err:HttpErrorResponse) => {
           this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
@@ -221,7 +236,6 @@ export class SettingsComponent implements OnInit {
         this.isLoading = true;
         this.paymentService.processMonthlyPayment(token, this.couponCode).subscribe(
           (results) => {
-            this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
             this.verifyPaymentStatus();
           },
           (err:HttpErrorResponse) => {
@@ -237,6 +251,32 @@ export class SettingsComponent implements OnInit {
 
   /* Opens handler with config/callback for annual plan */
   openStripeAnnual(){
+    this.dismissActiveModal();
+    if (!this.changePayment && !(this.stripeCard && this.stripeCard.brand)){
+      this.isLoading = true;
+      this.loadingText = "Subscribing user...";
+      this.paymentService.processAnnualPayment(null, this.couponCode).subscribe(
+        (results) => {
+          if (results['error']){
+            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
+            this.paymentProcessedModalTitle = "Error";
+            this.isLoading = false;
+            this.activeModal = this.modalService.open(this.paymentProcessedModal);
+          }else{
+            this.verifyPaymentStatus();
+          }
+        },
+        (err:HttpErrorResponse) => {
+          this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
+          this.paymentProcessedModalTitle = "Error";
+          this.isLoading = false;
+          this.activeModal = this.modalService.open(this.paymentProcessedModal);
+        }
+      );
+      return;
+    }
+
+
     this.stripeHandler.open({
       description: 'Annual subscription plan',
       amount: ANNUAL_RATE,
@@ -271,7 +311,6 @@ export class SettingsComponent implements OnInit {
               console.error(results['error']);
               this.paymentProcessedModalBody = "Failed to update payment information: " + results['error'];
               this.paymentProcessedModalTitle = "Error";
-              
             }else{
               let cardObject = results["sources"]["data"][0];
               this.stripeCard = new StripeCard(cardObject['brand'], cardObject['last4'], cardObject['exp_month'], cardObject['exp_year']);
@@ -367,10 +406,14 @@ export class SettingsComponent implements OnInit {
       (err:HttpErrorResponse) =>{
         this.paymentProcessedModalBody = "There was an error retrieving your subscription status: " + err.error;
         this.paymentProcessedModalTitle = "Error";
+        this.isLoading = false;
+        this.activeModal = this.modalService.open(this.paymentProcessedModal);
       },
       () => {
         this.isLoading = false;
         this.activeModal = this.modalService.open(this.paymentProcessedModal);
+        this.getCustomer();
+        
       }
     );
   }
@@ -388,6 +431,7 @@ export class SettingsComponent implements OnInit {
         }else{
           this.paymentProcessedModalTitle = "Payment Method Removed"
           this.paymentProcessedModalBody = "Successfully deleted your payment information ";
+          this.stripeCard = new StripeCard();
         }
       },
       (err:HttpErrorResponse) => {
