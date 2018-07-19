@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener, TemplateRef } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {PaymentService, StripeCard, StripeSubscription} from '../../services/payment.service';
 import {User} from '../../services/user.service';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -32,6 +32,8 @@ export class SettingsComponent implements OnInit {
   couponCode:string = "";
 
   activeModal:NgbModalRef = null;
+  confirmModal:NgbModalRef = null; // In case we need nested modals
+
   /* Payment processed modal */
   @ViewChild('paymentProcessedModal')
   paymentProcessedModal:TemplateRef<any>;
@@ -45,6 +47,14 @@ export class SettingsComponent implements OnInit {
   /* Modify subscription modal */
   @ViewChild('changeSubscriptionModal')
   changeSubscriptionModal:TemplateRef<any>;
+
+  /* Subscription confirmation (select subscription)*/
+  @ViewChild('subscribeConfirmationModal')
+  subscribeConfirmationModal:TemplateRef<any>;
+  changePayment:boolean = false;
+
+  @ViewChild('cancelSubscriptionModal')
+  cancelSubscriptionModal:TemplateRef<any>;
 
   hrSync:string = null;
   syncAttempt:string = null;
@@ -183,6 +193,25 @@ export class SettingsComponent implements OnInit {
 
   /* Opens handler with configuration/callback for monthly plan */
   openStripeMonthly(){
+    this.dismissActiveModal();
+    if (!this.changePayment){
+      this.isLoading = true;
+      this.loadingText = "Subscribing user...";
+      this.paymentService.processMonthlyPayment(null, this.couponCode).subscribe(
+        (results) => {
+          this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
+          this.verifyPaymentStatus();
+        },
+        (err:HttpErrorResponse) => {
+          this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
+          this.paymentProcessedModalTitle = "Error";
+          this.isLoading = false;
+          this.activeModal = this.modalService.open(this.paymentProcessedModal);
+        }
+      );
+      return;
+    }
+
     this.stripeHandler.open({
       description: 'Monthly subscription plan',
       amount: MONTHLY_RATE,
@@ -192,6 +221,7 @@ export class SettingsComponent implements OnInit {
         this.isLoading = true;
         this.paymentService.processMonthlyPayment(token, this.couponCode).subscribe(
           (results) => {
+            this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
             this.verifyPaymentStatus();
           },
           (err:HttpErrorResponse) => {
@@ -245,7 +275,7 @@ export class SettingsComponent implements OnInit {
             }else{
               let cardObject = results["sources"]["data"][0];
               this.stripeCard = new StripeCard(cardObject['brand'], cardObject['last4'], cardObject['exp_month'], cardObject['exp_year']);
-              this.paymentProcessedModalBody = "Your payment informatoin was successfully updated";
+              this.paymentProcessedModalBody = "Your payment information was successfully updated";
               this.paymentProcessedModalTitle = "Information Updated";
             }
           },
@@ -271,7 +301,51 @@ export class SettingsComponent implements OnInit {
 
   /* Opens subscription modify modal */
   openSubscriptionModify(){
-    this.activeModal = this.modalService.open(this.changeSubscriptionModal);
+    this.activeModal = this.modalService.open(this.changeSubscriptionModal), {size: 'lg'};
+  }
+
+  /* Opens subscription confirm */
+  openSubscriptionConfirm(){
+    this.activeModal = this.modalService.open(this.subscribeConfirmationModal);
+  }
+
+  openSubscriptionCancel(){
+    this.confirmModal = this.modalService.open(this.cancelSubscriptionModal);
+  }
+
+  cancelSubscription(){
+    this.isLoading = true;
+    this.loadingText = "Canceling subscription...";
+    if (this.confirmModal){
+      this.confirmModal.close();
+      this.confirmModal = null;
+    }
+
+    this.dismissActiveModal();
+    this.paymentService.cancelSubscription().subscribe(
+      (results) => {
+        if (results["error"]){
+          this.paymentProcessedModalBody = "Failed to cancel subscription: " + results["error"];
+          this.paymentProcessedModalTitle = "Error";
+        }else{
+          this.paymentProcessedModalBody = "Subscription successfully canceled";
+          this.paymentProcessedModalTitle = "Subscription Cancelled";
+          this.stripeSubscription = new StripeSubscription();
+          this.userService.subscriptionStatus = "canceled"; // With one 'L', following stripe's example
+        }
+      },
+      (err:HttpErrorResponse) => {
+        this.paymentProcessedModalBody = "Failed to cancel subscription: " + err.error;
+        this.paymentProcessedModalTitle = "Error";
+        this.isLoading = false;
+        this.activeModal = this.modalService.open(this.paymentProcessedModal);
+      },
+      () => {
+        // Why does this not trigger in the event of an error? It's whole point is to be there in both cases
+        this.isLoading = false;
+        this.activeModal = this.modalService.open(this.paymentProcessedModal);
+      }
+    );
   }
 
   /* Verifies that status after payment is what it should be after subscribing(probably 'active') */
@@ -284,7 +358,7 @@ export class SettingsComponent implements OnInit {
         if (status === 'active' ||  status === 'past_due' || status === 'trialing'){
           // DO SOMETHING HAPPY
           this.paymentProcessedModalTitle = "Successfully Subscribed to Breathe"
-          this.paymentProcessedModalBody = "Take a deep breath, and let's begin";
+          this.paymentProcessedModalBody = "Take a deep breath, and let's begin.";
         }else{
           this.paymentProcessedModalTitle = "Verification Failed"
           this.paymentProcessedModalBody = "Subscription verification failed: status was '" + status + "'.";

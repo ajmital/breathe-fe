@@ -41,7 +41,10 @@ export class PaymentService {
   * Returns a subscription object (https://stripe.com/docs/api#subscription_object)
   */
   processPayment(url:string, token:string, coupon:string){
-    let payload = {"stripeToken": token};
+    let payload = {};
+    if (token && token !== ""){
+      payload["stripeToken"] = token;
+    }
     if (coupon && coupon !== ""){
       payload["coupon"] = coupon;
     }
@@ -175,6 +178,23 @@ export class PaymentService {
 
     return request;
   }
+
+  /* Deletes subscription associated with user */
+
+  cancelSubscription(){
+    let request = this.http.delete("/api/stripe/customer/subscription/delete/", {headers: this.headers}).shareReplay();
+
+    request.subscribe(
+      (results) => {
+      },
+      (err:HttpErrorResponse) => {
+        console.error(err.error);
+      }
+    );
+
+    return request;
+  }
+
 }
 
 

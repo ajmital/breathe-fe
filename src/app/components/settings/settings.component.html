@@ -67,10 +67,67 @@
 
   <div class="modal-footer">
     <button class="breathe-submit-button" (click)="changeSubscription()">Subscribe</button>
-    <button class="breathe-submit-button" (click)="dismissActiveModal()">Dismiss</button>
+    <button class="breathe-danger-button" (click)="openSubscriptionCancel()">Delete</button>
+    <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
   </div>
 </ng-template>
 <!-- End modify subscription modal -->
+
+<!-- Subscription canel confirmation dialog -->
+<ng-template #cancelSubscriptionModal let-c="close" let-d="dismiss">
+    <div class="modal-header green-background">
+      <h4 class="modal-title">Delete Subscription</h4>
+    </div>
+    <div class="modal-body">
+      <p>
+        <span class="breathe-status-danger">Warning!</span> This will permanently cancel your subscription. You will not receive a refund for the unused remainder of the subscription period.
+        If you merely wish to stop renewal of your subscription, remove your payment information instead.
+      </p>
+    </div>
+  
+    <div class="modal-footer">
+      <button class="breathe-danger-button" (click)="cancelSubscription()">Delete</button>
+      <button class="breathe-cancel-button" (click)="dismissActiveModal()">Cancel</button>
+    </div>
+  </ng-template>
+
+
+<!-- Subscription confirm/select -->
+<ng-template #subscribeConfirmationModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Modify Subscription</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row breathe-panel pb-2">
+      <div class="col">
+        <p>Current payment method: {{stripeCard.brand}} ending in {{stripeCard.last4}}</p>
+        <div class="row">
+          <div class="col">
+            <label class="control control-checkbox">
+              Change Payment
+              <input type="checkbox" [(ngModel)]="changePayment"/>
+              <div class="control_indicator"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-6">Monthly Plan</div>
+      <div class="col-auto">$14.95/month</div>
+    </div>
+    <div class="row">
+      <div class="col-6">Annual Plan</div>
+      <div class="col-auto">$99.95/year</div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="breathe-submit-button" (click)="openStripeMonthly()">Monthly Plan</button>
+    <button class="breathe-submit-button" (click)="openStripeAnnual()">Annual Plan</button>
+    <button class="breathe-cancel-button" (click)="dismissActiveModal()">Cancel</button>
+  </div>
+</ng-template>
 
 <!-- Main page content-->
 <div class="container-fluid">  
@@ -294,12 +351,9 @@
                     <button class="breathe-submit-button" (click)="openSubscriptionModify()">Modify Plan</button>
                   </div>
                 </div>
-                <div class="row py-2" *ngIf="!isSubscribed()">
-                  <div class="col">
-                    <button class="breathe-submit-button" (click)="openStripeMonthly()">Subscribe to Monthly Plan</button>
-                  </div>
-                  <div class="col">
-                    <button class="breathe-submit-button" (click)="openStripeAnnual()">Subscribe to Annual Plan</button>
+                <div class="row py-2 justify-content-center" *ngIf="!isSubscribed()">
+                  <div class="col-auto">
+                    <button class="breathe-submit-button" (click)="openSubscriptionConfirm()">Subscribe</button>
                   </div>
                 </div>
                 <div class="row py-2" *ngIf="!isSubscribed()">
