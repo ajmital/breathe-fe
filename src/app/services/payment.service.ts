@@ -22,28 +22,33 @@ export class PaymentService {
     }
 
     // Set token header (if not found, user service will redirect to login)
-    if (this.csrf_tok){
+    if (this.csrf_tok != null){
       this.headers = new HttpHeaders({"content-type": "application/json", "X-CSRFToken": this.csrf_tok});
     }
   }
 
   /* Wrappers for processPayment, specifying which plan */
-  processMonthlyPayment(token:string){
-    return this.processPayment("/api/stripe/customer/subscribe/monthly/", token);
+  processMonthlyPayment(token:string ,coupon:string){
+    return this.processPayment("/api/stripe/customer/subscribe/monthly/", token, coupon);
   }
 
-  processAnnualPayment(token:string){
-    return this.processPayment("/api/stripe/customer/subscribe/annual/", token);
+  processAnnualPayment(token:string, coupon:string){
+    return this.processPayment("/api/stripe/customer/subscribe/annual/", token, coupon);
   }
 
   /*
   * Sends payment information and subscribes a user to a payment plan
   * Returns a subscription object (https://stripe.com/docs/api#subscription_object)
   */
-  processPayment(url:string, token:string){
+  processPayment(url:string, token:string, coupon:string){
+    let payload = {"stripeToken": token};
+    if (coupon && coupon !== ""){
+      payload["coupon"] = coupon;
+    }
+
     let request = this.http.post(
       url,
-      {"stripeToken": token},
+      payload,
       {headers: this.headers}
     ).shareReplay();
 
@@ -183,9 +188,9 @@ export class StripeSubscription{
     this.id = id;
     this.period_start = (period_start == 0) ? null : new Date(period_start * 1000);
     this.period_end = (period_end == 0) ? null : new Date(period_end * 1000);
-    if (plan_id == ANNUAL_PLAN){
+    if (plan_id == "plan_DDvxdRbzhmimuW"){
       this.plan = "annual";
-    }else if (plan_id == MONTHLY_PLAN){
+    }else if (plan_id == "plan_DDvwiRtFyuFZNu"){
       this.plan = "monthly";
     }else{
       this.plan = "unknown";

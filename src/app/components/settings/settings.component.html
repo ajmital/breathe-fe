@@ -276,6 +276,13 @@
                     Delete
                   </div>
                 </div>
+
+                <div class="row py-2" *ngIf="!stripeCard || !stripeCard.brand">
+                  <div class="col">
+                    <button class="breathe-submit-button" (click)="openStripeModify()">Add Payment Info</button>
+                  </div>
+                </div>
+
                 <p class="text-capitalize">
                   Subscription Plan: {{isSubscribed() ? stripeSubscription.plan : "None"}}
                 </p>
@@ -293,6 +300,11 @@
                   </div>
                   <div class="col">
                     <button class="breathe-submit-button" (click)="openStripeAnnual()">Subscribe to Annual Plan</button>
+                  </div>
+                </div>
+                <div class="row py-2" *ngIf="!isSubscribed()">
+                  <div class="col">
+                    <input type="text" [(ngModel)]="couponCode" placeholder="Coupon code" />
                   </div>
                 </div>
               </div>

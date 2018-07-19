@@ -29,7 +29,7 @@ export class SettingsComponent implements OnInit {
   /* Payment storage objects */
   stripeCard:StripeCard = new StripeCard();
   stripeSubscription:StripeSubscription = new StripeSubscription();
-
+  couponCode:string = "";
 
   activeModal:NgbModalRef = null;
   /* Payment processed modal */
@@ -147,12 +147,12 @@ export class SettingsComponent implements OnInit {
       this.firstLoad = false;
       this.paymentService.getCustomer().subscribe(
         (results) => {
-          if (results['sources']){
+          if (results["sources"]["data"].length > 0){
             let cardObject = results["sources"]["data"][0];
             this.stripeCard = new StripeCard(cardObject['brand'], cardObject['last4'], cardObject['exp_month'], cardObject['exp_year']);
           }
 
-          if (results['subscriptions']){
+          if (results["subscriptions"]["data"].length > 0){
             let subObject = results["subscriptions"]["data"][0];
             this.stripeSubscription = new StripeSubscription(subObject['id'], subObject['current_period_start'], subObject['current_period_end'], subObject['plan']['id']);
           }
@@ -190,7 +190,7 @@ export class SettingsComponent implements OnInit {
       token: token => {
         this.loadingText = "Subscribing user..."
         this.isLoading = true;
-        this.paymentService.processMonthlyPayment(token).subscribe(
+        this.paymentService.processMonthlyPayment(token, this.couponCode).subscribe(
           (results) => {
             this.verifyPaymentStatus();
           },
@@ -212,7 +212,7 @@ export class SettingsComponent implements OnInit {
       amount: ANNUAL_RATE,
       panelLabel: 'Subscribe', // Button text in stripe handler
       token: token => {
-        this.paymentService.processAnnualPayment(token).subscribe(
+        this.paymentService.processAnnualPayment(token, this.couponCode).subscribe(
           (results) => {
             this.verifyPaymentStatus();
           },
@@ -359,7 +359,7 @@ export class SettingsComponent implements OnInit {
       },
       () => {
         this.isLoading = false;
-        this.modalService.open(this.paymentProcessedModal);
+        this.activeModal = this.modalService.open(this.paymentProcessedModal);
       }
     );
   }
