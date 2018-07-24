@@ -4,6 +4,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {PaymentService, StripeCard, StripeSubscription} from '../../services/payment.service';
 import {User} from '../../services/user.service';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import { isNull, isUndefined, isNullOrUndefined } from 'util';
 
 const now = new Date();
 const MONTHLY_RATE:number = 1495;
@@ -39,6 +40,7 @@ export class SettingsComponent implements OnInit {
   paymentProcessedModal:TemplateRef<any>;
   paymentProcessedModalTitle:string = "";
   paymentProcessedModalBody:string = "";
+  paymentProcessedModalButton:string = "Dismiss";
 
   /* Delete payment modal */
   @ViewChild('paymentDeleteModal')
@@ -78,7 +80,7 @@ export class SettingsComponent implements OnInit {
     this.stripeHandler = StripeCheckout.configure({
       name: 'Breathe',
       key: "pk_test_zeaM0ynDnovC8wopeewHcOz3",
-      image: 'assets/img/breathe-logo.svg',
+      image: 'assets/img/breathe-b-green.png',
       locale: 'auto',
       zipCode: true,
       allowRememberMe: false,
@@ -108,10 +110,10 @@ export class SettingsComponent implements OnInit {
       this.tempUser.inches = 0;
     }
 
-    if (!this.tempUser.feet ||
+    if (isNullOrUndefined(this.tempUser.feet) ||
       this.tempUser.feet < 0 ||
       !Number.isInteger(this.tempUser.feet) ||
-      !this.tempUser.inches ||
+      isNullOrUndefined(this.tempUser.inches) ||
       this.tempUser.inches < 0 || this.tempUser.inches > 11 ||
       !Number.isInteger(this.tempUser.inches)
     ){
@@ -210,6 +212,7 @@ export class SettingsComponent implements OnInit {
           if (results['error']){
             this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
             this.paymentProcessedModalTitle = "Error";
+            this.paymentProcessedModalButton = "Dismiss";
             this.isLoading = false;
             this.activeModal = this.modalService.open(this.paymentProcessedModal);
           }else{
@@ -220,6 +223,7 @@ export class SettingsComponent implements OnInit {
         (err:HttpErrorResponse) => {
           this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
           this.paymentProcessedModalTitle = "Error";
+          this.paymentProcessedModalButton = "Dismiss";
           this.isLoading = false;
           this.activeModal = this.modalService.open(this.paymentProcessedModal);
         }
@@ -241,6 +245,7 @@ export class SettingsComponent implements OnInit {
           (err:HttpErrorResponse) => {
             this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
             this.paymentProcessedModalTitle = "Error";
+            this.paymentProcessedModalButton = "Dismiss";
             this.isLoading = false;
             this.activeModal = this.modalService.open(this.paymentProcessedModal);
           }
@@ -252,7 +257,12 @@ export class SettingsComponent implements OnInit {
   /* Opens handler with config/callback for annual plan */
   openStripeAnnual(){
     this.dismissActiveModal();
-    if (!this.changePayment && !(this.stripeCard && this.stripeCard.brand)){
+
+    if (!this.stripeCard || !this.stripeCard.brand){
+      this.changePayment = true;
+    }
+    
+    if (!this.changePayment && this.stripeCard && this.stripeCard.brand){
       this.isLoading = true;
       this.loadingText = "Subscribing user...";
       this.paymentService.processAnnualPayment(null, this.couponCode).subscribe(
@@ -260,6 +270,7 @@ export class SettingsComponent implements OnInit {
           if (results['error']){
             this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
             this.paymentProcessedModalTitle = "Error";
+            this.paymentProcessedModalButton = "Dismiss";
             this.isLoading = false;
             this.activeModal = this.modalService.open(this.paymentProcessedModal);
           }else{
@@ -269,6 +280,7 @@ export class SettingsComponent implements OnInit {
         (err:HttpErrorResponse) => {
           this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
           this.paymentProcessedModalTitle = "Error";
+          this.paymentProcessedModalButton = "Dismiss";
           this.isLoading = false;
           this.activeModal = this.modalService.open(this.paymentProcessedModal);
         }
@@ -289,6 +301,7 @@ export class SettingsComponent implements OnInit {
           (err:HttpErrorResponse) => {
             this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
             this.paymentProcessedModalTitle = "Error";
+            this.paymentProcessedModalButton = "Dismiss";
             this.isLoading = false;
             this.activeModal = this.modalService.open(this.paymentProcessedModal);
           }
@@ -307,6 +320,7 @@ export class SettingsComponent implements OnInit {
         this.loadingText = "Updating payment information...";
         this.paymentService.modifyCustomer(token).subscribe(
           results => {
+            this.paymentProcessedModalButton = "Dismiss";
             if (results['error']){
               console.error(results['error']);
               this.paymentProcessedModalBody = "Failed to update payment information: " + results['error'];
@@ -321,6 +335,7 @@ export class SettingsComponent implements OnInit {
           (err:HttpErrorResponse) => {
             this.paymentProcessedModalTitle = "Error";
             this.paymentProcessedModalBody = "There was an error while attempting to update your information: " + err.error;
+            this.paymentProcessedModalButton = "Dismiss";
           },
           () =>{
             this.isLoading = false;
@@ -363,6 +378,7 @@ export class SettingsComponent implements OnInit {
     this.dismissActiveModal();
     this.paymentService.cancelSubscription().subscribe(
       (results) => {
+        this.paymentProcessedModalButton = "Dismiss";
         if (results["error"]){
           this.paymentProcessedModalBody = "Failed to cancel subscription: " + results["error"];
           this.paymentProcessedModalTitle = "Error";
@@ -374,6 +390,7 @@ export class SettingsComponent implements OnInit {
         }
       },
       (err:HttpErrorResponse) => {
+        this.paymentProcessedModalButton = "Dismiss";
         this.paymentProcessedModalBody = "Failed to cancel subscription: " + err.error;
         this.paymentProcessedModalTitle = "Error";
         this.isLoading = false;
@@ -398,14 +415,17 @@ export class SettingsComponent implements OnInit {
           // DO SOMETHING HAPPY
           this.paymentProcessedModalTitle = "Successfully Subscribed to Breathe"
           this.paymentProcessedModalBody = "Take a deep breath, and let's begin.";
+          this.paymentProcessedModalButton = "Let's go!";
         }else{
           this.paymentProcessedModalTitle = "Verification Failed"
           this.paymentProcessedModalBody = "Subscription verification failed: status was '" + status + "'.";
+          this.paymentProcessedModalButton = "Dismiss";
         }
       },
       (err:HttpErrorResponse) =>{
         this.paymentProcessedModalBody = "There was an error retrieving your subscription status: " + err.error;
         this.paymentProcessedModalTitle = "Error";
+        this.paymentProcessedModalButton = "Dismiss";
         this.isLoading = false;
         this.activeModal = this.modalService.open(this.paymentProcessedModal);
       },
@@ -425,6 +445,7 @@ export class SettingsComponent implements OnInit {
     this.loadingText = "Deleting payment info...";
     this.paymentService.deletePaymentInfo().subscribe(
       (results) => {
+        this.paymentProcessedModalButton = "Dismiss";
         if (results['error']){
           this.paymentProcessedModalTitle = "Error";
           this.paymentProcessedModalBody = "There was an error deleting your payment information: " + results['error'];
@@ -435,6 +456,7 @@ export class SettingsComponent implements OnInit {
         }
       },
       (err:HttpErrorResponse) => {
+        this.paymentProcessedModalButton = "Dismiss";
         this.paymentProcessedModalTitle = "Error";
         this.paymentProcessedModalBody = "There was an error while attempting to delete your payment information: " + err.error;
       },
@@ -462,6 +484,7 @@ export class SettingsComponent implements OnInit {
 
     this.paymentService.changeSubscription(new_subscription).subscribe(
       (results) => {
+        this.paymentProcessedModalButton = "Dismiss";
         if (results['error']){
           this.paymentProcessedModalTitle = "Error";
           this.paymentProcessedModalBody = "Unable to change subscription: " + results['error'];
@@ -472,6 +495,7 @@ export class SettingsComponent implements OnInit {
         }
       },
       (err:HttpErrorResponse) => {
+        this.paymentProcessedModalButton = "Dismiss";
         this.paymentProcessedModalTitle = "Error";
         this.paymentProcessedModalBody = "There was an error while attempting to change your subscription: " + err.error;
       },

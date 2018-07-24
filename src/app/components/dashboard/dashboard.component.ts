@@ -267,6 +267,9 @@ export class DashboardComponent implements OnInit {
     request.subscribe(
       (results) => {
         this.food_detail = this.resultToDetail(results);
+        if (food.period){
+          this.food_detail.period = food.period;
+        }
         this.detail_loading = false;
       },
       (err:HttpErrorResponse) => {
@@ -365,6 +368,9 @@ export class DashboardComponent implements OnInit {
       }
     }
     this.multiSelect = false;
+
+    // Update results
+    this.update();
   }
 
   addCurrentFood(){

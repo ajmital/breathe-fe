@@ -13,7 +13,7 @@
       {{paymentProcessedModalBody}}
     </div>
     <div class="modal-footer">
-      <button class="breathe-submit-button" (click)="dismissActiveModal()">Dismiss</button>
+      <button class="breathe-submit-button" (click)="dismissActiveModal()">{{paymentProcessedModalButton}}</button>
     </div>
 </ng-template>
 <!-- End payment processed modal -->
@@ -218,7 +218,7 @@
             <div class="form-row form-group">
               <label class="col-sm-2">Weight</label>
               <div class="col-sm-3 input-group">
-                <input type="number" name="weight" class="form-control" [(ngModel)]="tempUser.weight" placeholder="Weight" />
+                <input type="number" name="weight" class="form-control" [(ngModel)]="tempUser.weight" min="0" max="999" placeholder="Weight" />
                 <div class="input-group-append">
                   <span class="input-group-text">lbs</span>
                 </div>
