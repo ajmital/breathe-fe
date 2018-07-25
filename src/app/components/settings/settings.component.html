@@ -87,7 +87,7 @@
   
     <div class="modal-footer">
       <button class="breathe-danger-button" (click)="cancelSubscription()">Delete</button>
-      <button class="breathe-cancel-button" (click)="dismissActiveModal()">Cancel</button>
+      <button class="breathe-cancel-button" (click)="dismissConfirmModal()">Cancel</button>
     </div>
   </ng-template>
 
@@ -108,6 +108,11 @@
               <input type="checkbox" [(ngModel)]="changePayment"/>
               <div class="control_indicator"></div>
             </label>
+          </div>
+        </div>
+        <div class="row py-2">
+          <div class="col">
+            <span class="text-muted">We accept all major credit cards, including Visa, Mastercard, and American Express. We also accept Discover, JCB, and Diner's Club in the United States only.</span>
           </div>
         </div>
       </div>

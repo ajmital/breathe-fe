@@ -498,6 +498,13 @@ export class SettingsComponent implements OnInit {
     }
   }
 
+  dismissConfirmModal(){
+    if (this.confirmModal){
+      this.confirmModal.close();
+      this.confirmModal = null;
+    }
+  }
+
   /* Utility functions ********************/
   timestampToDateString(timestamp:string){
     if (!timestamp) return "";

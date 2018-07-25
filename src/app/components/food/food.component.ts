@@ -68,6 +68,10 @@ export class FoodComponent implements OnInit {
   });
   }
 
+  round(x:number){
+    return x.toFixed(2);
+  }
+
   /* Is user subscribed */
   isSubscribed(){
     return this.userService.subscriptionStatus === 'active' || this.userService.subscriptionStatus === 'past_due' || this.userService.subscriptionStatus === 'trialing';

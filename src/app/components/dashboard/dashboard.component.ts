@@ -98,6 +98,10 @@ export class DashboardComponent implements OnInit {
     this.getWeights();
   }
 
+  round(x:number){
+    return x.toFixed(2);
+  }
+
   /* Is user subscribed */
   isSubscribed(){
     return this.userService.subscriptionStatus === 'active' || this.userService.subscriptionStatus === 'past_due' || this.userService.subscriptionStatus === 'trialing';
@@ -409,11 +413,15 @@ export class DashboardComponent implements OnInit {
 
   nextDay(){
     let tomorrow:Date = new Date();
+    tomorrow.setHours(0, 0, 0, 0); // Only applies when moving forward, date is only important factor
     tomorrow.setFullYear(this.resultsDate.year);
     tomorrow.setMonth(this.resultsDate.month - 1); // Count from 0 vs 1
     tomorrow.setDate(this.resultsDate.day + 1);
     if (tomorrow <= now){
       this.resultsDate = {year: tomorrow.getFullYear(), month: tomorrow.getMonth() + 1, day: tomorrow.getDate()};
+    }else{
+      console.log(now.getDate() + '/' + now.getMonth() + 1 + '/' + now.getFullYear());
+      console.log(tomorrow.getDate() + '/' + tomorrow.getMonth() + 1 + '/' + tomorrow.getFullYear());
     }
     // Even though the model changed, does not trigger update unless click on calendar
     this.update();
@@ -423,7 +431,7 @@ export class DashboardComponent implements OnInit {
     let yesterday:Date = new Date();
     yesterday.setFullYear(this.resultsDate.year);
     yesterday.setMonth(this.resultsDate.month - 1); // Count from 0 vs 1
-    yesterday.setDate(this.resultsDate.day - 1);    
+    yesterday.setDate(this.resultsDate.day - 1);
     this.resultsDate = {year: yesterday.getFullYear(), month: yesterday.getMonth() + 1, day: yesterday.getDate()};
     this.update();
   }
