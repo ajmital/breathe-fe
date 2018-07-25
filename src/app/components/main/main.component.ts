@@ -239,7 +239,7 @@ export class MainComponent implements OnInit {
   }
 
   openTab(url:string){
-    window.open(url, '_blank');
+    window.open(url);
   }
 
   /* Controls side nav */

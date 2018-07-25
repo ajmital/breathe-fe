@@ -17,6 +17,10 @@ const ANNUAL_RATE:number = 9995;
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
+
+  /* Current year, used to set maximum on birth year input dynamically */
+  currentYear:number = now.getFullYear();
+
   /* Generic loading indicator (most useful for payment-related requests, due to synchronous requests made on the server side) */
   isLoading:boolean = false;
   loadingText:string = ""; // Used to provide message while loading
@@ -205,53 +209,34 @@ export class SettingsComponent implements OnInit {
       this.changePayment = true;
     }
     if (!this.changePayment && this.stripeCard && this.stripeCard.brand){
-      this.isLoading = true;
-      this.loadingText = "Subscribing user...";
-      this.paymentService.processMonthlyPayment(null, this.couponCode).subscribe(
-        (results) => {
-          if (results['error']){
-            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
-            this.paymentProcessedModalTitle = "Error";
-            this.paymentProcessedModalButton = "Dismiss";
-            this.isLoading = false;
-            this.activeModal = this.modalService.open(this.paymentProcessedModal);
-          }else{
-            this.stripeSubscription = new StripeSubscription(results["id"], results["current_period_start"], results["current_period_end"], results["plan"]["id"]);
-            this.verifyPaymentStatus();
-          }
-        },
-        (err:HttpErrorResponse) => {
-          this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
-          this.paymentProcessedModalTitle = "Error";
-          this.paymentProcessedModalButton = "Dismiss";
-          this.isLoading = false;
-          this.activeModal = this.modalService.open(this.paymentProcessedModal);
-        }
-      );
-      return;
-    }
+      this.processMonthlyPayment(null, this.couponCode);
+    }else{
 
-    this.stripeHandler.open({
-      description: 'Monthly subscription plan',
-      amount: MONTHLY_RATE,
-      panelLabel: 'Subscribe', // Button text in stripe handler
-      token: token => {
-        this.loadingText = "Subscribing user..."
-        this.isLoading = true;
-        this.paymentService.processMonthlyPayment(token, this.couponCode).subscribe(
-          (results) => {
-            this.verifyPaymentStatus();
-          },
-          (err:HttpErrorResponse) => {
-            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
-            this.paymentProcessedModalTitle = "Error";
-            this.paymentProcessedModalButton = "Dismiss";
-            this.isLoading = false;
-            this.activeModal = this.modalService.open(this.paymentProcessedModal);
-          }
-        );
+      this.stripeHandler.open({
+        description: 'Monthly subscription plan',
+        amount: MONTHLY_RATE,
+        panelLabel: 'Subscribe', // Button text in stripe handler
+        token: token => {
+          this.processMonthlyPayment(token, this.couponCode);
+        }
+      });
+    }
+  }
+
+  processMonthlyPayment(token:string, coupon:string){
+    this.loadingText = "Subscribing user..."
+    this.isLoading = true;
+    this.paymentService.processMonthlyPayment(token, coupon).subscribe(
+      (results) => {
+        if (results['error']){
+          this.paymentProcessedError(results['error']);
+        }else{
+          this.verifyPaymentStatus();
+        }          },
+      (err:HttpErrorResponse) => {
+        this.paymentProcessedError(err.error);
       }
-    });
+    );
   }
 
   /* Opens handler with config/callback for annual plan */
@@ -263,51 +248,43 @@ export class SettingsComponent implements OnInit {
     }
     
     if (!this.changePayment && this.stripeCard && this.stripeCard.brand){
-      this.isLoading = true;
-      this.loadingText = "Subscribing user...";
-      this.paymentService.processAnnualPayment(null, this.couponCode).subscribe(
-        (results) => {
-          if (results['error']){
-            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + results['error'];
-            this.paymentProcessedModalTitle = "Error";
-            this.paymentProcessedModalButton = "Dismiss";
-            this.isLoading = false;
-            this.activeModal = this.modalService.open(this.paymentProcessedModal);
-          }else{
-            this.verifyPaymentStatus();
-          }
-        },
-        (err:HttpErrorResponse) => {
-          this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
-          this.paymentProcessedModalTitle = "Error";
-          this.paymentProcessedModalButton = "Dismiss";
-          this.isLoading = false;
-          this.activeModal = this.modalService.open(this.paymentProcessedModal);
+      this.processAnnualPayment(null, this.couponCode);
+    }else{
+      this.stripeHandler.open({
+        description: 'Annual subscription plan',
+        amount: ANNUAL_RATE,
+        panelLabel: 'Subscribe', // Button text in stripe handler
+        token: token => {
+          this.processAnnualPayment(token, this.couponCode);
         }
-      );
-      return;
+      });
     }
+  }
 
-
-    this.stripeHandler.open({
-      description: 'Annual subscription plan',
-      amount: ANNUAL_RATE,
-      panelLabel: 'Subscribe', // Button text in stripe handler
-      token: token => {
-        this.paymentService.processAnnualPayment(token, this.couponCode).subscribe(
-          (results) => {
-            this.verifyPaymentStatus();
-          },
-          (err:HttpErrorResponse) => {
-            this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + err.error;
-            this.paymentProcessedModalTitle = "Error";
-            this.paymentProcessedModalButton = "Dismiss";
-            this.isLoading = false;
-            this.activeModal = this.modalService.open(this.paymentProcessedModal);
-          }
-        );
+  processAnnualPayment(token:string, coupon:string){
+    this.loadingText = "Subscribing user..."
+    this.isLoading = true;
+    this.paymentService.processAnnualPayment(token, coupon).subscribe(
+      (results) => {
+        if (results['error']){
+          this.paymentProcessedError(results['error']);
+        }else{
+          this.verifyPaymentStatus();
+        }          
+      },
+      (err:HttpErrorResponse) => {
+        this.paymentProcessedError(err.error);
       }
-    });
+    );
+  }
+
+  /* Displays error message for failure to subscribe */
+  paymentProcessedError(message:any){
+    this.paymentProcessedModalBody = "Failed to subscribe to Breathe: " + message;
+    this.paymentProcessedModalTitle = "Error";
+    this.paymentProcessedModalButton = "Dismiss";
+    this.isLoading = false;
+    this.activeModal = this.modalService.open(this.paymentProcessedModal);
   }
 
   /* Opens stripe configured to modify payment information */
@@ -409,6 +386,8 @@ export class SettingsComponent implements OnInit {
     this.loadingText = "Verifying that subscription was successful...";
     this.paymentService.getStatus().subscribe(
       (results) => {
+        this.changePayment = false; // Reset checkbox
+        this.couponCode = "";
         status = results['status'];
         this.userService.subscriptionStatus = status;
         if (status === 'active' ||  status === 'past_due' || status === 'trialing'){
@@ -433,7 +412,6 @@ export class SettingsComponent implements OnInit {
         this.isLoading = false;
         this.activeModal = this.modalService.open(this.paymentProcessedModal);
         this.getCustomer();
-        
       }
     );
   }
