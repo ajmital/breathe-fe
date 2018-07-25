@@ -4,7 +4,8 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {PaymentService, StripeCard, StripeSubscription} from '../../services/payment.service';
 import {User} from '../../services/user.service';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import { isNull, isUndefined, isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util';
+import {environment} from '../../../environments/environment';
 
 const now = new Date();
 const MONTHLY_RATE:number = 1495;
@@ -83,7 +84,7 @@ export class SettingsComponent implements OnInit {
   configureStripe(email:string){
     this.stripeHandler = StripeCheckout.configure({
       name: 'Breathe',
-      key: "pk_test_zeaM0ynDnovC8wopeewHcOz3",
+      key: environment.stripe_key,
       image: 'assets/img/breathe-b-green.png',
       locale: 'auto',
       zipCode: true,
