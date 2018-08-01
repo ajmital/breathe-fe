@@ -178,17 +178,17 @@
         </div>
         <span>Help &amp; Learn</span>
       </div>
-      <div class="row sidenav-hover" (click)="openTab('science.html')">
+      <div class="row sidenav-hover" (click)="openTab('/static/fe/science.html')">
         <div class="col-10 sidenav-suboption">
           <span>Science</span>
         </div>
       </div>
-      <div class="row sidenav-hover" (click)="openTab('device_help.html')">
+      <div class="row sidenav-hover" (click)="openTab('/static/fe/device_help.html')">
         <div class="col-10 sidenav-suboption">
           <span>Device Help</span>
         </div>
       </div>
-      <div class="row sidenav-hover" (click)="openTab('contact.html')">
+      <div class="row sidenav-hover" (click)="openTab('/static/fe/contact.html')">
         <div class="col-10 sidenav-suboption">
           <span>Contact Us</span>
         </div>
@@ -228,7 +228,7 @@
 
 
     <nav class="navbar navbar-expand">
-        <a href="home.html"><img class="navbar-brand" src="assets/img/breathe-logo.svg" /></a>
+        <a href="/static/fe/index.html"><img class="navbar-brand" src="assets/img/breathe-logo.svg" /></a>
         <div class="mr-auto"></div>
         <div class="navbar-nav pr-sm-2">
             <span class="nav-item nav-link" [ngClass]="{'breathe-active': dashboard}"  (click)="show('dashboard')">Dashboard</span>
