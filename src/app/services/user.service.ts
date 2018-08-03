@@ -61,7 +61,7 @@ export class UserService {
       }
       document.cookie = ca.join(';');
     }
-    window.location.href = "/static/fe/"; // Redirect to breathe home page
+    this.redirectToLogin();
   }
 
   /* Profile-related methods */////////////////////////////
