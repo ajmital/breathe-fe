@@ -4,18 +4,77 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 The project uses Angular 5. The most significant change between this, angular 4, and angular 2 is that the `http-client` service was revamped as the `http` service, there is no need to explicitly map requests back to json, and it is significantly more efficient in compilation.
 
+More detailed documentation will be added soon, breaking down specific methods, variables, and how interactions are handled.
+
 ## Breathe FE Structure
-Currently, the project assumes the Breathe API is located at `localhost:8000`, and each service defines a variable at the top pointing to this.
+Currently, the project assumes the Breathe API is located on the same server as these pages are hosted, and each service defines a variable at the top pointing to this.
 
-The user-data and food components are currently placed together in a single "main" component using tabs.  The landing-page component provides a very simple login form (username and password) which POST to the Django server's rest-authentication URL (this will have to change later).
+Additional static pages are assumed to be hosted at /static/fe/
 
-The registration page is nonfunctional, because although it allows a user to authenticate into Django, it does not create a Breathe user, and none of their details will be saved in the database. This is because the rest-authentication plugin was not connect to some method to create a Breathe user and place them in the database.
+There are four [components](https://angular.io/guide/architecture-components) which are structured as:
 
-All services were consolidated into a single `UserService`, to simplify access to the API. There is a `user` class defined in the `UserService` as well as in other components, which is a redunancy left over from initial development. The reason for placing user information in the `UserService` is to allow different components to share that data if they are on the same page.
+    Main
+      |-- Dashboard
+      |-- Food
+      |-- Settings
 
-## Credential Management
+Each of the three child components contain an `update()` method which should be called after changes are made.
 
-Because the infrastructure for logging in from a browser did not exist, I used the existing rest-authentication plugin for Django to emulate sign in. Credentials were stored in a local or session storage variable called 'user'.  Currently, the landing page is set to navigate to the main page if this variable is set, and if it is not set, the main page will redirect to the landing page.
+Additionally, there are four [services](https://angular.io/guide/architecture-services) which provide a place for methods and variables that multiple components use:
+ - `UserService`
+ - `FoodService`
+ - `PaymentService`
+ - `DrawService`
+
+## Components
+
+### Main
+The Main component houses pieces used in all components of the dashboard:
+ - Navbar
+ - Side nav menu
+ - Modals for initial setup
+ - Loading overlay
+
+The Main component essentially acts as a root hub for the other components, and controls which components are displayed (see `MainComponent.show()` method). It also utilizes the `UserService` service to retrieve initial user info, and will only display child components after this process is completed.
+
+Additionally, as the "parent" component of the other components, this component can trigger any child components functions (via the [@ViewChild](https://angular.io/api/core/ViewChild) decorator) or receive [events](https://toddmotto.com/component-events-event-emitter-output-angular-2) from child components. This was useful in two cases:
+ - Switching to sibling component (e.g. from Dashboard to Food)
+ - Opening a modal that "belongs" to another component
+ 
+ A component cannot see its siblings, so instead, the component could trigger an event in the Main component which would allow the Main component to select a child component to display or open a modal.
+
+### Dashboard
+The Dashboard component is the heart of the Breathe portal, displaying user data and providing controls to add weight or food. This dashboard displays data according to the date specified by the user. Its `update()` method first retrieves the user's results for the specified date, then retrieves their food entries, summing their total macronutrients and storing them, and finally retrieves the user's weight entries. All these rely on corresponding methods in the `UserService` service to make the HTTP requests.
+
+The Dashboard component also contains some food entry capabilities which are identical to those in the Food Component. These should both eventually be encapsulated in the FoodService service or the Main component. These include the ability to:
+ - Get detailed information about a food entry and display it in a modal
+ - Multiselect food to repeat a series of entries
+ - Repeat foods
+ 
+ ### Food
+ The Food component provides search capabilities and food entry. Its `update()` method retrieves a user's most recent food entries using the `UserService.getFood()` method. While counterintuitive, this method involves data associated with a user, and so is not in  `FoodService`.
+ 
+ Apart from the ability to search for foods, the Food component also contains food entry capabilites nearly identical to those in the Dashboard component (see above). These should eventually be encapsulated into a service or the main component (or both).
+ 
+ ### Settings
+ The Settings component allows the user to edit their profile and manage their subscription. This component contains a significant amount of modals which mirror the components subscription-related functions:
+  - `paymentProcessedModal`: After receiving a response from the server, either a success or error message is displayed here
+  - `paymentDeleteModal`: Confirmation dialog for deleting user's payment information
+  - `changeSubscriptionModal`: Confirmation dialog for switching user's subscription type
+  - `subscribeConfirmationModal`: Selecting subscription plan for unsubscirbed users
+  - `cancelSubscriptionModal`: Confirmation dialog to cancel subscription
+ 
+ To update a user's profile, the Settings component uses two-way data-binding on form inputs with a temporary User object. This object is initially populated with the value of `UserService.user` and when the user wishes to save, `UserService.user` is set to the temporay object, and the `UserService.setUser()` method is called.
+
+## Services
+### UserService
+The `UserService` service contains all methods/variables that require user authentication; however, given how large this service is, it no longer makes sense to organize it this way and it should be split into smaller services.
+
+### FoodService
+The `FoodService` service contains food-related methods that do not depend on the user (searching for food, retrieving details from nutritionix). 
+
+### PaymentService
+The `PaymentService` service handles all requests to the Stripe-related endpoints on the Breathe backend.
 
 ## Development server
 
