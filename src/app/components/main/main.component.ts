@@ -33,7 +33,7 @@ export class MainComponent implements OnInit {
   statusReady:boolean = false;
 
   // Control showing initial setup page
-  firstTimeSetup:boolean = true;
+  firstTimeSetup:boolean = false;
   @ViewChild('setupModal')
   setupModal:TemplateRef<any>;
 
@@ -82,7 +82,7 @@ export class MainComponent implements OnInit {
     let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
     this.userService.getUser().subscribe(
       (user_data:any) => {
-        if (this.firstTimeSetup || user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
+        if (user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
         !user_data["feet"] || !user_data["inches"] || !user_data["weight"]){
           this.month = user_data["birth_month"];
           this.year = user_data["birth_year"];
@@ -232,6 +232,7 @@ export class MainComponent implements OnInit {
   }
   
   installApp(){
+    this.closeNav();
     if (this.isSubscribed()){
       this.activeModal = this.modalService.open(this.installModal);
     }else{
