@@ -122,6 +122,36 @@
   </div>
 </ng-template>
 
+<!-- Modal to display error messages -->
+<ng-template #errorModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Error</h4>
+  </div>
+  <div class="modal-body">
+    {{errorModalBody}}
+  </div>
+  <div class="modal-footer">
+    <button class="breathe-submit-button" (click)="openTab('#')">Android</button>
+    <button class="breathe-submit-button" (click)="openTab('http://appstorebeta.com/3evJo8fr5O')">iPhone</button>
+    <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
+  </div>
+</ng-template>
+
+<!-- Modal for installing the app -->
+<ng-template #installModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Install</h4>
+  </div>
+  <div class="modal-body">
+    View the installation instructions <a href="/static/fe/installation.html">here</a> to learn how to install Breathe on your device.
+  </div>
+  <div class="modal-footer">
+    <button class="breathe-submit-button" (click)="openTab('#')">Android</button>
+    <button class="breathe-submit-button" (click)="openTab('http://appstorebeta.com/3evJo8fr5O')">iPhone</button>
+    <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
+  </div>
+</ng-template>
+
 <!-- Loading animation -->
 <div class="loader" *ngIf="!isLoaded || !statusReady"></div>
 
@@ -161,6 +191,14 @@
         </div>
         <span>Device Status</span>
       </div>
+
+      <div class="row sidenav-option sidenav-hover" (click)="installApp()">
+        <div class="col-auto">
+          <img src="assets/breathe-icons/phone.png" />
+        </div>
+        <span>Install App</span>
+      </div>
+
 
       <div class="row sidenav-option sidenav-hover" (click)="logout()">
         <div class="col-auto">

@@ -7,6 +7,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
 import { FoodComponent } from '../food/food.component';
 import { SettingsComponent } from '../settings/settings.component';
 import {PaymentService} from '../../services/payment.service';
+import { isNullOrUndefined, isNull } from 'util';
 
 const now:Date = new Date();
 
@@ -32,7 +33,7 @@ export class MainComponent implements OnInit {
   statusReady:boolean = false;
 
   // Control showing initial setup page
-  firstTimeSetup:boolean = false;
+  firstTimeSetup:boolean = true;
   @ViewChild('setupModal')
   setupModal:TemplateRef<any>;
 
@@ -41,6 +42,13 @@ export class MainComponent implements OnInit {
 
   @ViewChild('subscribeFirstModal')
   subscribeFirstModal:TemplateRef<any>;
+
+  @ViewChild('errorModal')
+  errorModal:TemplateRef<any>;
+  errorModalBody:string = "";
+
+  @ViewChild('installModal')
+  installModal:TemplateRef<any>;
 
   activeModal:NgbModalRef = null;
 
@@ -74,7 +82,7 @@ export class MainComponent implements OnInit {
     let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
     this.userService.getUser().subscribe(
       (user_data:any) => {
-        if ( user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
+        if (this.firstTimeSetup || user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
         !user_data["feet"] || !user_data["inches"] || !user_data["weight"]){
           this.month = user_data["birth_month"];
           this.year = user_data["birth_year"];
@@ -86,8 +94,10 @@ export class MainComponent implements OnInit {
           this.activeModal = this.modalService.open(this.setupModal, {size: 'lg', keyboard: false});
         }
       },
-      (err) => {
+      (err:HttpErrorResponse) => {
         this.isLoaded = true;
+        this.errorModalBody = "Failed to load user: " + err.error;
+        this.activeModal = this.modalService.open(this.errorModal);
       },
       () => {
         this.isLoaded = true;
@@ -98,7 +108,7 @@ export class MainComponent implements OnInit {
         this.training_status = response["training"];
         switch(this.training_status){
           case "beginner":{
-            this.training_width = 20;
+            this.training_width = 20; // For later usage with sidenav display of progress
             break;
           }
         }
@@ -127,24 +137,24 @@ export class MainComponent implements OnInit {
     this.heightError = false;
     this.weightError = false;
     // Input validation
-    if (!this.month || this.month < 1 || this.month > 12 || !Number.isInteger(this.month) ||
-      !this.year || this.year > now.getFullYear() || this.year < 1900 ||
+    if (isNullOrUndefined(this.month) || this.month < 1 || this.month > 12 || !Number.isInteger(this.month) ||
+      isNullOrUndefined(this.year) || this.year > now.getFullYear() || this.year < 1900 ||
       !Number.isInteger(this.year)
     ){
       this.birthError = true;
     }
 
-    if (!this.inches){
+    if (isNullOrUndefined(this.feet)){
       this.inches = 0;
     }
 
-    if (!this.feet || this.feet < 0 || !Number.isInteger(this.feet) ||
+    if (isNullOrUndefined(this.feet) || this.feet < 0 || !Number.isInteger(this.feet) ||
       !this.inches || this.inches < 0 || this.inches > 11 || !Number.isInteger(this.inches)
     ){
       this.heightError = true;
     }
 
-    if (!this.weight || this.weight < 0){
+    if (!this.weight || this.weight < 0){ // Weight cannot be 0
       this.weightError = true;
     }
 
@@ -160,14 +170,16 @@ export class MainComponent implements OnInit {
     this.userService.user.birth_year = this.year;
 
     this.userService.setUser().subscribe(
-      (results) => {},
-      (err:HttpErrorResponse) => {
-        console.error(err);
-      },
-      () => {
+      (results) => {
         this.firstTimeSetup = false;
         this.dismissActiveModal();
         this.activeModal = this.modalService.open(this.subscribeFirstModal);
+      },
+      (err:HttpErrorResponse) => {
+        this.dismissActiveModal();
+        this.errorModalBody = "There was an error updating your user information: " + err.error;
+        this.activeModal = this.modalService.open(this.errorModal);
+        console.error(err);
       }
     )
   }
@@ -214,6 +226,18 @@ export class MainComponent implements OnInit {
     }
   }
 
+  /* Is user subscribed */
+  isSubscribed(){
+    return this.userService.subscriptionStatus === 'active' || this.userService.subscriptionStatus === 'past_due' || this.userService.subscriptionStatus === 'trialing';
+  }
+  
+  installApp(){
+    if (this.isSubscribed()){
+      this.activeModal = this.modalService.open(this.installModal);
+    }else{
+      this.openSubscribeModal();
+    }
+  }
 
   /* Switches to a page and closes the menu */
   menuSwitch(component:string){
@@ -252,6 +276,7 @@ export class MainComponent implements OnInit {
   }
 
   openSubscribeModal(){
+    this.dismissActiveModal();
     this.activeModal = this.modalService.open(this.subscribeModal);
   }
 
