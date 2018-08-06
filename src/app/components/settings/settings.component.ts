@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit {
   firstLoad:boolean = true; // Marks whether this is first time page was loaded
 
   showSuccess:boolean = false; // Shows success message on saving user
+  showError:boolean = false;
   birthError:boolean = false; // Controls alert for birth month/year input validation
   heightError:boolean = false;
   weightError:boolean = false;
@@ -70,6 +71,7 @@ export class SettingsComponent implements OnInit {
 
   /* Temporary user object for modifying */
   tempUser:User = new User();
+  saveUserError:string = "";
 
   constructor(public userService:UserService, private paymentService:PaymentService, private modalService:NgbModal) { }
 
@@ -95,6 +97,7 @@ export class SettingsComponent implements OnInit {
 
   /* Save tempUser as actual user */
   save(){
+    this.showError = false;
     this.loadingText = "Saving user...";
     this.isLoading = true;
     this.birthError = false;
@@ -141,6 +144,9 @@ export class SettingsComponent implements OnInit {
         setTimeout(() => this.showSuccess = false, 5000);
       },
       (err:HttpErrorResponse) => {
+        this.saveUserError = err.error;
+        this.showError = true;
+        this.isLoading = false;
         console.error(err);
       },
       () => {
