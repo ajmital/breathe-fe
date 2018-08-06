@@ -85,8 +85,8 @@ export class MainComponent implements OnInit {
     let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
     this.userService.getUser().subscribe(
       (user_data:any) => {
-        if (user_data["weight"] == 0 || user_data["feet"] == 0 || !user_data["birth_month"] || !user_data["birth_year"] || 
-        isNullOrUndefined(user_data["feet"]) || isNullOrUndefined(user_data["inches"]) || !user_data["weight"]){
+        if (user_data["weight"] == 0 || isNullOrUndefined(user_data["feet"]) || !user_data["birth_month"] || !user_data["birth_year"] || 
+        user_data["feet"] == 0 || isNullOrUndefined(user_data["inches"]) || !user_data["weight"]){
           this.month = user_data["birth_month"];
           this.year = user_data["birth_year"];
           this.feet = user_data["feet"];
