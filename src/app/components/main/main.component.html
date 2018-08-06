@@ -143,11 +143,12 @@
     <h4 class="modal-title">Install</h4>
   </div>
   <div class="modal-body">
-    View the installation instructions <a href="/static/fe/installation.html">here</a> to learn how to install Breathe on your device.
+    <p>From your mobile device, select one of the options below.</p>
+    <p>View the installation instructions <a href="/static/fe/installation.html">here</a> to learn ho to install Breathe on your device.</p>
   </div>
   <div class="modal-footer">
-    <button class="breathe-submit-button" (click)="openTab('#')">Android</button>
-    <button class="breathe-submit-button" (click)="openTab('http://appstorebeta.com/3evJo8fr5O')">iPhone</button>
+    <button class="breathe-submit-button" (click)="openTab('/static/apk/breathe_7-27.apk')">Android</button>
+    <button class="breathe-submit-button" (click)="openTab('http://appstorebeta.com/qjAXfC4yTO')">iPhone</button>
     <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
   </div>
 </ng-template>
