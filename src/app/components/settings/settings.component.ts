@@ -28,7 +28,7 @@ export class SettingsComponent implements OnInit {
   firstLoad:boolean = true; // Marks whether this is first time page was loaded
 
   showSuccess:boolean = false; // Shows success message on saving user
-  showError:boolean = false;
+  showFailure:boolean = false;
   birthError:boolean = false; // Controls alert for birth month/year input validation
   heightError:boolean = false;
   weightError:boolean = false;
@@ -97,7 +97,7 @@ export class SettingsComponent implements OnInit {
 
   /* Save tempUser as actual user */
   save(){
-    this.showError = false;
+    this.showFailure = false;
     this.loadingText = "Saving user...";
     this.isLoading = true;
     this.birthError = false;
@@ -145,7 +145,7 @@ export class SettingsComponent implements OnInit {
       },
       (err:HttpErrorResponse) => {
         this.saveUserError = err.error;
-        this.showError = true;
+        this.showFailure = true;
         this.isLoading = false;
         console.error(err);
       },
