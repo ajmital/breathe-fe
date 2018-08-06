@@ -20,9 +20,9 @@
                   <label class="col-sm-2 col-form-label">Birth Date</label>
                   <div class="col-sm-5">
                     <div class="input-group">
-                      <input type="number" name="birth_month" autocomplete="bday-month" class="form-control" [(ngModel)]="month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" />
+                      <input type="number" name="birth_month" autocomplete="bday-month" class="form-control" [(ngModel)]="month" data-toggle="tooltip" title="Enter your birth month" placeholder="Month" min="1" max="12"/>
                       <span class="input-group-text">/</span>
-                      <input type="number" name="birth_year" autocomplete="bday-year" class="form-control" [(ngModel)]="year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" />
+                      <input type="number" name="birth_year" autocomplete="bday-year" class="form-control" [(ngModel)]="year" data-toggle="tooltip" title="Enter your birth year" placeholder="Year" min="1900" max="{{currentYear}}"/>
                     </div>
                   </div>
                 </div>
@@ -36,13 +36,13 @@
                 <div class="form-row form-group">
                   <label class="col-sm-2 col-form-label">Height</label>
                   <div class="col-sm-3 col-6 input-group">
-                    <input type="number" name="feet" class="form-control" [(ngModel)]="feet" data-toggle="tooltip" title="Enter your height in feet" placeholder="Feet" />
+                    <input type="number" name="feet" class="form-control" [(ngModel)]="feet" data-toggle="tooltip" title="Enter your height in feet" placeholder="Feet" min="0"/>
                     <div class="input-group-append">
                       <span class="input-group-text">ft</span>
                     </div>
                   </div>
                   <div class="col-sm-3 col-6 input-group">
-                    <input type="number" name="inches" class="form-control" [(ngModel)]="inches" data-toggle="tooltip" title="Enter your height in inches" placeholder="Inches" />
+                    <input type="number" name="inches" class="form-control" [(ngModel)]="inches" data-toggle="tooltip" title="Enter your height in inches" placeholder="Inches" min="0" max="11"/>
                     <div class="input-group-append">
                       <span class="input-group-text">in</span>
                     </div>
@@ -58,7 +58,7 @@
                 <div class="form-row form-group">
                   <label class="col-sm-2">Weight</label>
                   <div class="col-sm-3 input-group">
-                    <input type="number" name="weight" class="form-control" [(ngModel)]="weight" placeholder="Weight" />
+                    <input type="number" name="weight" class="form-control" [(ngModel)]="weight" placeholder="Weight" min="0" max="999"/>
                     <div class="input-group-append">
                       <span class="input-group-text">lbs</span>
                     </div>

@@ -76,9 +76,12 @@ export class MainComponent implements OnInit {
   food:boolean = false;
   settings:boolean = false;
 
+
+  currentYear:number;
   constructor(public userService:UserService, private modalService:NgbModal, public paymentService:PaymentService) { }
 
   ngOnInit() {
+    this.currentYear = now.getFullYear();
     let nowString:string = now.getFullYear().toString() + '-' + (now.getMonth() + 1).toString() + '-' + now.getDate().toString();
     this.userService.getUser().subscribe(
       (user_data:any) => {
@@ -144,12 +147,12 @@ export class MainComponent implements OnInit {
       this.birthError = true;
     }
 
-    if (isNullOrUndefined(this.feet)){
+    if (isNullOrUndefined(this.inches)){
       this.inches = 0;
     }
 
     if (isNullOrUndefined(this.feet) || this.feet < 0 || !Number.isInteger(this.feet) ||
-      !this.inches || this.inches < 0 || this.inches > 11 || !Number.isInteger(this.inches)
+      this.inches < 0 || this.inches > 11 || !Number.isInteger(this.inches)
     ){
       this.heightError = true;
     }
