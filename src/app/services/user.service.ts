@@ -27,6 +27,11 @@ export class UserService {
 
     for (let i:number = 0; i < ca.length; i += 1){
       if (ca[i].indexOf(CSRF_COOKIE) == 0){
+        if (this.csrf_tok){ // If duplicates, retry
+          document.cookie = CSRF_COOKIE + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/fe;";
+          document.cookie = CSRF_COOKIE + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          this.redirectToLogin();
+        }
         this.csrf_tok = ca[i].substring(CSRF_COOKIE.length + 1);
       }
     }
