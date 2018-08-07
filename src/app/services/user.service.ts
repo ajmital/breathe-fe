@@ -23,6 +23,8 @@ export class UserService {
   
   constructor(private http:HttpClient) {
     let ca:Array<String> = document.cookie.split(';');
+
+
     for (let i:number = 0; i < ca.length; i += 1){
       if (ca[i].indexOf(CSRF_COOKIE) == 0){
         this.csrf_tok = ca[i].substring(CSRF_COOKIE.length + 1);
@@ -45,22 +47,7 @@ export class UserService {
   logout(){
     /* Slice CSRF token/session ID and redirect to login */
     /* Why is there not a logout endpoint on the server to clear its session? */
-    let ca:Array<String> = document.cookie.split(';');
-    let i:number;
-    if (ca.length > 0){
-      for (i = 0; i < ca.length; i += 1)
-        if (ca[i].indexOf(CSRF_COOKIE) == 0) break;
-
-      if (i < ca.length) ca = ca.splice(i, 1);
-
-      if (ca.length > 0){
-        for (i = 0; i < ca.length; i += 1)
-          if (ca[i].indexOf("sessionid") == 0) break;
-
-        if (i < ca.length) ca = ca.splice(i, 1);
-      }
-      document.cookie = ca.join(';');
-    }
+  
     this.redirectToLogin();
   }
 
