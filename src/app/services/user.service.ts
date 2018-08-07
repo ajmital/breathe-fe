@@ -23,7 +23,6 @@ export class UserService {
   
   constructor(private http:HttpClient) {
     let ca:Array<String> = document.cookie.split(';');
-    document.cookie = CSRF_COOKIE + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/fe;"; // Prevent bad cookie
 
     for (let i:number = 0; i < ca.length; i += 1){
       if (ca[i].indexOf(CSRF_COOKIE) == 0){
@@ -48,9 +47,11 @@ export class UserService {
   }
 
   logout(){
-    /* Slice CSRF token/session ID and redirect to login */
+    /* Slice CSRF token and redirect to login */
     /* Why is there not a logout endpoint on the server to clear its session? */
-  
+    document.cookie = CSRF_COOKIE + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/fe;";
+    document.cookie = CSRF_COOKIE + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
     this.redirectToLogin();
   }
 
