@@ -7,7 +7,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/shareReplay';
 
 const CSRF_COOKIE:string = "csrftoken";
-const PAYMENT_URL:string = "https://paymenturl.com/";
 
 @Injectable()
 export class UserService {
