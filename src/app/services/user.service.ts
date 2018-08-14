@@ -24,11 +24,12 @@ export class UserService {
     let ca:Array<String> = document.cookie.split(';');
 
     for (let i:number = 0; i < ca.length; i += 1){
-      if (ca[i].indexOf(CSRF_COOKIE) == 0){
+      let cookie = ca[i].trim();
+      if (cookie.indexOf(CSRF_COOKIE) == 0){
         if (this.csrf_tok){ // If duplicates, retry
           this.redirectToLogin();
         }
-        this.csrf_tok = ca[i].substring(CSRF_COOKIE.length + 1);
+        this.csrf_tok = cookie.substring(CSRF_COOKIE.length + 1);
       }
     }
 

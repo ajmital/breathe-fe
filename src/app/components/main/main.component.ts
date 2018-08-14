@@ -1,13 +1,20 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+
 import { UserService } from '../../services/user.service';
+import {PaymentService} from '../../services/payment.service';
+import {RatingService} from '../../services/rating.service';
+
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+
 import { HttpErrorResponse } from '@angular/common/http';
+
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { FoodComponent } from '../food/food.component';
 import { SettingsComponent } from '../settings/settings.component';
-import {PaymentService} from '../../services/payment.service';
-import { isNullOrUndefined, isNull } from 'util';
+
+import { isNullOrUndefined } from 'util';
+import { TreeMapModule } from '../../../../node_modules/@swimlane/ngx-charts';
 
 const now:Date = new Date();
 
@@ -50,6 +57,10 @@ export class MainComponent implements OnInit {
   @ViewChild('installModal')
   installModal:TemplateRef<any>;
 
+  @ViewChild('ratingModal')
+  ratingModal:TemplateRef<any>;
+  ratingError:boolean = false;
+
   activeModal:NgbModalRef = null;
 
   // String to display algorithm training status
@@ -68,6 +79,10 @@ export class MainComponent implements OnInit {
   birthError:boolean = false;
   fullName:string = null;
 
+  // Rating models
+  rating:string = null; // String representation of int
+  feedback:string = null;
+
   // Side nav control
   navOpen:boolean = false;
 
@@ -78,7 +93,12 @@ export class MainComponent implements OnInit {
 
 
   currentYear:number;
-  constructor(public userService:UserService, private modalService:NgbModal, public paymentService:PaymentService) { }
+  constructor(
+    public userService:UserService,
+    private modalService:NgbModal,
+    public paymentService:PaymentService,
+    private ratingService:RatingService
+  ) {}
 
   ngOnInit() {
     this.currentYear = now.getFullYear();
@@ -236,6 +256,7 @@ export class MainComponent implements OnInit {
   
   installApp(){
     this.closeNav();
+    this.dismissActiveModal();
     if (this.isSubscribed()){
       this.activeModal = this.modalService.open(this.installModal);
     }else{
@@ -253,6 +274,29 @@ export class MainComponent implements OnInit {
   addWeight(){
     this.menuSwitch('dashboard');
     this.dashboardComponent.openWeightModal();
+  }
+
+  openRatingModal(){
+    this.dismissActiveModal();
+    this.closeNav();
+    this.activeModal = this.modalService.open(this.ratingModal);
+  }
+
+  rate(){
+    if (isNullOrUndefined(this.rating)){
+      this.ratingError = true;
+    }else{
+      this.ratingError = false;
+      let rating:number = parseInt(this.rating);
+      let feedback:string;
+      if (isNullOrUndefined(this.feedback)){
+        feedback = "";
+      }else{
+        feedback = this.feedback;
+      }
+      this.ratingService.rate(rating, this.feedback);
+      this.dismissActiveModal();
+    }
   }
 
   dismissActiveModal(){

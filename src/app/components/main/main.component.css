@@ -128,16 +128,16 @@ p{
 
 .sidenav-option{
   padding-left: 2rem;
-  padding-top: 2.5vh;
-  padding-bottom: 2.5vh;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
   color: #FFFFFF;
   font-size: 3vh;
 }
 
 .sidenav-suboption{
   padding-left: 2rem;
-  padding-top: 2.5vh;
-  padding-bottom: 2.5vh;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
   color: #DDDDDD;
   font-size: 2.5vh;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -219,6 +219,41 @@ p{
 
 .menu-icon:hover > div{
   background-color: #DDDDDD;
+}
+
+/* Rating styles */
+#feedback{
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+div.star{
+  display: inline-block;
+}
+
+input.star { display: none; }
+
+label.star {
+  float: right;
+  padding: 10px;
+  font-size: 36px;
+  color: #26B2A9;
+  transition: all .2s;
+}
+
+input.star:checked ~ label.star:before {
+  content: '\f005';
+  color: #26B2A9;
+  transition: all .25s;
+}
+
+label.star:hover { transform: scale(1.2); }
+
+label.star:before {
+  content: '\f006';
+  font-family: FontAwesome;
 }
 
 /* Semi-auto-generated navbar styles */

@@ -153,6 +153,39 @@
   </div>
 </ng-template>
 
+<ng-template #ratingModal let-c="close" let-d="dismiss">
+  <div class="modal-header green-background">
+    <h4 class="modal-title">Feedback</h4>
+  </div>
+  <div class="modal-body">
+    <p>Rating:</p>
+    <div class="star">
+      <input class="star star-5" id="star-5" type="radio" name="rating" value="5" [(ngModel)]="rating"/>
+      <label class="star star-5" for="star-5"></label>
+      <input class="star star-4" id="star-4" type="radio" name="rating" value="4" [(ngModel)]="rating"/>
+      <label class="star star-4" for="star-4"></label>
+      <input class="star star-3" id="star-3" type="radio" name="rating" value="3" [(ngModel)]="rating"/>
+      <label class="star star-3" for="star-3"></label>
+      <input class="star star-2" id="star-2" type="radio" name="rating" value="2" [(ngModel)]="rating"/>
+      <label class="star star-2" for="star-2"></label>
+      <input class="star star-1" id="star-1" type="radio" name="rating" value="1" [(ngModel)]="rating"/>
+      <label class="star star-1" for="star-1"></label>
+    </div>
+    <br>
+
+    <textarea id="feedback" [(ngModel)]="feedback" placeholder="Additional feedback"></textarea>
+    <div class="form-row" *ngIf="ratingError">
+        <div class="col">
+          <ngb-alert type="danger" (close)="ratingError = false">Please select a rating!</ngb-alert>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button class="breathe-submit-button" (click)="rate()">Submit Feedback</button>
+    <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
+  </div>
+</ng-template>
+
 <!-- Loading animation -->
 <div class="loader" *ngIf="!isLoaded || !statusReady"></div>
 
@@ -230,6 +263,11 @@
       <div class="row sidenav-hover" (click)="openTab('/static/fe/contact.html')">
         <div class="col-10 sidenav-suboption">
           <span>Contact Us</span>
+        </div>
+      </div>
+      <div class="row sidenav-hover" (click)="openRatingModal()">
+        <div class="col-10 sidenav-suboption">
+          <span>Rate</span>
         </div>
       </div>
 
