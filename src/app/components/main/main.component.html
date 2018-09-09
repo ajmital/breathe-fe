@@ -131,8 +131,6 @@
     {{errorModalBody}}
   </div>
   <div class="modal-footer">
-    <button class="breathe-submit-button" (click)="openTab('#')">Android</button>
-    <button class="breathe-submit-button" (click)="openTab('http://appstorebeta.com/a0x3bkTPgP')">iPhone</button>
     <button class="breathe-cancel-button" (click)="dismissActiveModal()">Dismiss</button>
   </div>
 </ng-template>
@@ -144,7 +142,7 @@
   </div>
   <div class="modal-body">
     <p>From your mobile device, select one of the options below.</p>
-    <p>View the installation instructions <a href="/static/fe/installation.html">here</a> to learn how to install Breathe on your device.</p>
+    <p>View the installation instructions <a href="/installation.html">here</a> to learn how to install Breathe on your device.</p>
   </div>
   <div class="modal-footer">
     <button class="breathe-submit-button" (click)="openTab('/static/apk/breathe-latest.apk')">Android</button>
@@ -305,7 +303,7 @@
 
 
     <nav class="navbar navbar-expand">
-        <a href="/static/fe/index.html"><img class="navbar-brand" src="assets/img/breathe-logo.svg" /></a>
+        <a href="/"><img class="navbar-brand" src="assets/img/breathe-logo.svg" /></a>
         <div class="mr-auto"></div>
         <div class="navbar-nav pr-sm-2">
             <span class="nav-item nav-link" [ngClass]="{'breathe-active': dashboard}"  (click)="show('dashboard')">Dashboard</span>
