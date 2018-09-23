@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/shareReplay';
+import { environment } from '../../environments/environment.qa';
 
 const CSRF_COOKIE:string = "csrftoken";
 
@@ -207,9 +208,9 @@ export class StripeSubscription{
     this.id = id;
     this.period_start = (period_start == 0) ? null : new Date(period_start * 1000);
     this.period_end = (period_end == 0) ? null : new Date(period_end * 1000);
-    if (plan_id == "plan_DDvxdRbzhmimuW"){
+    if (plan_id == environment.stripe_annual || plan_id == "plan_DN0NqlykXRyF1C"){ // Maintain compatibility with old pricing plans
       this.plan = "annual";
-    }else if (plan_id == "plan_DDvwiRtFyuFZNu"){
+    }else if (plan_id == environment.stripe_monthly || plan_id == "plan_DN0M92Ov34bLLz"){
       this.plan = "monthly";
     }else{
       this.plan = "unknown";

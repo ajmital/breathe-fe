@@ -8,8 +8,8 @@ import { isNullOrUndefined } from 'util';
 import {environment} from '../../../environments/environment';
 
 const now = new Date();
-const MONTHLY_RATE:number = 1495;
-const ANNUAL_RATE:number = 9995;
+const MONTHLY_RATE:number = 1499;
+const ANNUAL_RATE:number = 9999;
 
 
 @Component({
