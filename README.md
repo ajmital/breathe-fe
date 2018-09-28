@@ -70,23 +70,41 @@ The Dashboard component also contains some food entry capabilities which are ide
 ### UserService
 The `UserService` service contains all methods/variables that require user authentication; however, given how large this service is, it no longer makes sense to organize it this way and it should be split into smaller services.
 
+The service contains the user's data so that it is accessible by all components. It also maintains the user's subscription status. Some of its less obvious methods include getting/setting weight, getting the user's food, and adding the user's food.
+
 ### FoodService
 The `FoodService` service contains food-related methods that do not depend on the user (searching for food, retrieving details from nutritionix). 
 
 ### PaymentService
 The `PaymentService` service handles all requests to the Stripe-related endpoints on the Breathe backend.
 
+It defines two classes: `StripeSubscription` and `StripeCard` which are used to store information about the user's subscription and current payment method.
+
+All HTTP request Observables are shared with [shareReplay()](https://www.learnrxjs.io/operators/multicasting/sharereplay.html):
+
+    let request = this.http.delete(
+      '/api/stripe/customer/delete/',
+      {headers: this.headers}
+     ).shareReplay();
+
+This enables both the service and the caller to handle HTTP events without repeating the request by caching the most recent copy.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+The current setup allows only for authentication from the same server as the backend, so the development server will not be helpful. The best workaround is to set up an Apache instance, with the Breathe-DRF project set up as a WSGI application, and then point all requests to `/fe/` to the `dist/` folder. This ensures that every time the project is built, it can immediately be tested.
 
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
+To build the project for QA, run `ng build --env=qa --base-href /fe/ --deploy-url /fe/`. The `env` flag sets the environment. The main use of the environment in Breathe-Fe is to switch between live/testing Stripe services. The `--base-href` and `--deploy-url` flags are used because the default assumption for Angular projects is that they are hosted at the server root, but in this case, they are hosted under /fe.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+To build the project for production, run `ng build -prod --base-href /fe/ --deploy-url /fe/`.
+
+The output files will be placed in the `dist/` directory.
 
 ## Running unit tests
 
